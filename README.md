@@ -4,7 +4,7 @@
 
 SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e nove Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Release 1 — SIGMA Protocol** (Release 0 — Foundation aprovada e publicada em `github.com/FelipeGat/Project-SIGMA`). Nenhum código de aplicação foi escrito ainda. Veja [ROADMAP.md](ROADMAP.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado (Release 0 — Foundation publicada em `github.com/FelipeGat/Project-SIGMA`). Proposta formal da **Release 2 — SIGMA Bootstrap** em preparação. Nenhum código de aplicação foi escrito ainda. Veja [ROADMAP.md](ROADMAP.md) e [memory/STATE.md](memory/STATE.md).
 
 ## Por onde começar
 
@@ -16,9 +16,12 @@ SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtua
 | Entender o produto — quem usa, quem paga, personas | [PRODUCT.md](PRODUCT.md) |
 | Entender o horizonte de longo prazo | [VISION_2030.md](VISION_2030.md) |
 | Entender como o sistema é desenhado (Engines, domínio, stack) | [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) |
+| Entender como o SIGMA inicia (boot, DI, ciclo de vida) | [BOOTSTRAP.md](BOOTSTRAP.md) |
 | Entender o que pertence e o que nunca pertence ao Kernel | [KERNEL.md](KERNEL.md) |
 | Entender como uma Skill vira código (Plugin System) | [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) |
-| Entender a filosofia "tudo é evento" | [EVENT_MODEL.md](EVENT_MODEL.md) |
+| Entender a SIGMA Language (SGL) | [SGL.md](SGL.md) |
+| Entender por que o SIGMA nunca lê um sistema externo direto | [DIGITAL_TWIN.md](DIGITAL_TWIN.md) |
+| Entender a filosofia "tudo é evento" e as três camadas de evento | [EVENT_MODEL.md](EVENT_MODEL.md) |
 | Entender observabilidade (Logs/Metrics/Tracing/Audit) | [TELEMETRY.md](TELEMETRY.md) |
 | Entender Workspace e multiempresa | [WORKSPACES.md](WORKSPACES.md), [MULTITENANCY.md](MULTITENANCY.md) |
 | Entender os três níveis de Memory | [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md) |
@@ -72,9 +75,10 @@ Todas as pastas de código (`apps/`, `packages/`, `services/`, `plugins/`) estã
 6. Multiempresa desde o schema — Tenant/Company/Workspace/User/Role nunca retrofitados.
 7. Observabilidade desde o dia zero — nenhum Engine roda sem Telemetry.
 8. SIGMA executa Intenções, não comandos — uma Intent pode decompor em múltiplas Missions.
-9. Toda resposta do sistema — Skill, Plugin, Agent, canal externo — volta no mesmo Envelope padronizado.
-10. Nenhuma solução provisória. Nenhum código sem arquitetura definida antes.
-11. Desenvolvimento avança **uma Release por vez**, com aprovação explícita antes de iniciar implementação.
+9. SIGMA é declarativo, nunca imperativo — descreve-se o estado desejado, o sistema decide o como.
+10. Toda resposta do sistema — Skill, Plugin, Agent, canal externo — volta no mesmo Envelope padronizado.
+11. Nenhuma solução provisória. Nenhum código sem arquitetura definida antes.
+12. Desenvolvimento avança **uma Release por vez**, com aprovação explícita antes de iniciar implementação.
 
 ## Licença
 

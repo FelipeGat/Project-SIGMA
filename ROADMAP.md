@@ -9,8 +9,8 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | Release | Nome | Status |
 |---|---|---|
 | 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Aprovada, publicada |
-| 1 | SIGMA Protocol | 🔵 Em andamento |
-| 2 | Kernel | ⚪ Não iniciado |
+| 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
+| 2 | SIGMA Bootstrap | 🔵 Proposta formal em preparação |
 | 3 | Memory Engine | ⚪ Não iniciado |
 | 4 | Mission Engine | ⚪ Não iniciado |
 | 5 | Planner Engine | ⚪ Não iniciado |
@@ -27,17 +27,19 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 
 Entregou apenas documentação e estrutura de projeto, nenhum código de aplicação, em três rodadas de revisão (internamente chamadas Sprint 0, 0.1, 0.2 — terminologia anterior à [ADR-0024](docs/adr/0024-terminologia-release.md), não renomeada retroativamente): README, VISION, MANIFESTO, PRODUCT, VISION_2030, DOMAIN, ARCHITECTURE, arquitetura em 9 Engines, monorepo `apps/packages/services/plugins/tools/docker`, KERNEL/PLUGIN_SYSTEM/EVENT_MODEL/TELEMETRY/WORKSPACES/MULTITENANCY/MEMORY_ARCHITECTURE, `agents/`, `skills/`, `knowledge/`, `playbooks/`, `council/`, `memory/`, ADR-0001–0023, CONTRIBUTING, CODE_OF_CONDUCT, LICENSE. Aprovada pelo Product Owner; primeiro push realizado em 2026-08-04 (`github.com/FelipeGat/Project-SIGMA`, branch `main`).
 
-## Release 1 — SIGMA Protocol (atual)
+## Release 1 — SIGMA Protocol ✅
 
-Especificação do protocolo de comunicação entre todas as peças do SIGMA, **antes** de qualquer Engine ser implementado — ver [ADR-0025](docs/adr/0025-protocol-antecede-kernel.md) e [SIGMA_PROTOCOL.md](SIGMA_PROTOCOL.md). Escopo: envelope de resposta padronizado ([ADR-0026](docs/adr/0026-envelope-de-resposta-padronizado.md)), conceito de Capability ([ADR-0027](docs/adr/0027-capability-unidade-de-skill.md)), filosofia de execução por Intenção com decomposição em múltiplas Missions ([ADR-0028](docs/adr/0028-intencao-nao-comando.md)), Princípio da Autonomia Progressiva ([ADR-0029](docs/adr/0029-autonomia-progressiva.md)). Ainda documentação, não código.
+Especificação do protocolo de comunicação entre todas as peças do SIGMA, **antes** de qualquer Engine ser implementado — ver [ADR-0025](docs/adr/0025-protocol-antecede-kernel.md) e [SIGMA_PROTOCOL.md](SIGMA_PROTOCOL.md). Escopo: Envelope de resposta padronizado ([ADR-0026](docs/adr/0026-envelope-de-resposta-padronizado.md), [ADR-0030](docs/adr/0030-envelope-v2.md)), Capability e Capability Registry ([ADR-0027](docs/adr/0027-capability-unidade-de-skill.md), [ADR-0033](docs/adr/0033-capability-registry.md)), execução por Intenção com decomposição em múltiplas Missions ([ADR-0028](docs/adr/0028-intencao-nao-comando.md)), SIGMA Language ([ADR-0032](docs/adr/0032-sigma-language.md), [SGL.md](SGL.md)), Digital Twin ([ADR-0035](docs/adr/0035-digital-twin.md), [DIGITAL_TWIN.md](DIGITAL_TWIN.md)), eventos em três camadas ([ADR-0034](docs/adr/0034-eventos-tres-camadas.md)), Autonomia Progressiva ([ADR-0029](docs/adr/0029-autonomia-progressiva.md)), princípio Declarativo-não-Imperativo ([ADR-0037](docs/adr/0037-declarativo-nao-imperativo.md)). Aprovada pelo Product Owner; push realizado.
 
-## Release 2 — Kernel
+## Release 2 — SIGMA Bootstrap (proposta em preparação)
 
-Bootstrap da plataforma: configuração por ambiente, contexto de execução, health-check, versionamento interno, bootstrap de Telemetry (ver [TELEMETRY.md](TELEMETRY.md)) e do `services/event-bus`. Inclui o schema fundacional de multiempresa — Tenant, Company, Workspace, User, Role (ver [MULTITENANCY.md](MULTITENANCY.md) e [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md)) — desde a primeira migration. Primeiro código de aplicação do projeto. Implementa o envelope de resposta da Release 1 desde o primeiro endpoint.
+Renomeada de "Kernel" — escopo reduzido ao bootstrap puro da plataforma, equivalente ao `Application` do Laravel: Config, Logger, DI Container, Modules, Events (mecanismo), Lifecycle (boot/start/ready/shutdown), Health. **Fora do escopo**: Missions, IA/Agents, Plugins. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md) e [BOOTSTRAP.md](BOOTSTRAP.md). Primeiro código de aplicação do projeto. Implementa o Envelope de resposta da Release 1 desde o primeiro endpoint de health-check.
+
+O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role — [MULTITENANCY.md](MULTITENANCY.md)), antes bundlado nesta Release, ainda não tem casa definitiva — proposto para a Release 3, a confirmar na proposta formal desta Release.
 
 ## Release 3 — Memory Engine
 
-Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Construído antes do Mission Engine para que o Planner (Release 5) já tenha uma fonte de contexto/heurística ao nascer.
+Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)), custódia dos primeiros Digital Twins (ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md)). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Candidata a receber o schema fundacional de multiempresa adiado da Release 2 (a confirmar). Construído antes do Mission Engine para que o Planner (Release 5) já tenha uma fonte de contexto/heurística ao nascer.
 
 ## Release 4 — Mission Engine
 

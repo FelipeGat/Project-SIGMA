@@ -17,6 +17,6 @@
     "whatsapp_skill.message_received"
   ],
   "capabilities": [
-    { "name": "SendMessage", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 1, "events_emitted": [] }
+    { "name": "SendMessage", "version": "1.0.0", "owner": "whatsapp-plugin", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 1, "events_emitted": [], "dependencies": [] }
   ]
 }

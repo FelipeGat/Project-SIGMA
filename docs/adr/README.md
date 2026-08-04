@@ -35,3 +35,12 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0027](0027-capability-unidade-de-skill.md) | Capability é a unidade de implementação de uma Skill — não a função |
 | [0028](0028-intencao-nao-comando.md) | SIGMA executa Intenções, não comandos — Intent pode decompor em múltiplas Missions |
 | [0029](0029-autonomia-progressiva.md) | Princípio da Autonomia Progressiva — quatro níveis configuráveis |
+| [0030](0030-envelope-v2.md) | Envelope v2 — correlationId, actor, intent, capability, audit |
+| [0031](0031-ordem-runtime-vs-desenvolvimento.md) | Ordem de Runtime é distinta da Ordem de Desenvolvimento |
+| [0032](0032-sigma-language.md) | SIGMA Language (SGL) como camada intermediária de representação de Intent |
+| [0033](0033-capability-registry.md) | Capability Registry — versão, owner e dependências por Capability |
+| [0034](0034-eventos-tres-camadas.md) | Eventos em três camadas — Technical, Semantic, Business |
+| [0035](0035-digital-twin.md) | Digital Twin — SIGMA nunca lê um sistema externo diretamente |
+| [0036](0036-objetivo-e-campo-da-intent.md) | "Objetivo" é o campo de propósito da Intent — não uma camada nova (proposto, aguardando confirmação) |
+| [0037](0037-declarativo-nao-imperativo.md) | SIGMA é declarativo, nunca imperativo |
+| [0038](0038-sigma-bootstrap-nao-kernel-completo.md) | Release 2 é o SIGMA Bootstrap — não o Kernel completo |

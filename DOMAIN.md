@@ -7,7 +7,7 @@ Convenção de nomenclatura correspondente: [docs/conventions/naming-conventions
 ## Núcleo de orquestração
 
 ### Intent
-A interpretação estruturada de um **objetivo**, não de uma lista de comandos — produzida pelo **Intent Engine** a partir de linguagem natural ou de um evento de outro sistema. Uma Intent pode se decompor em **uma ou mais Missions** relacionadas (cardinalidade 1:N — ver [SIGMA_PROTOCOL.md §2](SIGMA_PROTOCOL.md#2-intenção-não-comando) e [ADR-0028](docs/adr/0028-intencao-nao-comando.md)). Uma Intent ainda não é um plano de ação — é a compreensão de *o que* se quer alcançar, antes de decidir *como*.
+A interpretação estruturada de um **objetivo**, não de uma lista de comandos — produzida pelo **Intent Engine** a partir de linguagem natural ou de um evento de outro sistema. Carrega um campo `objective`: a frase-resumo, declarativa (um estado desejado, não um passo a passo — ver [ADR-0037](docs/adr/0037-declarativo-nao-imperativo.md)), do que se quer alcançar — "Objetivo" é o nome de produto, em português, para esse campo (ver [ADR-0036](docs/adr/0036-objetivo-e-campo-da-intent.md), proposto e aguardando confirmação). Uma Intent pode se decompor em **uma ou mais Missions** relacionadas (cardinalidade 1:N — ver [SIGMA_PROTOCOL.md §2](SIGMA_PROTOCOL.md#2-intenção-não-comando) e [ADR-0028](docs/adr/0028-intencao-nao-comando.md)). Representada internamente em [SGL](SGL.md) antes de virar o Envelope. Uma Intent ainda não é um plano de ação — é a compreensão de *o que* se quer alcançar, antes de decidir *como*.
 
 ### Plan
 O plano de execução montado pelo **Planner Engine** a partir de uma Intent: quantas Missions são necessárias, quais Subtasks cada uma exige, em que ordem, e quais Agentes/Skills/Capabilities são candidatos para cada uma. O Plan é decidido pelo sistema — nunca por uma IA agindo livremente. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md).
@@ -19,7 +19,7 @@ A entidade central do sistema — o agregado raiz. Nasce de uma Intent já plane
 Uma unidade de trabalho dentro do Plan de uma Mission, atribuída a um Agent específico, que invoca uma Capability para cumpri-la.
 
 ### Capability
-Uma ação nomeada e discreta que uma Skill implementa (ex: `CreateEvent`), com schema de entrada/saída e um nível mínimo de autonomia requerido. Uma Skill é um conjunto de Capabilities — nunca funções soltas. Ver [SIGMA_PROTOCOL.md §3](SIGMA_PROTOCOL.md#3-capability) e [ADR-0027](docs/adr/0027-capability-unidade-de-skill.md).
+Uma ação nomeada e discreta que uma Skill implementa (ex: `CreateEvent`), com versão própria, owner, schema de entrada/saída, dependências de outras Capabilities, e um nível mínimo de autonomia requerido. Uma Skill é um conjunto de Capabilities — nunca funções soltas. O conjunto de todas as Capabilities de todos os Plugins carregados forma o **Capability Registry**, mantido pelo Skill Engine. Ver [SIGMA_PROTOCOL.md §4](SIGMA_PROTOCOL.md#4-capability-e-capability-registry) e [ADR-0027](docs/adr/0027-capability-unidade-de-skill.md)/[ADR-0033](docs/adr/0033-capability-registry.md).
 
 ### Knowledge
 Tudo que o sistema sabe — base de conhecimento estruturada, documentação de domínio, contexto de negócio. Gerenciado pelo **Memory Engine**. Alimentado, entre outras fontes, por [/knowledge](knowledge/).
@@ -75,10 +75,13 @@ Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (e
 
 ## Negócio (orquestrado, não gerido pelo SIGMA)
 
-Estas entidades representam conceitos de negócio que o SIGMA referencia para dar contexto a uma Mission — a fonte da verdade de cada uma permanece no sistema dono do domínio (ex: Gestor.Alfa), acessada via Skill. SIGMA nunca duplica esses dados como se fossem seus.
+Estas entidades representam conceitos de negócio que o SIGMA referencia para dar contexto a uma Mission — a fonte da verdade de cada uma permanece no sistema dono do domínio (ex: Gestor.Alfa), acessada via Skill. SIGMA nunca duplica esses dados como se fossem seus, mas mantém uma representação viva de cada uma para leitura rápida — ver **Digital Twin** abaixo.
+
+### Digital Twin
+A representação viva e sincronizada de um Client, Project, Company ou User, mantida pelo SIGMA (custódia do Memory Engine) e atualizada a partir de Semantic Events. Toda leitura de contexto consulta o Twin; toda escrita continua indo direto ao sistema externo via Capability — o Twin nunca é a fonte da verdade. Ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md) e [ADR-0035](docs/adr/0035-digital-twin.md).
 
 ### Client
-Um cliente do ecossistema Alfa. Fonte da verdade: Gestor.Alfa (ou equivalente).
+Um cliente do ecossistema Alfa. Fonte da verdade: Gestor.Alfa (ou equivalente); representado no SIGMA por um `ClientTwin`.
 
 ### Contact
 Uma pessoa de contato associada a um Client.

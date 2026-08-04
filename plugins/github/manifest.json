@@ -19,7 +19,7 @@
     "github_skill.failed"
   ],
   "capabilities": [
-    { "name": "CreatePullRequest", "input": "CreatePullRequestInput", "output": "PullRequestRef", "autonomy_level_required": 2, "events_emitted": [] },
-    { "name": "CreateIssue", "input": "CreateIssueInput", "output": "IssueRef", "autonomy_level_required": 2, "events_emitted": [] }
+    { "name": "CreatePullRequest", "version": "1.0.0", "owner": "github-plugin", "input": "CreatePullRequestInput", "output": "PullRequestRef", "autonomy_level_required": 2, "events_emitted": [], "dependencies": [] },
+    { "name": "CreateIssue", "version": "1.0.0", "owner": "github-plugin", "input": "CreateIssueInput", "output": "IssueRef", "autonomy_level_required": 2, "events_emitted": [], "dependencies": [] }
   ]
 }

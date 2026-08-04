@@ -224,10 +224,13 @@ Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decis
 
 | Documento | Cobre |
 |---|---|
-| [SIGMA_PROTOCOL.md](../../SIGMA_PROTOCOL.md) | O Envelope, Capability, Intenção-não-Comando, Autonomia Progressiva — o contrato que une todos os Engines. Maior autoridade que este documento em caso de conflito sobre formato |
+| [SIGMA_PROTOCOL.md](../../SIGMA_PROTOCOL.md) | O Envelope, Capability, Intenção-não-Comando, Autonomia Progressiva, Ordem de Runtime vs. Desenvolvimento — o contrato que une todos os Engines. Maior autoridade que este documento em caso de conflito sobre formato |
+| [BOOTSTRAP.md](../../BOOTSTRAP.md) | Como o SIGMA inicia, carrega módulos e Engines, injeção de dependências, ciclo de vida (boot/start/ready/shutdown) |
 | [KERNEL.md](../../KERNEL.md) | O que pertence e o que nunca pertence ao Kernel |
 | [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) | Como uma Skill é empacotada e carregada como Plugin |
-| [EVENT_MODEL.md](../../EVENT_MODEL.md) | Catálogo canônico de eventos e a filosofia "tudo é evento" |
+| [SGL.md](../../SGL.md) | A gramática da SIGMA Language e seu mapeamento para o Envelope |
+| [DIGITAL_TWIN.md](../../DIGITAL_TWIN.md) | A representação viva de Client/Project/Company/User que substitui leitura direta a sistemas externos |
+| [EVENT_MODEL.md](../../EVENT_MODEL.md) | Catálogo canônico de eventos, a filosofia "tudo é evento" e as três camadas Technical/Semantic/Business |
 | [TELEMETRY.md](../../TELEMETRY.md) | Logs, Metrics, Tracing, Audit — observabilidade desde o dia zero |
 | [WORKSPACES.md](../../WORKSPACES.md) | A unidade de contexto operacional (Workspace) |
 | [MULTITENANCY.md](../../MULTITENANCY.md) | A hierarquia Tenant → Company → Workspace → User → Role |

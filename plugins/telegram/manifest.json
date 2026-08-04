@@ -17,6 +17,6 @@
     "telegram_skill.user_responded"
   ],
   "capabilities": [
-    { "name": "SendMessage", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 2, "events_emitted": [] }
+    { "name": "SendMessage", "version": "1.0.0", "owner": "telegram-plugin", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 2, "events_emitted": [], "dependencies": [] }
   ]
 }

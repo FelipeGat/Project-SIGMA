@@ -20,7 +20,7 @@
     "budget.created_via_gestor"
   ],
   "capabilities": [
-    { "name": "FindClient", "input": "FindClientInput", "output": "Client", "autonomy_level_required": 3, "events_emitted": [] },
-    { "name": "CreateBudget", "input": "CreateBudgetInput", "output": "Budget", "autonomy_level_required": 1, "events_emitted": ["budget.created_via_gestor"] }
+    { "name": "FindClient", "version": "1.0.0", "owner": "gestor-plugin", "input": "FindClientInput", "output": "Client", "autonomy_level_required": 3, "events_emitted": [], "dependencies": [] },
+    { "name": "CreateBudget", "version": "1.0.0", "owner": "gestor-plugin", "input": "CreateBudgetInput", "output": "Budget", "autonomy_level_required": 1, "events_emitted": ["budget.created_via_gestor"], "dependencies": ["FindClient"] }
   ]
 }

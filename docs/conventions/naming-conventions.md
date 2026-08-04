@@ -18,7 +18,9 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | **Capability** | Uma ação nomeada e discreta implementada por uma Skill (ex: `CreateEvent`) | "Action", "função" solta — ver [ADR-0027](../adr/0027-capability-unidade-de-skill.md) |
 | **Plugin** | O empacotamento técnico de uma Skill, carregado dinamicamente (ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md)) | "Skill" — Plugin é a implementação; Skill é o conceito |
 | **Workspace** | Unidade de contexto operacional (ex: um cliente) que agrega Client/Project/Budget/Meeting relacionados | "Project" isolado |
+| **Digital Twin** | Representação viva e sincronizada de um Client/Project/Company/User | Fonte da verdade — o Twin nunca é a fonte, o sistema externo é |
 | **Tenant** | Fronteira de isolamento total de dados | "Company" |
+| **Objetivo** | Nome de produto, em português, para o campo `objective` de uma Intent | Entidade própria — ver [ADR-0036](../adr/0036-objetivo-e-campo-da-intent.md) (proposto, não confirmado) |
 | **Knowledge** | O que o sistema sabe | "Memory" |
 | **Memory** | O que o sistema aprendeu | "Knowledge" |
 | **Event** | Um fato de domínio publicado no Event Bus | "Log" |
@@ -35,6 +37,8 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | App (`apps/`) | kebab-case | `web`, `mobile`, `admin` |
 | Plugin (`plugins/`) | kebab-case, mesmo nome da Skill em minúsculas | `gestor`, `github`, `whatsapp` |
 | `manifest.json` de Plugin | campos em snake_case (ver [plugins/manifest.schema.json](../../plugins/manifest.schema.json)) | `api_base_url`, `autonomy_level_required` |
+| Bloco SGL | Palavra-chave em MAIÚSCULAS (ver [SGL.md](../../SGL.md)) | `INTENT`, `MISSION`, `SUBTASK` |
+| Campo SGL | camelCase | `objective`, `dependsOn` |
 
 ## Backend (Laravel / PHP 8.4, dentro de cada pacote)
 

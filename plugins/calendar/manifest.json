@@ -19,9 +19,9 @@
     "meeting.scheduled"
   ],
   "capabilities": [
-    { "name": "CreateEvent", "input": "CreateEventInput", "output": "Meeting", "autonomy_level_required": 2, "events_emitted": ["meeting.scheduled"] },
-    { "name": "CancelEvent", "input": "CancelEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [] },
-    { "name": "MoveEvent", "input": "MoveEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [] },
-    { "name": "SearchAgenda", "input": "SearchAgendaInput", "output": "Meeting[]", "autonomy_level_required": 3, "events_emitted": [] }
+    { "name": "CreateEvent", "version": "1.0.0", "owner": "calendar-plugin", "input": "CreateEventInput", "output": "Meeting", "autonomy_level_required": 2, "events_emitted": ["meeting.scheduled"], "dependencies": [] },
+    { "name": "CancelEvent", "version": "1.0.0", "owner": "calendar-plugin", "input": "CancelEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [], "dependencies": ["CreateEvent"] },
+    { "name": "MoveEvent", "version": "1.0.0", "owner": "calendar-plugin", "input": "MoveEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [], "dependencies": ["CreateEvent"] },
+    { "name": "SearchAgenda", "version": "1.0.0", "owner": "calendar-plugin", "input": "SearchAgendaInput", "output": "Meeting[]", "autonomy_level_required": 3, "events_emitted": [], "dependencies": [] }
   ]
 }

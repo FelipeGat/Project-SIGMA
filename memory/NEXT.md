@@ -1,17 +1,20 @@
 # Próximos passos
 
-## Imediato — aguardando aprovação
+## Imediato
 
-1. Revisão da Release 1 — SIGMA Protocol pelo Product Owner (documento [SIGMA_PROTOCOL.md](../SIGMA_PROTOCOL.md), mais as ADRs 0024–0029 e a atualização de `DOMAIN.md`/`ARCHITECTURE.md`/`PLUGIN_SYSTEM.md`/manifests de Plugin que dele decorrem).
-2. Confirmar especificamente a ordem **Planner Engine (Release 5) antes do Intent Engine (Release 6)** — sinalizada como tensão em [ADR-0025](../docs/adr/0025-protocol-antecede-kernel.md), não assumida silenciosamente.
-3. Se aprovado: `git push` da Release 1 ao GitHub.
+1. Push da Release 1 completa (com todas as extensões desta revisão) já autorizado pelo Product Owner — executar.
+2. Apresentar a proposta formal da Release 2 — SIGMA Bootstrap (Objetivo/Escopo/Arquitetura/Dependências/Riscos/Entregáveis/Testes/Critérios de Aceite) — em andamento.
 
-## Depois da aprovação — Release 2
+## Aguardando confirmação do Product Owner (não bloqueiam a proposta da Release 2, mas precisam de resposta antes que as Releases correspondentes comecem)
 
-A primeira Release de código é o **Kernel** (bootstrap, contexto de execução, schema fundacional de multiempresa, Telemetry, event-bus), agora implementando o Envelope de resposta desde o primeiro endpoint. Nenhum código será escrito antes de essa Release ser apresentada no formato Objetivo/Escopo/Arquitetura/Dependências/Riscos/Entrega/Testes/Critérios de Aceite e aprovada explicitamente (ver [ADR-0010](../docs/adr/0010-processo-por-epicos-com-aprovacao.md)).
+1. **[ADR-0036](../docs/adr/0036-objetivo-e-campo-da-intent.md)** — "Objetivo" como campo de Intent vs. camada nova acima dela. Confirmar antes da Release 5/6.
+2. **Nova casa do schema de multiempresa** — proposto para a Release 3 (Memory Engine), já que a Release 2 foi reduzida a infraestrutura pura. Confirmar na revisão da proposta da Release 2.
+
+## Depois da aprovação da proposta — início do código
+
+Primeira linha de código do Project SIGMA: Release 2 — SIGMA Bootstrap, exatamente no escopo de [BOOTSTRAP.md](../BOOTSTRAP.md) — Config, Logger, DI Container, Modules, Events (mecanismo), Lifecycle, Health. Nada de Mission, IA, ou Plugins.
 
 ## Não bloqueado, mas não iniciado
 
-- Popular `knowledge/` com conteúdo real pode acontecer em paralelo ao desenvolvimento de código.
+- Popular `knowledge/` com conteúdo real.
 - Criar a Organização no GitHub (`Alfa-Solucoes`/`Grupo-Solucoes`) sugerida pelo Product Owner — ação de conta fora do escopo do que posso executar diretamente.
-- Definir quem configura o nível de Autonomia Progressiva por User/Role na prática (ver [ADR-0029](../docs/adr/0029-autonomia-progressiva.md)) — adiado para a Release 7/8, quando Skill Engine e Agent Engine de fato aplicam esse gate.

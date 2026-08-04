@@ -29,4 +29,4 @@ Uma peça de lógica pertence ao Kernel se, e somente se, remover essa peça que
 
 ## Onde vive
 
-Implementação em [packages/kernel](packages/kernel/) — Release 2 do [ROADMAP.md](ROADMAP.md), pré-requisito de toda camada seguinte.
+Implementação em [packages/kernel](packages/kernel/), a partir da Release 2 — SIGMA Bootstrap do [ROADMAP.md](ROADMAP.md), pré-requisito de toda Release seguinte. A Release 2 é o primeiro incremento do escopo completo descrito aqui — não a totalidade; ver [BOOTSTRAP.md](BOOTSTRAP.md) para o que ela entrega de fato, e [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md) para o porquê da distinção.

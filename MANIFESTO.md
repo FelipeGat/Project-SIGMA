@@ -34,6 +34,10 @@ Entre a solução mais rápida de implementar hoje e a solução mais desacoplad
 
 SIGMA não é um chat inteligente com plugins. É uma plataforma operacional corporativa: tem um Kernel, tem Engines com responsabilidades específicas, tem um ciclo de vida de Missão auditável. Quando a documentação, o código ou a conversa sobre o SIGMA soarem como "um assistente que responde perguntas", é sinal de que a visão está se estreitando — e isso deve ser corrigido, não seguido. Ver [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md).
 
+## SIGMA é declarativo, nunca imperativo
+
+Não se diz ao SIGMA *"atualize o orçamento"*. Diz-se *"o orçamento da Sea Master precisa refletir as decisões tomadas nesta reunião"* — um estado desejado, não uma sequência de passos. O SIGMA decide o como. Isso desacopla completamente a intenção de quem a registrou da implementação de quem a executa: se o Gestor.Alfa mudar de API, se uma nova IA surgir, ou se uma Skill for substituída, a intenção registrada continua válida sem alteração. Toda funcionalidade nova é avaliada por essa lente — se ela só funciona quando o usuário especifica o passo a passo, ela está pedindo para ser um script, não uma Mission do SIGMA. Ver [SIGMA_PROTOCOL.md §2](SIGMA_PROTOCOL.md#2-intenção-não-comando) e [ADR-0037](docs/adr/0037-declarativo-nao-imperativo.md).
+
 ---
 
 Este manifesto é revisado raramente e por decisão explícita — não por conveniência de um épico específico. Mudanças aqui são, por definição, mudanças de rumo da empresa, não do software.
