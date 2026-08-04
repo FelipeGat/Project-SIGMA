@@ -1,0 +1,29 @@
+# Sigma Contract — formato de referência. Ver contracts/README.md e ADR-0049.
+# Um contrato descreve UM conceito de domínio — não uma implementação.
+
+name: ""                # Nome do conceito (ex: Mission, Plugin, Capability)
+version: "1.0.0"          # Versão do contrato — mudança incompatível exige nova versão, nunca edição silenciosa
+
+input:                      # O que este conceito aceita como entrada
+  - name: ""
+    type: ""
+    required: true
+
+output:                        # O que este conceito produz como saída — sempre dentro do campo `data` do Envelope
+  - name: ""
+    type: ""
+
+events:                          # Eventos que este conceito publica (ver EVENT_MODEL.md — Technical/Semantic/Business)
+  - ""
+
+permissions:                        # Chaves de permissão exigidas para operar sobre este conceito
+  - key: ""
+    risk: "read"                     # read | write-internal | write-external | irreversible
+
+autonomy_level_required: 0               # 0-3, ver SIGMA_PROTOCOL.md §5
+
+supported_versions:                        # Quais versões deste contrato uma implementação pode suportar simultaneamente
+  - "1.0.0"
+
+compatible_with:                             # Referência cruzada — ver COMPATIBILITY.md para a matriz completa
+  protocol: "1.0"

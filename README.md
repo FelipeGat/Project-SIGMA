@@ -4,7 +4,7 @@
 
 SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e dez Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado (Release 0 — Foundation publicada em `github.com/FelipeGat/Project-SIGMA`). **Release 2 — SIGMA Bootstrap** aprovada com alteração obrigatória (Identity Engine extraído como Release própria, Bootstrap desacoplado de Engines, System Manifest, Self-Describing Components) — proposta revisada, aguardando confirmação final antes do primeiro código. Nenhum código de aplicação foi escrito ainda. Veja [ROADMAP.md](ROADMAP.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado. **Release 2 — SIGMA Bootstrap: aprovada, implementação em andamento** — primeiro código de aplicação do projeto. Veja [ROADMAP.md](ROADMAP.md), [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md) e [memory/STATE.md](memory/STATE.md).
 
 ## Por onde começar
 
@@ -29,6 +29,10 @@ SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtua
 | Consultar o glossário de domínio | [DOMAIN.md](DOMAIN.md) |
 | Ver quem governa o projeto e com que autoridade | [council/](council/) |
 | Ver o que já foi decidido e por quê | [docs/adr/](docs/adr/) |
+| Ver ideias em discussão, antes de virarem decisão | [docs/rfc/](docs/rfc/) |
+| Ver o contrato formal de cada conceito de domínio | [contracts/](contracts/) |
+| Ver quais versões de Kernel/Protocol/Plugin são compatíveis | [COMPATIBILITY.md](COMPATIBILITY.md) |
+| Ver como sistemas externos integram com o SIGMA | [sdk/](sdk/) |
 | Ver a proposta formal da próxima Release, para aprovação | [docs/releases/](docs/releases/) |
 | Ver o que vem a seguir, por camada de Engine | [ROADMAP.md](ROADMAP.md) |
 | Ver onde o projeto está agora | [memory/STATE.md](memory/STATE.md) |
@@ -54,18 +58,20 @@ project-sigma/
 ├── packages/       # Os dez Engines, core, design-system, sdk — bibliotecas
 ├── services/         # Processos deployáveis: gateway, auth, scheduler, notifications, ai-router, event-bus
 ├── plugins/           # Empacotamento técnico de cada Skill (manifest.json)
-├── docs/               # Arquitetura, ADRs, convenções
-├── tools/               # Ferramentas de desenvolvimento do monorepo
-├── docker/               # Containers de ambiente local e deploy
-├── agents/                # Documentação de cada Agent runtime (Claude, ChatGPT, Gemini, Manus)
-├── skills/                 # Documentação de cada Skill/integração planejada
-├── knowledge/               # Conhecimento de negócio da Alfa (não código, não docs do SIGMA)
-├── playbooks/                 # Padrões documentados de Missions recorrentes
-├── council/                     # Governança do projeto (Product Owner, CTO, Lead Engineer, Creative, Documentation)
-└── memory/                        # Memória operacional do próprio projeto (estado, próximos passos, decisões)
+├── contracts/          # Contrato formal por conceito de domínio (Sigma Contracts)
+├── sdk/                 # Clientes multi-linguagem (php/typescript/python) para integração externa
+├── docs/                 # Arquitetura, ADRs, RFCs, convenções, propostas de Release
+├── tools/                 # Ferramentas de desenvolvimento do monorepo
+├── docker/                 # Containers de ambiente local e deploy
+├── agents/                  # Documentação de cada Agent runtime (Claude, ChatGPT, Gemini, Manus)
+├── skills/                   # Documentação de cada Skill/integração planejada
+├── knowledge/                 # Conhecimento de negócio da Alfa (não código, não docs do SIGMA)
+├── playbooks/                   # Padrões documentados de Missions recorrentes
+├── council/                       # Governança do projeto (Product Owner, CTO, Lead Engineer, Creative, Documentation)
+└── memory/                          # Memória operacional do próprio projeto (estado, próximos passos, decisões)
 ```
 
-Todas as pastas de código (`apps/`, `packages/`, `services/`, `plugins/`) estão vazias na Fase Foundation — apenas README/manifest de escopo. Ver [ADR-0016](docs/adr/0016-monorepo-apps-packages-services.md).
+Todas as pastas de código (`apps/`, `packages/`, `services/`, `plugins/`, `sdk/`) estão vazias na Fase Foundation, exceto `packages/kernel` e `services/event-bus`/`services/gateway`, onde a Release 2 já está em implementação. Ver [ADR-0016](docs/adr/0016-monorepo-apps-packages-services.md).
 
 ## Princípios inegociáveis
 

@@ -53,3 +53,11 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0045](0045-system-manifest.md) | System Manifest — o Bootstrap lê um único arquivo, o resto é descoberto |
 | [0046](0046-self-describing-components.md) | Self-Describing Components |
 | [0047](0047-decision-log-por-release.md) | Toda Release produz Código e Decision Log |
+| [0048](0048-processo-quatro-fases.md) | Toda Release segue quatro fases — Proposal, Architecture Review, Implementation, Validation |
+| [0049](0049-sigma-contracts.md) | Sigma Contracts — contrato formal por conceito de domínio |
+| [0050](0050-compatibility-matrix.md) | Compatibility Matrix — COMPATIBILITY.md |
+| [0051](0051-processo-rfc.md) | RFC — ideias antes da decisão |
+| [0052](0052-kernel-api-apenas-interfaces.md) | Kernel API — apenas interfaces, nunca classes concretas |
+| [0053](0053-escopo-restrito-release-2.md) | Escopo restrito da Release 2 — lista explícita do que existe e do que não existe |
+| [0054](0054-tres-niveis-de-validacao.md) | Três níveis de validação obrigatórios por Release |
+| [0055](0055-sdk-multi-linguagem.md) | `/sdk` multi-linguagem como diretório próprio, distinto de `packages/sdk` |

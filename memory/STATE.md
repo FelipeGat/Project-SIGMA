@@ -4,34 +4,24 @@ _Atualizado em: 2026-08-04._
 
 ## Fase
 
-**Release 1 — SIGMA Protocol: aprovada, push realizado.** **Release 2 — SIGMA Bootstrap: aprovada com alteração obrigatória** pelo CTO — proposta revisada (revisão 2) incorporando Identity Engine como Release própria, Bootstrap desacoplado de Engines, System Manifest, Self-Describing Components, lifecycle estendido, health estilo Kubernetes. Aguardando confirmação final do Product Owner sobre a proposta atualizada antes da primeira linha de código.
+**Release 1 — SIGMA Protocol: aprovada, push realizado.** **Release 2 — SIGMA Bootstrap: aprovada (revisão 3), implementação autorizada e em andamento.** Processo de Release passa a seguir quatro fases (Proposal → Architecture Review → Implementation → Validation — [ADR-0048](../docs/adr/0048-processo-quatro-fases.md)). Primeiro código de aplicação do Project SIGMA sendo escrito nesta mesma sessão.
 
-## O que existe
+## O que existe (documentação)
 
-- Documentação de visão, produto, filosofia (Declarativo-não-Imperativo) e horizonte de longo prazo: [VISION.md](../VISION.md), [MANIFESTO.md](../MANIFESTO.md), [PRODUCT.md](../PRODUCT.md), [VISION_2030.md](../VISION_2030.md).
-- **[SIGMA_PROTOCOL.md](../SIGMA_PROTOCOL.md)** — Envelope v2, Capability Registry, Intenção-não-Comando, Autonomia Progressiva, Ordem de Runtime vs. Desenvolvimento.
-- **[SGL.md](../SGL.md)**, **[DIGITAL_TWIN.md](../DIGITAL_TWIN.md)**, **[BOOTSTRAP.md](../BOOTSTRAP.md)** (reescrito: Module-only, lifecycle `discover→register→boot→start→ready→degraded→shutdown`, health `/health/live|ready|startup`, Telemetry, Configuration Provider), **[SYSTEM_MANIFEST.md](../SYSTEM_MANIFEST.md)** (novo: System Manifest + Self-Describing Components).
-- Documentação estrutural: [KERNEL.md](../KERNEL.md) (reescrito: Kernel nunca conhece Engine, só Module), [PLUGIN_SYSTEM.md](../PLUGIN_SYSTEM.md), [EVENT_MODEL.md](../EVENT_MODEL.md), [TELEMETRY.md](../TELEMETRY.md), [WORKSPACES.md](../WORKSPACES.md), [MULTITENANCY.md](../MULTITENANCY.md) (schema de multiempresa agora atribuído ao Identity Engine), [MEMORY_ARCHITECTURE.md](../MEMORY_ARCHITECTURE.md).
-- Arquitetura de alto nível — agora **dez Engines** (Identity Engine acrescentado) — [docs/architecture/ARCHITECTURE.md](../docs/architecture/ARCHITECTURE.md).
-- Glossário de domínio — [DOMAIN.md](../DOMAIN.md).
-- 47 ADRs — [docs/adr/](../docs/adr/).
-- Monorepo: `apps/`, `packages/` (13 pacotes, incluindo `identity-engine/` novo), `services/`, `plugins/` (6 manifests), `tools/`, `docker/`.
-- Documentação inicial (sem código) de 4 Agents, 6 Skills, 7 Playbooks, `knowledge/` com 7 áreas.
-- Governança formalizada em [council/](../council/).
-- **Processo de Decision Log** formalizado — toda Release que produz código produz também um Decision Log (`docs/releases/000N-<slug>-decision-log.md`) — [ADR-0047](../docs/adr/0047-decision-log-por-release.md), [CONTRIBUTING.md](../CONTRIBUTING.md).
-- Roadmap com 15 Releases (0–14), Identity Engine inserido como Release 3 — [ROADMAP.md](../ROADMAP.md).
-- Proposta revisada da Release 2 — [docs/releases/0002-sigma-bootstrap.md](../docs/releases/0002-sigma-bootstrap.md).
+- Visão, produto, filosofia, horizonte de longo prazo, [SIGMA_PROTOCOL.md](../SIGMA_PROTOCOL.md), [SGL.md](../SGL.md), [DIGITAL_TWIN.md](../DIGITAL_TWIN.md), [BOOTSTRAP.md](../BOOTSTRAP.md) (Module-only, interfaces `ILogger/IEventBus/IModule/IConfiguration/IHealth/IContainer`), [SYSTEM_MANIFEST.md](../SYSTEM_MANIFEST.md), [KERNEL.md](../KERNEL.md), demais docs estruturais.
+- **Novidades desta rodada**: [COMPATIBILITY.md](../COMPATIBILITY.md), `contracts/` (Sigma Contracts), `docs/rfc/` (processo RFC), `sdk/` (php/typescript/python/docs, placeholder multi-linguagem).
+- Arquitetura com **dez Engines** — [docs/architecture/ARCHITECTURE.md](../docs/architecture/ARCHITECTURE.md).
+- **55 ADRs** — [docs/adr/](../docs/adr/).
+- Proposta final da Release 2 (revisão 3) — [docs/releases/0002-sigma-bootstrap.md](../docs/releases/0002-sigma-bootstrap.md), escopo explícito: Bootstrap, DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, Event Bus (infra), Telemetry, System Manifest Loader — **sem banco de dados, sem domínio**.
+
+## O que existe (código) — em construção nesta sessão
+
+- `packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway` — implementação da Release 2 em andamento.
 
 ## Pendências sinalizadas, aguardando confirmação do Product Owner
 
-- **[ADR-0036](../docs/adr/0036-objetivo-e-campo-da-intent.md)** — "Objetivo" tratado como campo `objective` de uma Intent, não camada nova. Proposto, não confirmado — relevante antes da Release 6/7.
-- **Confirmação final da proposta revisada da Release 2** — se aprovada como está, o próximo passo é código; se algo ainda precisa ajuste, aguardo indicação.
-
-## O que não existe ainda
-
-- Nenhuma linha de código de aplicação.
-- Nenhum Engine, Plugin, Skill ou Agent implementado de fato.
+- **[ADR-0036](../docs/adr/0036-objetivo-e-campo-da-intent.md)** — "Objetivo" como campo de Intent vs. camada nova. Não bloqueia Release 2; relevante antes da Release 6/7.
 
 ## Bloqueios
 
-Nenhum processual. Aguardando confirmação explícita do Product Owner de que a proposta revisada da Release 2 está pronta para virar código — o Product Owner indicou que autorizaria após a atualização, mas essa atualização não havia sido apresentada ainda antes desta revisão. Ver [NEXT.md](NEXT.md).
+Nenhum. Implementação da Release 2 autorizada e em andamento. Ver [NEXT.md](../memory/NEXT.md).

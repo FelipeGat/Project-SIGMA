@@ -75,3 +75,14 @@ Registro cronológico e leve de decisões do projeto — inclusive as que não j
   - **Toda Release passa a produzir dois artefatos: Código e Decision Log** — decisões locais tomadas dentro do escopo já aprovado, registradas ao final da implementação, distintas de ADR (que é anterior ao código e de escopo mais amplo). → [ADR-0047](../docs/adr/0047-decision-log-por-release.md), processo formalizado em `CONTRIBUTING.md`
   - `docs/architecture/ARCHITECTURE.md` atualizado: 9 → 10 Engines.
   - Proposta da Release 2 reescrita (revisão 2) incorporando tudo acima — aguardando confirmação final do Product Owner antes do primeiro código.
+- **"Ela não é mais apenas Lead Engineer, passou a atuar como Software Architect."** Aprovação final da Release 2 (revisão 3), com processo permanente mudando a partir daqui:
+  - **Processo de 4 fases**: Proposal → Architecture Review → Implementation → Validation. → [ADR-0048](../docs/adr/0048-processo-quatro-fases.md)
+  - **Sigma Contracts** (`contracts/*.contract.yaml`) — contrato formal por conceito de domínio (entrada/saída/eventos/permissões/versões). Nenhum contrato ainda existe; nascem com a Release do conceito correspondente. → [ADR-0049](../docs/adr/0049-sigma-contracts.md)
+  - **COMPATIBILITY.md** — matriz Kernel × Protocol × Plugin API × Status. → [ADR-0050](../docs/adr/0050-compatibility-matrix.md)
+  - **RFC** (`docs/rfc/`) — ideias antes da decisão: RFC → Discussão → Aprovação → ADR → Código. → [ADR-0051](../docs/adr/0051-processo-rfc.md)
+  - **Kernel API apenas por interface** — `ILogger`, `IEventBus`, `IModule`, `IConfiguration`, `IHealth`, `IContainer`; nunca classe concreta. → [ADR-0052](../docs/adr/0052-kernel-api-apenas-interfaces.md)
+  - **Escopo da Release 2 restrito explicitamente**, incluindo remoção de banco de dados (MariaDB sai do docker-compose desta Release — nada a persistir ainda). → [ADR-0053](../docs/adr/0053-escopo-restrito-release-2.md)
+  - **Três níveis de validação obrigatórios**: Testes Automatizados, Architecture Validation, Scenario Validation — com cenários explícitos para o Bootstrap (sobe sem módulos, módulo opcional ausente, módulo degraded, Manifest com erro, módulo incompatível rejeitado, health correto). → [ADR-0054](../docs/adr/0054-tres-niveis-de-validacao.md)
+  - **`/sdk` multi-linguagem** (php/typescript/python/docs) na raiz, distinto de `packages/sdk` (interno). → [ADR-0055](../docs/adr/0055-sdk-multi-linguagem.md)
+  - Proposta da Release 2 reescrita pela terceira vez (revisão 3) com tudo isso incorporado.
+- **✅ Release 2 aprovada oficialmente. ✅ Push dos commits d1478ee e ff6ee3e autorizado. ✅ Primeira linha de código do Project SIGMA autorizada.** Implementação iniciada nesta mesma sessão.

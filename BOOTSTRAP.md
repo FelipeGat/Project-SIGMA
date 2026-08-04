@@ -17,7 +17,7 @@ discover → register → boot → start → ready → (degraded)* → shutdown
 1. **discover** — o Bootstrap lê o [System Manifest](SYSTEM_MANIFEST.md) (um único arquivo declarando o que deveria existir: quais Engines, Plugins, Providers, Workspace) e localiza os Modules correspondentes — nada além do que o Manifest declara é carregado.
 2. **register** — cada Module descoberto declara seus bindings no DI Container e sua configuração (ver Configuration Provider, abaixo) — nenhum `boot()` roda ainda.
 3. **boot** — Configuration Provider e Telemetry inicializam primeiro (falha aqui é sempre alta e explícita — nunca um valor `null` se propagando); em seguida cada Module roda seu `boot()`, na ordem topológica resolvida por `dependsOn`.
-4. **start** — Modules abrem conexões (banco, Redis, etc.) e ficam prontos para operar.
+4. **start** — Modules abrem as conexões que precisam (na Release 2, apenas Redis para o Event Bus — sem banco de dados, ver [ADR-0053](docs/adr/0053-escopo-restrito-release-2.md)) e ficam prontos para operar.
 5. **ready** — todos os Modules obrigatórios reportaram sucesso; `/health/ready` responde `200`.
 6. **degraded** *(não é uma etapa linear — um estado que qualquer Module pode assumir depois de `ready`)* — um Module específico para de funcionar (ex: a integração com o Telegram cai) sem derrubar o sistema inteiro; apenas aquele Module é marcado `degraded`, refletido em `/health/ready` de forma granular por Module, nunca como um "tudo ou nada".
 7. **shutdown** — ao receber sinal de encerramento, Modules encerram na ordem inversa de dependência, drenando trabalho em andamento antes de fechar conexões.
@@ -32,11 +32,24 @@ Module {
   kind: "engine" | "plugin" | "service" | "package"
   dependsOn: string[]
   config(): ConfigSchema           // o que este Module precisa de configuração — ver Configuration Provider
-  register(container): void         // registra bindings no DI Container
+  register(container: IContainer): void   // registra bindings no DI Container
   boot(): Promise<void>              // inicialização, após todos os bindings existirem
   describe(): ComponentDescriptor      // ver SYSTEM_MANIFEST.md — Self-Describing Components
 }
 ```
+
+## Kernel API — apenas interfaces
+
+Um Module nunca recebe ou importa uma classe concreta do Kernel — apenas interfaces, injetadas via `register(container)`. O Kernel expõe exatamente seis: `ILogger`, `IEventBus`, `IModule`, `IConfiguration`, `IHealth`, `IContainer`. A implementação concreta por trás de cada uma pode mudar sem que nenhum Module precise mudar. Ver [ADR-0052](docs/adr/0052-kernel-api-apenas-interfaces.md).
+
+| Interface | Responsabilidade |
+|---|---|
+| `IContainer` | Resolver dependências por contrato |
+| `IConfiguration` | Ler a configuração já resolvida deste Module (ver Configuration Provider) |
+| `ILogger` | Emitir Logs estruturados, correlacionados |
+| `IEventBus` | Publicar/assinar eventos (mecanismo — ver [EVENT_MODEL.md](EVENT_MODEL.md)) |
+| `IHealth` | Reportar o próprio estado (`ready`/`degraded`) ao Health Manager |
+| `IModule` | O contrato acima — implementado por todo Engine/Plugin/Service/Package |
 
 `kind` é metadado, não comportamento — o Bootstrap trata todo Module da mesma forma, independente do valor de `kind`. Um Engine (Release 4 em diante) é, tecnicamente, apenas um Module com `kind: "engine"`; o mesmo vale para um Plugin (Release 8) ou um Service (`services/*`).
 
