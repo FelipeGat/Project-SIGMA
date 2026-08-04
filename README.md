@@ -28,6 +28,7 @@ SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtua
 | Consultar o glossário de domínio | [DOMAIN.md](DOMAIN.md) |
 | Ver quem governa o projeto e com que autoridade | [council/](council/) |
 | Ver o que já foi decidido e por quê | [docs/adr/](docs/adr/) |
+| Ver a proposta formal da próxima Release, para aprovação | [docs/releases/](docs/releases/) |
 | Ver o que vem a seguir, por camada de Engine | [ROADMAP.md](ROADMAP.md) |
 | Ver onde o projeto está agora | [memory/STATE.md](memory/STATE.md) |
 | Contribuir com código ou documentação | [CONTRIBUTING.md](CONTRIBUTING.md) |
