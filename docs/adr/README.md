@@ -94,3 +94,8 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0086](0086-knowledgerecord-imutavel-e-versionado.md) | `KnowledgeRecord` é imutável — atualização sempre cria uma nova versão |
 | [0087](0087-memoryrecord-origin-e-candidatura-a-knowledge.md) | `MemoryRecord.origin` como string aberta; promoção a Knowledge é sempre candidatura, nunca automática |
 | [0088](0088-retracao-expiracao-e-governanca-de-promocao.md) | Retração, expiração e governança de promoção de Memory |
+| [0089](0089-mission-nasce-do-plan-nao-da-intent.md) | O domínio de Mission começa quando um Plan é aceito, não quando uma Intent é recebida |
+| [0090](0090-aprovacao-como-estado-de-primeira-classe.md) | Aprovação é um estado de primeira classe da Mission, distinto do gate por Capability |
+| [0091](0091-retry-subtask-compensacao-mission.md) | Retry é histórico de Subtask; Compensação é estado da Mission |
+| [0092](0092-plan-e-conceito-proprio-do-mission-engine.md) | `Plan`/`Subtask` candidata são conceitos do próprio Mission Engine — sem dependência de `planner-engine` |
+| [0093](0093-mission-workspace-opcional.md) | `Mission.workspaceId` é opcional |

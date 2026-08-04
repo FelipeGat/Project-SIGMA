@@ -71,7 +71,7 @@ Uma pessoa com acesso ao SIGMA, associada a um Tenant — autor de Missions, mem
 Um agrupamento de Users, com escopo de permissão e visão sobre Missions.
 
 ### Role
-Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (ex: "Comercial", "Técnico", "Administrativo"). Carrega, entre outras permissões, um **nível de Autonomia Progressiva** (0–3) que limita o quanto o SIGMA pode agir em nome de um User com esse Role sem confirmação humana. Ver [SIGMA_PROTOCOL.md §4](SIGMA_PROTOCOL.md#4-autonomia-progressiva) e [ADR-0029](docs/adr/0029-autonomia-progressiva.md).
+Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (ex: "Comercial", "Técnico", "Administrativo"). Carrega, entre outras permissões, um **nível de Autonomia Progressiva** (0–3) que limita o quanto o SIGMA pode agir em nome de um User com esse Role sem confirmação humana. Ver [SIGMA_PROTOCOL.md §5](SIGMA_PROTOCOL.md#5-autonomia-progressiva) e [ADR-0029](docs/adr/0029-autonomia-progressiva.md).
 
 ## Negócio (orquestrado, não gerido pelo SIGMA)
 

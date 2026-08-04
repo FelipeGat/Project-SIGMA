@@ -2,14 +2,23 @@
 
 ## Imediato
 
-1. **Release 4.5 — Platform Validation COMPLETA.** Dez verificações executadas contra Docker real — ver [Decision Log](../docs/releases/0004.5-platform-validation-decision-log.md)/[Validation Report](../docs/releases/0004.5-platform-validation-validation-report.md). Achado real de maior prioridade: **nenhum serviço do `docker-compose.yml` tem `restart policy`** — `memory-worker` não recupera sozinho de nenhuma interrupção de conexão Redis (nem restart de rotina do Redis). Recomendado, não implementado: `restart: on-failure` em todos os serviços (baixo risco) + considerar Redis Streams no lugar de pub/sub para persistência/replay de mensagem (mudança maior, candidata a Release de hardening).
-2. **Release 5 — Mission Engine, próximo passo natural.** `Mission` tratada como Aggregate Root (ciclo de vida, eventos, estado, histórico, autonomia, aprovação, retries, compensações, correlação) — "a primeira Engine que faz o SIGMA decidir". Processo exigido pelo Product Owner: 5A Mission Research (`MISSION_MANIFESTO.md`/`MISSION_MODEL.md`/`MISSION_LIFECYCLE.md`/`MISSION_EVENTS.md`/`contracts/Mission.contract.yaml`/ADRs/Proposal, sem código) → Review → 5B Implementation → Review → Push.
-3. Aguardar confirmação para dar push do(s) commit(s) pendentes (Implementation completa de 4A e 4B, ROADMAP.md, e agora a Implementation/Validation da 4.5) — commitado localmente, push ainda não realizado.
-4. **Pergunta de numeração Planner/Intent (6/7) ENCERRADA em 2026-08-04** — Product Owner confirmou explicitamente `6 — Planner, 7 — Intent`, mantendo [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) sem alteração. Não é mais pendência.
-5. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
-6. Ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
-7. Toda decisão relevante de cada rodada precisa terminar registrada no repositório — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
-8. **A partir da Release 4, todo Engine com domínio novo segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](../docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)** (ADR-0082, documentado em [CONTRIBUTING.md](../CONTRIBUTING.md)) — Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push, nesta ordem, sem pular etapa.
+1. **Aguardar aprovação da Proposal da Release 5A — Mission Research** ([docs/releases/0005a-mission-research.md](../docs/releases/0005a-mission-research.md)) — nenhum código de `packages/mission-engine` antes disso. Bundle completo já entregue: [MISSION_MANIFESTO.md](../MISSION_MANIFESTO.md)/[MISSION_MODEL.md](../MISSION_MODEL.md)/[MISSION_LIFECYCLE.md](../MISSION_LIFECYCLE.md)/[MISSION_EVENTS.md](../MISSION_EVENTS.md)/`contracts/Mission.contract.yaml`/ADRs 0089-0093.
+2. Depois de aprovada a 5A: **Release 5B — Implementation** — `packages/mission-engine/src/Domain/`. Decidir nessa Proposal se divide em sub-Releases Domain/Infrastructure (ADR-0060), não antecipado.
+3. **Achado de alta prioridade da Release 4.5, ainda não endereçado**: nenhum serviço do `docker-compose.yml` tem `restart policy` — `memory-worker` não recupera sozinho de nenhuma interrupção de conexão Redis. Recomendado, não implementado: `restart: on-failure` (baixo risco) + considerar Redis Streams (mudança maior). A critério do Product Owner quando priorizar isso vs. seguir direto para Mission.
+4. Aguardar confirmação para dar push do(s) commit(s) pendentes (Implementation completa de 4A/4B, ROADMAP.md, Implementation/Validation da 4.5, e agora a Release 5A) — commitado localmente, push ainda não realizado.
+5. **Pergunta de numeração Planner/Intent (6/7) ENCERRADA em 2026-08-04** — Product Owner confirmou explicitamente `6 — Planner, 7 — Intent`, mantendo [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) sem alteração. Não é mais pendência.
+6. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
+7. Ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
+8. Toda decisão relevante de cada rodada precisa terminar registrada no repositório — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
+9. **A partir da Release 4, todo Engine com domínio novo segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](../docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)** (ADR-0082, documentado em [CONTRIBUTING.md](../CONTRIBUTING.md)) — Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push, nesta ordem, sem pular etapa.
+
+## Perguntas em aberto para a Architecture Review da Release 5B
+
+- Onde exatamente a distinção "a Subtask já produziu efeito colateral ou não" (o gatilho para `Compensating` em vez de `Failed` direto) é resolvida — [MISSION_MODEL.md](../MISSION_MODEL.md) deixa explicitamente para Implementation.
+- Número exato de tentativas de retry e política de backoff — parâmetro de configuração, não decidido em [MISSION_MODEL.md](../MISSION_MODEL.md)/[MISSION_LIFECYCLE.md](../MISSION_LIFECYCLE.md).
+- Timeout de um `ApprovalGate` pendente — expira sozinho ou fica pendente indefinidamente?
+- Se a Release 5B se divide em sub-Releases Domain/Infrastructure (ADR-0060) — decisão da Proposal de 5B, não antecipada em 5A.
+- `packages/README.md` ainda tem outras dependências não revisadas nesta rodada (ex: `agent-engine`/`execution-engine` → `mission-engine` — essas fazem sentido pela Ordem de Desenvolvimento, mas não foram auditadas em detalhe).
 
 ## Pendências reais deixadas pela Release 4 (4A + 4B) e 4.5, para quando fizerem falta
 

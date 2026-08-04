@@ -62,12 +62,31 @@ Ver [DOMAIN_EVENTS.md#memory-engine](DOMAIN_EVENTS.md#memory-engine) — catalog
 | `DigitalTwinUpdated` | `digital_twin.updated` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 | `DigitalTwinStale` | `digital_twin.stale` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 
-## Mission / Planner / Intent / Skill / Agent / Execution / Audit Engine
+## Mission Engine
 
-Nenhum evento ainda — nenhum destes Engines tem Proposal aprovada nem código. Cada um ganha sua seção aqui quando a modelagem de domínio correspondente for escrita (mesmo momento em que ganhou uma seção o Identity Engine, antes da Release 3A, e o Memory Engine, antes da Release 4A) — nunca eventos hipotéticos sem nenhum plano de implementação próximo.
+Todos camada **Technical** — orquestração do ciclo de vida de uma `Mission`, catalogados em [EVENT_MODEL.md](EVENT_MODEL.md) (nomes canônicos) e [MISSION_EVENTS.md](MISSION_EVENTS.md) (porquê + payload completo) antes do código, mesmo padrão de Identity/Memory — a diferença é a camada (Technical, não Semantic), por isso o payload vive em `MISSION_EVENTS.md`, não em `DOMAIN_EVENTS.md` (explicitamente escopado a Semantic). Três eventos (`SubtasksCreated`/`MissionFinished`/`MissionCancelled`) já estavam no catálogo canônico desde a Foundation, sem dono real até agora.
+
+| Evento | Bus | Camada | Publica | Consome | Versão | Contrato |
+|---|---|---|---|---|---|---|
+| `MissionCreated` | `mission.created` | Technical | Mission Engine | Audit Engine, Memory Engine | v1 | `Mission.contract.yaml` |
+| `SubtasksCreated` | `subtasks.created` | Technical | Mission Engine | Agent Engine (Release 9) | v1 | `Mission.contract.yaml` |
+| `MissionApprovalRequested` | `mission.approval_requested` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionApproved` | `mission.approved` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionRejected` | `mission.rejected` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionStarted` | `mission.started` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `SubtaskRetried` | `subtask.retried` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionCompensationStarted` | `mission.compensation_started` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `SubtaskCompensated` | `subtask.compensated` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionCompensationFinished` | `mission.compensation_finished` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionFinished` | `mission.finished` | Technical | Mission Engine | Audit Engine, Memory Engine | v1 | `Mission.contract.yaml` |
+| `MissionCancelled` | `mission.cancelled` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+
+## Planner / Intent / Skill / Agent / Execution / Audit Engine
+
+Nenhum evento ainda — nenhum destes Engines tem Proposal aprovada nem código. Cada um ganha sua seção aqui quando a modelagem de domínio correspondente for escrita (mesmo momento em que ganharam sua seção Identity, Memory e agora Mission) — nunca eventos hipotéticos sem nenhum plano de implementação próximo.
 
 ## Processo
 
-1. Todo evento novo é catalogado aqui e em [DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) junto da modelagem de domínio do Engine que o publica — antes do código, não depois (mesmo padrão de [IDENTITY_MODEL.md](IDENTITY_MODEL.md)/[DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) antes da Release 3A, e [MEMORY_MODEL.md](MEMORY_MODEL.md)/[DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) antes da Release 4A). Um evento só entra aqui quando a Release que o publica já tem uma Proposal em preparação — nunca especulativo sem plano de implementação.
+1. Todo evento novo é catalogado aqui, junto da modelagem de domínio do Engine que o publica — antes do código, não depois. Eventos **Semantic** também entram em [DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) (mesmo padrão de Identity/Memory); eventos **Technical** também entram em [EVENT_MODEL.md](EVENT_MODEL.md) (catálogo canônico de nomes) e no documento narrativo próprio do Engine (ex: [MISSION_EVENTS.md](MISSION_EVENTS.md)) — as fontes correspondentes nunca divergem. Um evento só entra aqui quando a Release que o publica já tem uma Proposal em preparação — nunca especulativo sem plano de implementação.
 2. Ao publicar um evento novo, a linha correspondente entra nesta tabela **e** no campo `events:` do Contract correspondente, no mesmo Pull Request — as duas fontes nunca divergem por mais que um PR.
 3. Uma mudança incompatível de payload sobe a versão (`v1` → `v2`) e o evento antigo continua existindo até todo consumidor migrar — nunca uma edição silenciosa da mesma versão.

@@ -1,0 +1,86 @@
+# Sigma Contract — Mission
+# Contrato do conceito de dominio "Mission" (ver MISSION_MANIFESTO.md,
+# MISSION_MODEL.md e MISSION_LIFECYCLE.md) — so o contrato, nenhum
+# codigo ainda. Nasce antes da implementacao da Release 5, mesmo
+# espirito de contracts/Identity.contract.yaml/Memory.contract.yaml.
+
+name: Mission
+version: "1.0.0"
+
+input:
+  - name: plan
+    type: Plan
+    required: true
+    # O Plan que origina a Mission — nesta Release, sempre "source:
+    # Manual" (fornecido por quem chama), nunca produzido pelo Planner
+    # Engine (ainda nao existe, ver ADR-0031/ADR-0092). Mission Engine
+    # nunca importa packages/planner-engine como dependencia de codigo.
+  - name: approvalDecision
+    type: ApprovalDecision
+    required: false
+    # Presente quando o input e uma decisao humana sobre um
+    # ApprovalGate pendente (Approved/Rejected) - ausente em todo
+    # outro fluxo.
+  - name: executionOutcome
+    type: SubtaskOutcome
+    required: false
+    # Presente quando o input e o resultado de uma Subtask ja
+    # executada (Validated/Failed) - nesta Release, fornecido
+    # manualmente; nas Releases 9/10, pelo Agent/Execution Engine.
+  - name: query
+    type: MissionQuery
+    required: false
+    # Presente na consulta de uma Mission ja existente.
+
+output:
+  - name: mission
+    type: Mission
+    # O aggregate Mission, com seu status/history atuais - nunca
+    # Plan/Subtask isolados fora do contexto da Mission que os possui.
+
+events:
+  - mission.created
+  - subtasks.created
+  - mission.approval_requested
+  - mission.approved
+  - mission.rejected
+  - mission.started
+  - subtask.retried
+  - mission.compensation_started
+  - subtask.compensated
+  - mission.compensation_finished
+  - mission.finished
+  - mission.cancelled
+# Os doze eventos publicados pelo Mission Engine (tres ja catalogados
+# desde a Foundation em EVENT_MODEL.md, nove novos nesta Release) -
+# ver MISSION_EVENTS.md e EVENT_CATALOG.md para payload/consumidor/
+# versao de cada um.
+
+permissions:
+  - mission.approve
+  - mission.reject
+  - mission.cancel
+# Vocabulario de Permission esperado a partir da Release 5B (mesmo
+# padrao do Memory Engine em ADR-0088) para as tres intervencoes
+# humanas no ciclo de vida de uma Mission: decidir um ApprovalGate
+# (aprovar/rejeitar) e cancelar manualmente. Nenhuma delas e checada
+# nesta sub-Release (5A e so Domain, sem Application/Interfaces) -
+# listadas aqui porque o Contract documenta o vocabulario completo,
+# nao so o que ja e aplicado. Criar uma Mission a partir de um Plan
+# nao exige Permission propria - quem decide criar e o Planner
+# Engine/quem chama, nao o Mission Engine em si.
+
+autonomy_level_required: 0
+# Mission nao tem UM nivel fixo - cada Subtask resolve o proprio
+# autonomyLevelRequired via a Capability que invoca (SIGMA_PROTOCOL.md
+# Secao 5); o que a Mission acrescenta e um autonomyCeiling resolvido
+# uma vez, na criacao, a partir do User/Role que a originou (ver
+# MISSION_MODEL.md). O valor 0 aqui e o piso do proprio ato de criar
+# uma Mission a partir de um Plan - nunca o teto que suas Subtasks
+# respeitam.
+
+supported_versions:
+  - "1.0.0"
+
+compatible_with:
+  protocol: "1.0"

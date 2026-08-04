@@ -10,8 +10,8 @@ Mecânica técnica (PHP/Composer): cada pacote é um pacote Composer próprio (`
 | [kernel/](kernel/) | Kernel — ver [KERNEL.md](../KERNEL.md) | core |
 | [identity-engine/](identity-engine/) | Identity Engine — ver [MULTITENANCY.md](../MULTITENANCY.md) | core, kernel |
 | [intent-engine/](intent-engine/) | Intent Engine | core, kernel |
-| [planner-engine/](planner-engine/) | Planner Engine | core, kernel, intent-engine |
-| [mission-engine/](mission-engine/) | Mission Engine | core, kernel, planner-engine |
+| [planner-engine/](planner-engine/) | Planner Engine | core, kernel |
+| [mission-engine/](mission-engine/) | Mission Engine | core, kernel |
 | [memory-engine/](memory-engine/) | Memory Engine — ver [MEMORY_ARCHITECTURE.md](../MEMORY_ARCHITECTURE.md) | core, kernel |
 | [agent-engine/](agent-engine/) | Agent Engine | core, kernel, mission-engine |
 | [skill-engine/](skill-engine/) | Skill Engine — carrega Plugins, ver [PLUGIN_SYSTEM.md](../PLUGIN_SYSTEM.md) | core, kernel |
@@ -21,3 +21,5 @@ Mecânica técnica (PHP/Composer): cada pacote é um pacote Composer próprio (`
 | [sdk/](sdk/) | SDK público para sistemas externos integrarem com o SIGMA sem depender de detalhes internos (ver [VISION_2030.md](../VISION_2030.md)) | core |
 
 `execution-engine` não constava na lista original da revisão que originou esta estrutura (Sprint 0.2) — incluído para manter consistência com os Engines já aprovados em [ADR-0011](../docs/adr/0011-arquitetura-em-camadas-de-engines.md). `identity-engine` foi acrescentado na Release 1 (revisão de CTO), extraído do que seria `memory-engine` — ver [ADR-0039](../docs/adr/0039-identity-engine.md). O núcleo tem hoje dez Engines, não nove.
+
+**Correção em 2026-08-04 (achado real ao pesquisar para a Release 5 — Mission Engine)**: `mission-engine` e `planner-engine` chegaram a listar `planner-engine`/`intent-engine` como dependência Composer, respectivamente — contradizendo diretamente a Ordem de Desenvolvimento já decidida em [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) (`Mission` é construído antes de `Planner`, que é construído antes de `Intent` — cada um contra uma entrada mockada/manual da Engine seguinte, nunca uma dependência de código real). Corrigido: esta coluna reflete apenas dependências de **código/Composer**, nunca a Ordem de Runtime — `mission-engine` consome um `Plan`/`Subtask` candidato como dado de entrada (Value Object próprio ou de `packages/core`), nunca importando `planner-engine`; o mesmo vale para `planner-engine`/`intent-engine`.
