@@ -2,7 +2,7 @@
 
 ## O processo é por épico, não por PR isolado
 
-O SIGMA avança um épico por vez (ver [ROADMAP.md](ROADMAP.md) e [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md)). Antes de escrever código para um épico, ele precisa ter sido apresentado e aprovado no formato:
+O SIGMA avança um épico por vez, seguindo a ordem de camadas de Engine do [ROADMAP.md](ROADMAP.md) (ver [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md) e [ADR-0015](docs/adr/0015-roadmap-por-camadas-nao-por-feature.md)). Antes de escrever código para um épico, ele precisa ter sido apresentado e aprovado no formato:
 
 - **Objetivo** — o que o épico resolve.
 - **Escopo** — o que entra e, explicitamente, o que não entra.
@@ -30,6 +30,10 @@ Toda decisão que afeta mais de um módulo, introduz uma dependência nova, ou m
 ## Padrão de código
 
 Todo código de aplicação segue [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md): documentação do porquê, testes, logs, tratamento de erro, versionamento de contratos públicos, nomes padronizados, alta legibilidade, comentários apenas quando o "porquê" não é óbvio.
+
+## Documentação que não é código
+
+`agents/`, `skills/`, `knowledge/` e `playbooks/` são documentação viva, editável fora do ciclo de épico — não exigem a aprovação formal de um épico para receber atualização, mas ainda seguem revisão por Pull Request. `memory/` é atualizada por quem (humano ou Agent) estiver ativamente trabalhando no projeto, para manter [memory/STATE.md](memory/STATE.md) e [memory/NEXT.md](memory/NEXT.md) refletindo a realidade.
 
 ## Código de conduta
 

@@ -1,71 +1,81 @@
 # Roadmap — SIGMA
 
-O SIGMA avança **um épico por vez**. Cada épico só entra em desenvolvimento após ser apresentado no formato Objetivo / Escopo / Arquitetura / Dependências / Riscos / Entrega / Testes / Critérios de Aceite e **aprovado explicitamente**. Este roadmap é a visão macro; o detalhamento formal de cada épico é produzido logo antes de sua execução, não com meses de antecedência — desenhar em detalhe um épico distante hoje só gera retrabalho quando o contexto mudar.
+O SIGMA avança **um épico por vez**, seguindo a ordem de dependência real entre os Engines do núcleo — não uma lista de features. Cada épico só entra em desenvolvimento após ser apresentado no formato Objetivo / Escopo / Arquitetura / Dependências / Riscos / Entrega / Testes / Critérios de Aceite e **aprovado explicitamente**. Ver [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md) e [ADR-0015](docs/adr/0015-roadmap-por-camadas-nao-por-feature.md).
+
+Este roadmap é a visão macro; o detalhamento formal de cada épico é produzido logo antes de sua execução, não com meses de antecedência — desenhar em detalhe um épico distante hoje só gera retrabalho quando o contexto mudar.
 
 ## Status
 
-| Épico | Nome | Status |
+| Camada | Nome | Status |
 |---|---|---|
-| Sprint 0 | Foundation — documentação, arquitetura, estrutura | 🔵 Em andamento |
-| E1 | Mission Engine — núcleo | ⚪ Não iniciado |
-| E2 | Identidade & Acesso | ⚪ Não iniciado |
-| E3 | Skill Registry + primeira Skill real | ⚪ Não iniciado |
-| E4 | Orquestração de Agentes (1º provedor de IA real) | ⚪ Não iniciado |
-| E5 | Knowledge & Memory | ⚪ Não iniciado |
-| E6 | Painel Web (React PWA) | ⚪ Não iniciado |
-| E7 | App Mobile (React Native + Expo) | ⚪ Não iniciado |
-| E8 | Automation Engine | ⚪ Não iniciado |
-| E9 | Expansão de Skills | ⚪ Não iniciado |
+| Foundation | Documentação, arquitetura, estrutura (Sprint 0 + 0.1) | 🔵 Em andamento |
+| L1 | Kernel | ⚪ Não iniciado |
+| L2 | Intent Engine | ⚪ Não iniciado |
+| L3 | Planner Engine | ⚪ Não iniciado |
+| L4 | Mission Engine | ⚪ Não iniciado |
+| L5 | Memory Engine | ⚪ Não iniciado |
+| L6 | Agent Engine | ⚪ Não iniciado |
+| L7 | Skill Engine | ⚪ Não iniciado |
+| L8 | Execution Engine | ⚪ Não iniciado |
+| L9 | Audit Engine | ⚪ Não iniciado |
+| L10 | Interfaces (Web PWA + Mobile) | ⚪ Não iniciado |
+| L11 | Automation Engine | ⚪ Não iniciado |
+| L12 | Analytics | ⚪ Não iniciado |
 
-## Sprint 0 — Foundation (atual)
+## Foundation (atual)
 
-Entrega apenas documentação e estrutura de projeto. Nenhum código de aplicação. Escopo:
-
-- README.md, VISION.md, ARCHITECTURE.md, ROADMAP.md
-- Estrutura inicial de diretórios (backend/, frontend-web/, frontend-mobile/, docs/)
-- Convenções de nomenclatura
-- ADR-0001 a ADR-0010
-- CONTRIBUTING.md, CODE_OF_CONDUCT.md, LICENSE
-- docs/ organizada
+Entrega apenas documentação e estrutura de projeto. Nenhum código de aplicação. Escopo do Sprint 0: README, VISION, ARCHITECTURE, ROADMAP, estrutura inicial de diretórios, convenções de nomenclatura, ADR-0001–0010, CONTRIBUTING, CODE_OF_CONDUCT, LICENSE. Escopo do Sprint 0.1 (revisão): MANIFESTO, PRODUCT, VISION_2030, DOMAIN, pastas `agents/`, `skills/`, `knowledge/`, `playbooks/`, `memory/`, ADR-0011–0015, roadmap reestruturado por camada.
 
 Critério de saída: aprovação explícita do responsável pelo projeto antes de qualquer linha de código de aplicação.
 
-## E1 — Mission Engine (núcleo)
+## L1 — Kernel
 
-Entidade Mission, máquina de estados do ciclo de vida, persistência, API REST mínima (criar Missão, consultar status), eventos de domínio publicados no Event Bus. Sem Agentes reais ainda — a escolha de Skill/Agente é simulada/mockada para provar o fluxo de estados ponta a ponta.
+Bootstrap da plataforma: configuração por ambiente, contexto de execução, health-check, versionamento interno. Nenhuma regra de negócio — é a fundação sobre a qual todo Engine seguinte roda. Sem este épico, nenhum outro tem onde existir.
 
-## E2 — Identidade & Acesso
+## L2 — Intent Engine
 
-User, Team, Company. Autenticação, autorização (Policies), RBAC. Toda Missão passa a ter um autor e um contexto de empresa/time.
+Recebe linguagem natural ou evento estruturado e produz uma `Intent`. Sem Planner ainda — o critério de aceite é a Intent corretamente estruturada e persistida, não uma ação executada. Ver [ADR-0013](docs/adr/0013-intent-engine-como-porta-de-entrada.md).
 
-## E3 — Skill Registry + primeira Skill real
+## L3 — Planner Engine
 
-Entidade Skill, SkillRegistry, contrato de Skill (Config/Permissions/Input/Output/Events/Logs/Tests/Docs) implementado de fato através de uma primeira Skill ponta a ponta (candidata: `GestorSkill`, por já existir integração e caso de uso real no ecossistema Alfa).
+Recebe uma Intent e produz um `Plan` (Subtasks candidatas, Agent/Skill sugeridos por Subtask). Primeira versão pode se apoiar fortemente nos [Playbooks](playbooks/) já documentados como heurística inicial, antes de qualquer aprendizado via Memory Engine. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md).
 
-## E4 — Orquestração de Agentes
+## L4 — Mission Engine
 
-IA (provedor), Agent (persona), AgentPort (contrato de invocação). Primeira integração real com um provedor de IA (Claude, para o Agente de Engenharia). Uma Missão passa a ser de fato interpretada e executada por um Agente real usando a Skill do E3.
+Entidade Mission, máquina de estados do ciclo de vida (ver [ARCHITECTURE.md §6](docs/architecture/ARCHITECTURE.md)), persistência, API REST mínima (criar Mission a partir de um Plan, consultar status, acompanhar Subtasks), eventos de domínio publicados no Event Bus. Primeiro ponto em que um fluxo Intent → Plan → Mission é validável ponta a ponta — ainda sem Agent real executando (Subtask simulada/mockada).
 
-## E5 — Knowledge & Memory
+## L5 — Memory Engine
 
-Modelagem e primeira persistência/consulta de Knowledge e Memory, alimentadas pelos eventos de domínio já publicados desde o E1.
+Modelagem e primeira persistência/consulta de Knowledge e Memory, alimentadas pelos eventos de domínio já publicados desde o L4. Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/).
 
-## E6 — Painel Web
+## L6 — Agent Engine
 
-React + TypeScript + Vite (PWA), Design System próprio, dark mode. Dashboard de Missões em tempo real via WebSocket, consumindo a API do E1–E4.
+Entidades IA (provedor) e Agent (persona), contrato `AgentPort`. Primeira integração real com um provedor de IA (Claude, para o Agent de Engenharia — ver [agents/claude.md](agents/claude.md)). Uma Subtask passa a ser de fato delegada a um Agent real, não mais simulada.
 
-## E7 — App Mobile
+## L7 — Skill Engine
 
-React Native + Expo, mesmo Design System e mesmo backend do E6. Paridade essencial do painel.
+Entidade Skill, contrato completo (Config/Permissions/Input/Output/Events/Logs/Tests/Docs — ver [ARCHITECTURE.md §7](docs/architecture/ARCHITECTURE.md)) implementado de fato através de uma primeira Skill ponta a ponta (candidata: `GestorSkill`, já especificada em [skills/gestor.md](skills/gestor.md), por já existir API e caso de uso real no ecossistema Alfa). Primeiro ponto em que o SIGMA age de verdade sobre um sistema externo.
 
-## E8 — Automation Engine
+## L8 — Execution Engine
 
-Motor de automação declarativa reagindo a eventos de domínio (ex: "quando Missão X concluir, disparar Missão Y").
+Acompanhamento e validação da execução de Subtasks em andamento: retry, timeout, critério de sucesso/falha por tipo de Subtask. Fecha o ciclo Intent → Plan → Mission → Agent → Skill → **validação**.
 
-## E9 — Expansão de Skills
+## L9 — Audit Engine
 
-GitHubSkill, TelegramSkill, EmailSkill, GoogleCalendarSkill, DockerSkill, WhatsAppSkill, e demais integrações do ecossistema Alfa, seguindo o contrato validado no E3.
+Persistência estruturada de Events e Logs com correlação completa (Mission → Subtask → Agent → Skill), e a API/consulta necessária para auditoria e para alimentar interfaces.
+
+## L10 — Interfaces
+
+React + TypeScript + Vite (PWA), Design System próprio, dark mode — dashboard de Missions em tempo real via WebSocket. React Native + Expo, mesmo Design System e mesmo backend, em seguida ou em paralelo conforme capacidade de execução no momento.
+
+## L11 — Automation Engine
+
+Motor de automação declarativa reagindo a eventos de domínio (ex: "quando uma Mission do tipo Novo Orçamento concluir, disparar a Mission de Nova Obra").
+
+## L12 — Analytics
+
+Métricas e indicadores sobre o que o SIGMA orquestra (tempo médio de Mission por tipo, taxa de falha por Skill, uso por Agent) — consome o histórico já registrado pelo Audit Engine.
 
 ---
 
-Este roadmap é revisado ao final de cada épico concluído — a ordem e o escopo dos épicos seguintes podem mudar com base no que for aprendido.
+Este roadmap é revisado ao final de cada camada concluída — a ordem e o escopo das camadas seguintes podem mudar com base no que for aprendido.

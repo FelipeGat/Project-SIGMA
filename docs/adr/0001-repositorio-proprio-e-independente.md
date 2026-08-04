@@ -9,7 +9,7 @@ O SIGMA precisa orquestrar Gestor.Alfa, AlfaControl, AlfaGym, AlfaJornada, AlfaC
 
 ## Decisão
 
-SIGMA é um repositório e uma aplicação própria (`Sigma-IO`), desacoplada de qualquer sistema de negócio existente. Ele não é dono de dados de negócio de nenhum outro sistema; é dono apenas do seu próprio domínio de orquestração (Mission, Skill, Agent, Knowledge, Memory...).
+SIGMA é um repositório e uma aplicação própria (`project-sigma`, renomeado de `Sigma-IO` — ver [memory/DECISIONS.md](../../memory/DECISIONS.md)), desacoplada de qualquer sistema de negócio existente. Ele não é dono de dados de negócio de nenhum outro sistema; é dono apenas do seu próprio domínio de orquestração (Mission, Skill, Agent, Knowledge, Memory...).
 
 ## Consequências
 

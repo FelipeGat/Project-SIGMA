@@ -16,3 +16,8 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0008](0008-arquitetura-orientada-a-eventos.md) | Arquitetura orientada a eventos com Redis como backbone |
 | [0009](0009-stack-tecnologica-de-referencia.md) | Stack tecnológica de referência |
 | [0010](0010-processo-por-epicos-com-aprovacao.md) | Desenvolvimento avança por épicos únicos, com aprovação obrigatória antes de implementar |
+| [0011](0011-arquitetura-em-camadas-de-engines.md) | Arquitetura em camadas de Engines especializados (Kernel, Intent, Planner, Mission, Memory, Agent, Skill, Execution, Audit) |
+| [0012](0012-planner-decide-nunca-a-ia.md) | O Planner Engine decide o plano — nunca a IA/Agent |
+| [0013](0013-intent-engine-como-porta-de-entrada.md) | Intent Engine como porta de entrada única de linguagem natural |
+| [0014](0014-sigma-e-um-sistema-operacional-nao-uma-ia.md) | SIGMA é um Sistema Operacional, não uma IA |
+| [0015](0015-roadmap-por-camadas-nao-por-feature.md) | Roadmap organizado por camada de Engine, não por feature |

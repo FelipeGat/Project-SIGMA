@@ -9,7 +9,7 @@ O SIGMA terá um backend (Laravel), um frontend web (React PWA) e um app mobile 
 
 ## Decisão
 
-Monorepo único (`Sigma-IO`), com `backend/`, `frontend-web/` e `frontend-mobile/` na raiz, mais `docs/` compartilhada. O Design System é desenvolvido uma vez e consumido pelas duas frentes de frontend.
+Monorepo único (`project-sigma`, renomeado de `Sigma-IO` — ver [memory/DECISIONS.md](../../memory/DECISIONS.md)), com `backend/`, `frontend-web/` e `frontend-mobile/` na raiz, mais `docs/` compartilhada. O Design System é desenvolvido uma vez e consumido pelas duas frentes de frontend.
 
 ## Consequências
 

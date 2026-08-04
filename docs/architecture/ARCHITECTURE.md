@@ -1,102 +1,134 @@
 # Arquitetura de Alto Nível — SIGMA
 
-Este documento descreve como o SIGMA é estruturado: modelo de domínio, contextos delimitados, ciclo de vida da Missão, o contrato de Skill, o modelo de orquestração de Agentes, e a stack de referência. É o documento a se manter atualizado conforme decisões evoluem; decisões pontuais e seu porquê ficam registradas em [docs/adr/](../adr/).
+Este documento descreve como o SIGMA é estruturado: os Engines que compõem seu núcleo, o modelo de domínio, o ciclo de vida da Mission, o contrato de Skill, o modelo de Agentes, e a stack de referência. É o documento a se manter atualizado conforme decisões evoluem; decisões pontuais e seu porquê ficam registradas em [docs/adr/](../adr/).
+
+## 0. SIGMA é um Sistema Operacional, não uma IA
+
+Antes de qualquer diagrama: o SIGMA não é um chat inteligente com plugins. É uma plataforma operacional corporativa, com um Kernel e Engines de responsabilidade única — cada um resolvendo um problema específico do ciclo de vida de uma Mission. IA é uma capacidade que alguns desses Engines usam (Agent Engine, ao delegar uma Subtask), não a identidade do sistema como um todo. Ver [MANIFESTO.md](../../MANIFESTO.md) e [ADR-0014](../adr/0014-sigma-e-um-sistema-operacional-nao-uma-ia.md).
 
 ## 1. Princípios
 
 - **DDD** — o domínio (Mission, Skill, Agent, Knowledge, Memory...) é modelado primeiro, isolado de framework e infraestrutura.
 - **Clean Architecture** — dependências apontam para dentro: domínio não conhece infraestrutura; infraestrutura implementa contratos do domínio.
-- **Event-Driven** — contextos delimitados não se chamam diretamente; comunicam-se por eventos de domínio.
+- **Event-Driven** — Engines não se chamam diretamente; comunicam-se por eventos de domínio.
 - **SOLID**, alta coesão, baixo acoplamento — em cada módulo e entre módulos.
 - **Desacoplamento físico** — SIGMA nunca acessa o banco de dados de outro sistema (Gestor.Alfa, AlfaControl, AlfaGym, AlfaJornada, AlfaCam...). Toda comunicação com sistemas externos é via API. Ver [ADR-0007](../adr/0007-comunicacao-somente-via-api.md).
+- **O Planner decide, a IA executa** — nenhum Agent decide o que uma Mission deve fazer; ele executa a Subtask que o Planner Engine já definiu. Ver [ADR-0012](../adr/0012-planner-decide-nunca-a-ia.md).
 
-## 2. Visão geral do sistema
+## 2. Os nove Engines
+
+O núcleo do SIGMA é composto por nove Engines, cada um com responsabilidade única. Ver [ADR-0011](../adr/0011-arquitetura-em-camadas-de-engines.md).
+
+| # | Engine | Responsabilidade |
+|---|---|---|
+| 0 | **Kernel** | Ciclo de vida da plataforma: bootstrap, configuração, contexto de execução, health |
+| 1 | **Intent Engine** | Interpreta linguagem natural/eventos em uma `Intent` estruturada |
+| 2 | **Planner Engine** | Monta o `Plan` de execução a partir de uma Intent — decide, nunca a IA |
+| 3 | **Mission Engine** | Gerencia a `Mission` e seu progresso a partir de um Plan |
+| 4 | **Memory Engine** | Organiza `Knowledge` (o que se sabe) e `Memory` (o que se aprendeu) |
+| 5 | **Agent Engine** | Decide qual `Agent` executa cada `Subtask` |
+| 6 | **Skill Engine** | Conversa com sistemas externos através de `Skills` |
+| 7 | **Execution Engine** | Acompanha e valida a execução de cada Subtask em andamento |
+| 8 | **Audit Engine** | Registra `Events` e `Logs` — rastreabilidade de tudo que acontece |
+
+Interfaces (painel Web, App Mobile), **Automation Engine** e **Analytics** consomem estes nove Engines através de eventos e API — não fazem parte do núcleo de orquestração.
+
+## 3. Visão geral do sistema
 
 ```mermaid
 graph TB
-    User["Usuário / Sistema externo"] -->|"linguagem natural"| API["SIGMA API"]
-    API --> MissionEngine["Mission Engine<br/>(núcleo de orquestração)"]
-    MissionEngine -->|"delega subtarefa"| Agent1["Agente — Engenharia<br/>(Claude)"]
-    MissionEngine -->|"delega subtarefa"| Agent2["Agente — Estratégia<br/>(ChatGPT)"]
-    MissionEngine -->|"delega subtarefa"| Agent3["Agente — Design<br/>(Gemini)"]
-    MissionEngine -->|"delega subtarefa"| Agent4["Agente — Documentação<br/>(Manus)"]
-    Agent1 -->|"usa"| SkillRegistry["Skill Registry"]
-    Agent2 -->|"usa"| SkillRegistry
-    Agent3 -->|"usa"| SkillRegistry
-    Agent4 -->|"usa"| SkillRegistry
-    SkillRegistry --> S1["GestorSkill"]
-    SkillRegistry --> S2["WhatsAppSkill"]
-    SkillRegistry --> S3["GitHubSkill"]
-    SkillRegistry --> S4["..."]
+    User["Usuário / Sistema externo"] -->|"linguagem natural / evento"| Intent["Intent Engine"]
+    Intent -->|"Intent estruturada"| Planner["Planner Engine"]
+    Planner -->|"Plan (Subtasks)"| Mission["Mission Engine"]
+    Mission -->|"delega Subtask"| AgentEng["Agent Engine"]
+    AgentEng --> Agent1["Agent — Engenharia (Claude)"]
+    AgentEng --> Agent2["Agent — Estratégia (ChatGPT)"]
+    AgentEng --> Agent3["Agent — Design (Gemini)"]
+    AgentEng --> Agent4["Agent — Documentação (Manus)"]
+    Agent1 -->|"usa"| SkillEng["Skill Engine"]
+    Agent2 -->|"usa"| SkillEng
+    Agent3 -->|"usa"| SkillEng
+    Agent4 -->|"usa"| SkillEng
+    SkillEng --> S1["GestorSkill"]
+    SkillEng --> S2["WhatsAppSkill"]
+    SkillEng --> S3["GitHubSkill"]
+    SkillEng --> S4["..."]
     S1 -.->|"API"| Ext1["Gestor.Alfa"]
     S2 -.->|"API"| Ext2["WhatsApp Cloud API"]
     S3 -.->|"API"| Ext3["GitHub"]
-    MissionEngine --> EventBus["Event Bus (Redis)"]
-    EventBus --> Knowledge["Knowledge / Memory"]
+    Mission --> Exec["Execution Engine"]
+    Exec -->|"valida / retry"| Mission
+    Mission --> EventBus["Event Bus (Redis)"]
+    EventBus --> Audit["Audit Engine"]
+    EventBus --> Memory["Memory Engine"]
     EventBus --> Automation["Automation Engine"]
     EventBus --> WS["WebSocket"]
     WS --> Web["Painel Web (React PWA)"]
     WS --> Mobile["App Mobile (React Native)"]
+    Kernel["Kernel"] -.->|"config / bootstrap"| Intent
+    Kernel -.-> Planner
+    Kernel -.-> Mission
 ```
 
-SIGMA nunca fala diretamente com um sistema externo. A cadeia é sempre **Missão → Agente → Skill → API externa**. Essa indireção é o que permite trocar um provedor de IA ou uma integração sem tocar no domínio.
+SIGMA nunca fala diretamente com um sistema externo, e nenhum Engine decide fora do seu papel: **Intent Engine interpreta → Planner Engine decide → Mission Engine acompanha → Agent Engine delega → Skill Engine age → Execution Engine valida → Audit Engine registra.** Essa cadeia é o que permite trocar um provedor de IA ou uma integração sem tocar no núcleo, e auditar exatamente onde uma Mission está a qualquer momento.
 
-## 3. As três camadas de execução
+## 4. As três camadas de execução (dentro do Agent Engine)
 
-Um erro comum em sistemas de orquestração de IA é misturar "o modelo" com "quem o usa" e com "o que ele pode fazer". SIGMA separa isso em três conceitos distintos:
+Um erro comum em sistemas de orquestração de IA é misturar "o modelo" com "quem o usa" e com "o que ele pode fazer". SIGMA separa isso em três conceitos distintos, geridos pelo Agent Engine e pelo Skill Engine:
 
 | Camada | Entidade | Responsabilidade | Exemplo |
 |---|---|---|---|
 | Provedor | **IA** | Credenciais, limites, custo, capacidades técnicas de um modelo | Claude API, OpenAI API, Gemini API, Manus |
-| Persona operacional | **Agente** | Uma especialidade que usa uma IA para um tipo de trabalho | Agente de Engenharia (usa Claude), Agente de Estratégia (usa ChatGPT) |
-| Capacidade de ação | **Skill** | Uma integração concreta que um Agente invoca para agir no mundo | GitHubSkill, WhatsAppSkill, GestorSkill |
+| Persona operacional | **Agent** | Uma especialidade que usa uma IA para um tipo de trabalho | Agent de Engenharia (usa Claude), Agent de Estratégia (usa ChatGPT) |
+| Capacidade de ação | **Skill** | Uma integração concreta que um Agent invoca para agir no mundo | GitHubSkill, WhatsAppSkill, GestorSkill |
 
-Um Agente nunca acessa uma API externa diretamente — ele solicita a uma Skill. Isso mantém a permissão, o log e o contrato de entrada/saída centralizados na Skill, não espalhados em cada Agente. Ver [ADR-0004](../adr/0004-tres-camadas-ia-agente-skill.md).
+Um Agent nunca acessa uma API externa diretamente — ele solicita ao Skill Engine. Ver [ADR-0004](../adr/0004-tres-camadas-ia-agente-skill.md) e a documentação de cada Agent em [/agents](../../agents/).
 
-### Especialidades de Agente (conjunto inicial)
+### Especialidades de Agent (conjunto inicial)
 
-| Agente | IA | Especialidade |
+| Agent | IA | Especialidade | Documentação |
+|---|---|---|---|
+| Agent de Engenharia | Claude | Engenharia de Software | [agents/claude.md](../../agents/claude.md) |
+| Agent de Estratégia | ChatGPT | Estratégia | [agents/chatgpt.md](../../agents/chatgpt.md) |
+| Agent de Design | Gemini | Design | [agents/gemini.md](../../agents/gemini.md) |
+| Agent de Documentação | Manus | Documentação | [agents/manus.md](../../agents/manus.md) |
+
+Novas IAs e Agents serão adicionados por configuração, não por alteração de domínio.
+
+## 5. Modelo de domínio
+
+Ver o glossário completo em [DOMAIN.md](../../DOMAIN.md). Os domínios se agrupam em contextos delimitados (bounded contexts), cada um primariamente servido por um ou mais Engines:
+
+| Contexto | Entidades | Engine principal |
 |---|---|---|
-| Agente de Engenharia | Claude | Engenharia de Software |
-| Agente de Estratégia | ChatGPT | Estratégia |
-| Agente de Design | Gemini | Design |
-| Agente de Documentação | Manus | Documentação |
+| **Interpretação** | Intent | Intent Engine |
+| **Planejamento** | Plan, Subtask (candidatos) | Planner Engine |
+| **Missão** (núcleo) | Mission, Subtask (em execução) | Mission Engine |
+| **Conhecimento** | Knowledge, Memory | Memory Engine |
+| **Capacidade** | Agent, IA | Agent Engine |
+| **Integração** | Skill, Integration | Skill Engine |
+| **Rastreabilidade** | Event, Log | Audit Engine |
+| **Identidade & Organização** | User, Team, Company | (contexto de apoio, sem Engine dedicado) |
+| **Negócio** | Client, Contact, Project, Product, Budget, Document, Meeting | (referenciado via Skill, fonte da verdade externa) |
+| **Processo** | Process, Automation | Automation Engine |
 
-Novas IAs e Agentes serão adicionados por configuração, não por alteração de domínio.
+Contextos se comunicam exclusivamente por eventos de domínio publicados no Event Bus — nunca por chamada direta entre módulos. O detalhamento de cada entidade (atributos, invariantes, relacionamentos) é expandido épico a épico conforme cada Engine é implementado — modelar em detalhe antes do épico correspondente ser aprovado gera documentação que se torna fictícia.
 
-## 4. Modelo de domínio
+## 6. Mission — ciclo de vida através dos Engines
 
-Os 16 domínios de gestão identificados na concepção do SIGMA se agrupam em contextos delimitados (bounded contexts):
-
-| Contexto | Entidades | Responsabilidade |
-|---|---|---|
-| **Mission** (núcleo) | Mission, Plan, Subtask | O ciclo de vida de toda ação do sistema |
-| **Capability** | Agent, IA, Skill | Quem executa e com o que |
-| **Knowledge** | Knowledge, Memory | O que o sistema sabe e aprendeu |
-| **Identity & Organization** | User, Team, Company | Quem opera o sistema e por qual empresa |
-| **Business** | Client, Project | O que está sendo orquestrado, para quem |
-| **Process** | Process | Fluxos e procedimentos reutilizáveis (SOPs) que uma Missão pode seguir |
-| **Operations** | Event, Log, Automation | Rastreabilidade e reação automática a eventos de domínio |
-| **Integration** | Integration | Metadados e configuração das integrações concretas usadas pelas Skills |
-
-Contextos se comunicam exclusivamente por eventos de domínio publicados no Event Bus — nunca por chamada direta entre módulos de domínio. O detalhamento de cada entidade (atributos, invariantes, relacionamentos) vive em `docs/architecture/domain-model.md`, a ser expandido épico a épico conforme cada contexto é implementado — modelar em detalhe uma entidade antes de o épico que a implementa ser aprovado gera documentação que se torna fictícia.
-
-## 5. Mission — entidade central
-
-Uma Missão é uma solicitação — de um usuário ou de outro sistema — que o SIGMA interpreta, planeja e executa através de Agentes e Skills.
+Uma Mission nasce de uma Intent já planejada e é gerenciada pelo Mission Engine até sua conclusão.
 
 ```mermaid
 stateDiagram-v2
     [*] --> Recebida
-    Recebida --> Interpretando
-    Interpretando --> Planejada: intenção compreendida
+    Recebida --> Interpretando: Intent Engine
+    Interpretando --> Planejando: Intent estruturada → Planner Engine
     Interpretando --> Rejeitada: intenção ambígua/inválida
-    Planejada --> SubtarefasCriadas
-    SubtarefasCriadas --> SkillsAtribuidas: Agentes e Skills escolhidos
-    SkillsAtribuidas --> EmExecucao
-    EmExecucao --> Validando
-    Validando --> Registrada: validação ok
+    Planejando --> SubtarefasCriadas: Plan pronto → Mission Engine cria a Mission
+    SubtarefasCriadas --> EmExecucao: Agent Engine delega cada Subtask
+    EmExecucao --> Validando: Execution Engine acompanha
     Validando --> EmExecucao: validação falhou, retry
+    Validando --> Registrada: validação ok → Audit Engine
     Validando --> Falhou: falha definitiva
     Registrada --> Concluida
     Falhou --> [*]
@@ -106,18 +138,18 @@ stateDiagram-v2
     Cancelada --> [*]
 ```
 
-Cada transição de estado publica um evento de domínio (`MissionInterpreted`, `MissionPlanned`, `SubtasksCreated`, `MissionExecuting`, `MissionValidated`, `MissionCompleted`, `MissionFailed`...) consumido por Knowledge/Memory (aprendizado), Automation (reação) e WebSocket (tempo real no painel).
+Cada transição de estado publica um evento de domínio (`mission.interpreted`, `mission.planned`, `subtasks.created`, `mission.executing`, `mission.validated`, `mission.completed`, `mission.failed`...) consumido pelo Audit Engine (rastreabilidade), Memory Engine (aprendizado) e WebSocket (tempo real no painel).
 
-## 6. Skill — contrato
+## 7. Skill — contrato
 
-Toda integração externa é modelada como Skill. Uma Skill é desacoplada e possui, obrigatoriamente:
+Toda integração externa é modelada como Skill, operada pelo Skill Engine. Uma Skill é desacoplada e possui, obrigatoriamente:
 
 - **Configuração** — como a Skill é ativada e parametrizada por empresa/ambiente.
-- **Permissões** — quem (qual Agente, qual Missão) pode invocá-la e para quê.
+- **Permissões** — quem (qual Agent, qual Mission) pode invocá-la e para quê.
 - **Entrada** — contrato de dados que a Skill aceita.
 - **Saída** — contrato de dados que a Skill devolve.
 - **Eventos** — o que a Skill publica no Event Bus ao ser executada (sucesso, falha, progresso).
-- **Logs** — toda invocação é registrada, correlacionada à Missão que a originou.
+- **Logs** — toda invocação é registrada, correlacionada à Mission que a originou.
 - **Testes** — contrato coberto por testes automatizados antes de ir ao ar.
 - **Documentação** — o que a Skill faz, como configurá-la, exemplos de uso.
 
@@ -133,14 +165,14 @@ interface Skill
 }
 ```
 
-Exemplos de Skills previstas: `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `EmailSkill`, `GoogleCalendarSkill`, `DockerSkill`, `WhatsAppSkill`.
+Skills previstas, documentadas em [/skills](../../skills/): `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `GoogleCalendarSkill`, `EmailSkill` — e futuramente `DockerSkill`, `WhatsAppSkill`, entre outras.
 
-## 7. Estrutura de módulo (backend)
+## 8. Estrutura de módulo (backend)
 
-Cada contexto delimitado do backend Laravel segue a mesma estrutura interna, isolando domínio de infraestrutura:
+Cada Engine e cada contexto de apoio do backend Laravel segue a mesma estrutura interna, isolando domínio de infraestrutura:
 
 ```
-backend/app/Modules/<Contexto>/
+backend/app/Modules/<Engine-ou-Contexto>/
 ├── Domain/
 │   ├── Entities/
 │   ├── ValueObjects/
@@ -160,9 +192,9 @@ backend/app/Modules/<Contexto>/
     └── Resources/
 ```
 
-Esta estrutura é o padrão a ser usado a partir do primeiro épico de implementação; nenhum código é criado na Fase Foundation.
+Ex.: `backend/app/Modules/Mission/`, `backend/app/Modules/Planner/`, `backend/app/Modules/Skill/`. Esta estrutura é o padrão a ser usado a partir do primeiro épico de implementação; nenhum código é criado na Fase Foundation.
 
-## 8. Stack de referência
+## 9. Stack de referência
 
 | Camada | Tecnologia |
 |---|---|
@@ -173,11 +205,12 @@ Esta estrutura é o padrão a ser usado a partir do primeiro épico de implement
 
 Justificativa e alternativas consideradas em [ADR-0009](../adr/0009-stack-tecnologica-de-referencia.md).
 
-## 9. Regras de desacoplamento
+## 10. Regras de desacoplamento
 
-1. SIGMA nunca acessa diretamente o banco de dados de outro sistema Alfa. Toda leitura e escrita em Gestor.Alfa, AlfaControl, AlfaGym, AlfaJornada, AlfaCam etc. acontece através da API pública desses sistemas, encapsulada numa Skill.
-2. Um contexto de domínio do SIGMA nunca chama outro contexto diretamente — apenas via eventos publicados no Event Bus.
-3. Um Agente nunca invoca uma API externa diretamente — sempre através de uma Skill autorizada.
+1. SIGMA nunca acessa diretamente o banco de dados de outro sistema Alfa. Toda leitura e escrita em Gestor.Alfa, AlfaControl, AlfaGym, AlfaJornada, AlfaCam etc. acontece através da API pública desses sistemas, encapsulada numa Skill operada pelo Skill Engine.
+2. Um Engine nunca chama outro Engine diretamente — apenas via eventos publicados no Event Bus, exceto a cadeia síncrona explícita Intent → Planner → Mission → Agent (delegação de Subtask), que é o próprio fluxo de orquestração.
+3. Um Agent nunca invoca uma API externa diretamente — sempre através do Skill Engine.
 4. Nenhuma Skill mantém estado de negócio próprio além do necessário para operar (idempotência, retry) — a fonte da verdade de cada domínio de negócio permanece no sistema dono desse domínio.
+5. O Planner Engine decide o Plan; nenhum Agent decide, por conta própria, o que uma Mission deve fazer. Ver [ADR-0012](../adr/0012-planner-decide-nunca-a-ia.md).
 
-Ver [ADR-0007](../adr/0007-comunicacao-somente-via-api.md).
+Ver também [ADR-0007](../adr/0007-comunicacao-somente-via-api.md).
