@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Sigma\Gateway;
-
-use Sigma\Core\Id;
+namespace Sigma\Core;
 
 /**
  * O Envelope do SIGMA Protocol (ver SIGMA_PROTOCOL.md §1) — toda
- * resposta do Gateway, mesmo um endpoint de infraestrutura como
- * /health/*, sai neste formato.
+ * resposta HTTP de qualquer serviço do SIGMA sai neste formato.
+ * Movido de services/gateway para cá (ver ADR-0069) quando
+ * services/auth passou a precisar do mesmo formato — evita duplicar
+ * um formato que é, por definição, compartilhado por todo o Protocol.
  */
 final class Envelope
 {
@@ -17,10 +17,8 @@ final class Envelope
 
     /**
      * @param array<string, mixed>|null $data
-     * @param array{code: string, message: string}|null $error
      * @param array<int, string> $events
      * @param array<int, mixed> $warnings
-     * @param array<int, mixed> $nextActions
      */
     public static function success(?array $data = null, array $events = [], array $warnings = []): array
     {

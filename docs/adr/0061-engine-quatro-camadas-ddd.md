@@ -16,10 +16,12 @@ packages/<engine>/
 ├── Domain/          — Value Objects, Entities, Aggregates, eventos de domínio, regras de negócio. Sem dependência de framework, banco ou HTTP.
 ├── Application/      — Casos de uso/orquestração (ex: "autenticar User", "atribuir Role"). Depende de Domain; expõe interfaces que Infrastructure implementa.
 ├── Infrastructure/    — Persistência, clientes externos, implementações concretas das interfaces de Application/Domain (ex: repositórios sobre MariaDB).
-└── Interface/         — Onde o Engine é alcançado de fora: `IModule` (register/boot/describe), e, quando aplicável, a casca HTTP correspondente.
+└── Interfaces/         — Onde o Engine é alcançado de fora: `IModule` (register/boot/describe), e, quando aplicável, a casca HTTP correspondente.
 ```
 
-Exemplo concreto — `packages/identity-engine/`: `Domain/` com `TenantId`, `UserId`, `Identity` (agregado), `IdentityCreated` (evento); `Application/` com o caso de uso de autenticação; `Infrastructure/` com o repositório de `User` sobre MariaDB; `Interface/` com `IdentityEngineModule implements IModule`.
+`Interfaces/`, no plural — `interface` é palavra reservada do PHP e não pode nomear um segmento de namespace (`namespace Sigma\IdentityEngine\Interface;` é erro de sintaxe). Descoberto durante a Implementation da Release 3B; o nome conceitual da camada continua "Interface" (singular) na documentação, só o nome do namespace/pasta muda.
+
+Exemplo concreto — `packages/identity-engine/`: `Domain/` com `TenantId`, `UserId`, `Identity` (agregado), `IdentityCreated` (evento); `Application/` com o caso de uso de autenticação; `Infrastructure/` com o repositório de `User` sobre MariaDB; `Interfaces/` com `IdentityEngineModule implements IModule`.
 
 ## Consequências
 

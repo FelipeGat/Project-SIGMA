@@ -13,7 +13,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Sigma\Gateway\Bootstrap;
-use Sigma\Gateway\Envelope;
+use Sigma\Core\Envelope;
 use Sigma\Gateway\HealthEndpoints;
 
 $manifestPath = getenv('SIGMA_MANIFEST_PATH') ?: __DIR__ . '/../../../system-manifest.yaml';

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Sigma\Core\SigmaException;
 use Sigma\IdentityEngine\Domain\IdentityId;
 use Sigma\IdentityEngine\Domain\Session;
+use Sigma\IdentityEngine\Domain\SessionId;
 use Sigma\IdentityEngine\Domain\WorkspaceId;
 
 final class SessionTest extends TestCase
@@ -48,6 +49,21 @@ final class SessionTest extends TestCase
         self::assertTrue($updated->hasWorkspaceSelected());
         self::assertTrue($updated->workspaceId()->equals($workspaceId));
         self::assertSame($session->id()->toString(), $updated->id()->toString());
+    }
+
+    public function test_reconstitute_restores_the_exact_state_without_generating_a_new_id(): void
+    {
+        $id = SessionId::generate();
+        $identityId = IdentityId::generate();
+        $issuedAt = new \DateTimeImmutable('2026-08-04T10:00:00+00:00');
+        $expiresAt = $issuedAt->modify('+1 hour');
+        $workspaceId = WorkspaceId::generate();
+
+        $session = Session::reconstitute($id, $identityId, $issuedAt, $expiresAt, $workspaceId);
+
+        self::assertTrue($session->id()->equals($id));
+        self::assertTrue($session->identityId()->equals($identityId));
+        self::assertTrue($session->workspaceId()->equals($workspaceId));
     }
 
     public function test_selecting_a_workspace_a_second_time_is_rejected(): void

@@ -1,6 +1,5 @@
 # System Manifest do SIGMA — lido pelo Bootstrap na etapa `discover`.
-# Ver SYSTEM_MANIFEST.md. Nesta Release (2 — SIGMA Bootstrap), apenas
-# infraestrutura: nenhum Engine ou Plugin real existe ainda.
+# Ver SYSTEM_MANIFEST.md.
 
 # Versão do FORMATO deste arquivo (não do projeto SIGMA — isso é `version`,
 # abaixo). O Bootstrap rejeita qualquer manifestVersion que não reconheça.
@@ -18,9 +17,21 @@ modules:
     kind: service
     optional: false
     minVersion: "1.0.0"
+  - name: identity-engine
+    kind: engine
+    # optional: true aqui não significa "este Module é dispensável" —
+    # significa "nem todo processo que lê este Manifest precisa
+    # registrá-lo". services/gateway só registra kernel+event-bus;
+    # services/auth registra os três, incluindo identity-engine, e
+    # sempre o mantém presente do próprio ponto de vista. Ver Decision
+    # Log da Release 3B — gap descoberto ao validar via HTTP real.
+    optional: true
+    minVersion: "1.0.0"
 
-# Providers de IA e Workspaces — não interpretados pelo Bootstrap
-# (Release 2). Chegam com o Agent Engine (Release 9) e o Identity
-# Engine (Release 3), respectivamente. Vazios propositalmente aqui.
+# Providers de IA — não interpretados pelo Bootstrap ainda. Chega com o
+# Agent Engine (Release 9). Vazio propositalmente aqui.
 providers: []
+
+# Workspaces: hoje modelados pelo Identity Engine (packages/identity-engine),
+# não por este campo do Manifest — ver IDENTITY_MODEL.md. Vazio propositalmente aqui.
 workspace: []

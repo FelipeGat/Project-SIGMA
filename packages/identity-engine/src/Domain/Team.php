@@ -40,6 +40,12 @@ final class Team
         return $this->name;
     }
 
+    /** @return list<UserId> */
+    public function members(): array
+    {
+        return $this->memberIds;
+    }
+
     public function type(): TeamType
     {
         return $this->type;

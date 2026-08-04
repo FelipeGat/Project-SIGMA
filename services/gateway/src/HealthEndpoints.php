@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sigma\Gateway;
 
+use Sigma\Core\Envelope;
 use Sigma\Kernel\HealthManager;
 
 /**

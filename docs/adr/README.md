@@ -74,3 +74,4 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0066](0066-context-imutavel.md) | `Context` é imutável — trocar de Workspace produz uma nova Session |
 | [0067](0067-team-tipado.md) | `Team` é tipado — System Team vs. Business Team |
 | [0068](0068-autonomy-por-capability.md) | Autonomy é baseada em capability nomeada, não em nível numérico |
+| [0069](0069-envelope-em-packages-core.md) | `Envelope` vive em `packages/core`, não em `services/gateway` |

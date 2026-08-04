@@ -58,6 +58,18 @@ final class RoleAssignmentTest extends TestCase
         self::assertCount(1, $assignment->pullDomainEvents());
     }
 
+    public function test_reconstitute_restores_the_revoked_flag_without_recording_any_event(): void
+    {
+        $role = new Role(RoleId::generate(), TenantId::generate(), 'Comercial');
+        $scope = Scope::workspace(WorkspaceId::generate());
+        $userId = UserId::generate();
+
+        $assignment = RoleAssignment::reconstitute($role, SubjectType::User, $userId, $scope, true);
+
+        self::assertTrue($assignment->isRevoked());
+        self::assertCount(0, $assignment->pullDomainEvents());
+    }
+
     public function test_applies_to_scope_matches_exact_scope_only(): void
     {
         $workspaceId = WorkspaceId::generate();

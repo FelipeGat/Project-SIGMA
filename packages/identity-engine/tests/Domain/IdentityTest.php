@@ -13,6 +13,7 @@ use Sigma\IdentityEngine\Domain\Event\IdentityCreated;
 use Sigma\IdentityEngine\Domain\Event\SessionStarted;
 use Sigma\IdentityEngine\Domain\Event\WorkspaceSelected;
 use Sigma\IdentityEngine\Domain\Identity;
+use Sigma\IdentityEngine\Domain\IdentityId;
 use Sigma\IdentityEngine\Domain\Permission;
 use Sigma\IdentityEngine\Domain\Role;
 use Sigma\IdentityEngine\Domain\RoleAssignment;
@@ -206,6 +207,14 @@ final class IdentityTest extends TestCase
         $this->expectException(SigmaException::class);
 
         $identity->selectWorkspace($foreignSession, $this->workspace, $this->now);
+    }
+
+    public function test_reconstitute_does_not_record_any_domain_event(): void
+    {
+        $identity = Identity::reconstitute(IdentityId::generate(), $this->user, $this->tenant, true);
+
+        self::assertTrue($identity->isActive());
+        self::assertCount(0, $identity->pullDomainEvents());
     }
 
     public function test_the_full_lifecycle_produces_the_expected_sequence_of_domain_events(): void

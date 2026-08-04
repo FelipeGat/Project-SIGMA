@@ -28,6 +28,17 @@ final class Session
         return new self(SessionId::generate(), $identityId, $now, $now->add($ttl), workspaceId: null);
     }
 
+    /** Reidrata uma Session já existente a partir de dados persistidos (Infrastructure, Release 3B). */
+    public static function reconstitute(
+        SessionId $id,
+        IdentityId $identityId,
+        \DateTimeImmutable $issuedAt,
+        \DateTimeImmutable $expiresAt,
+        ?WorkspaceId $workspaceId,
+    ): self {
+        return new self($id, $identityId, $issuedAt, $expiresAt, $workspaceId);
+    }
+
     public function id(): SessionId
     {
         return $this->id;

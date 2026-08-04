@@ -26,6 +26,15 @@ final class RoleAssignment
     ) {
     }
 
+    /** Reidrata um RoleAssignment já existente a partir de dados persistidos (Infrastructure, Release 3B). */
+    public static function reconstitute(Role $role, SubjectType $subjectType, Identifier $subjectId, Scope $scope, bool $revoked): self
+    {
+        $assignment = new self($role, $subjectType, $subjectId, $scope);
+        $assignment->revoked = $revoked;
+
+        return $assignment;
+    }
+
     public static function assign(Role $role, SubjectType $subjectType, Identifier $subjectId, Scope $scope): self
     {
         $assignment = new self($role, $subjectType, $subjectId, $scope);

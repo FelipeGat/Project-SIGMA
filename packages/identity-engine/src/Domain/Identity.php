@@ -44,6 +44,20 @@ final class Identity
         return $identity;
     }
 
+    /**
+     * Reidrata uma Identity já existente a partir de dados persistidos
+     * (Infrastructure, Release 3B) — nunca dispara eventos de domínio,
+     * ao contrário de create()/activate()/disable(). Usado apenas por
+     * repositórios ao carregar do banco.
+     */
+    public static function reconstitute(IdentityId $id, User $user, Tenant $tenant, bool $active): self
+    {
+        $identity = new self($id, $user, $tenant);
+        $identity->active = $active;
+
+        return $identity;
+    }
+
     public function id(): IdentityId
     {
         return $this->id;

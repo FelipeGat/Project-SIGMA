@@ -52,6 +52,18 @@ final class TeamTest extends TestCase
         self::assertFalse($team->hasMember($user));
     }
 
+    public function test_members_lists_every_added_member(): void
+    {
+        $team = new Team(TeamId::generate(), CompanyId::generate(), 'Suporte', TeamType::System);
+        $first = UserId::generate();
+        $second = UserId::generate();
+
+        $team->addMember($first);
+        $team->addMember($second);
+
+        self::assertCount(2, $team->members());
+    }
+
     public function test_type_is_preserved(): void
     {
         $team = new Team(TeamId::generate(), CompanyId::generate(), 'Comercial', TeamType::Business);
