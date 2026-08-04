@@ -69,3 +69,8 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0061](0061-engine-quatro-camadas-ddd.md) | Todo Engine segue quatro camadas DDD — Domain, Application, Infrastructure, Interface |
 | [0062](0062-identity-nunca-conhece-outro-engine.md) | Identity Engine nunca conhece outro Engine — comunicação apenas por eventos publicados |
 | [0063](0063-identificadores-como-value-objects.md) | Identificadores de domínio são Value Objects, nunca string primitiva |
+| [0064](0064-identity-como-agregado-raiz.md) | `Identity` é o agregado raiz — não `Context` isolado |
+| [0065](0065-session-autentica-identity.md) | `Session` autentica uma `Identity`, não diretamente um `User` |
+| [0066](0066-context-imutavel.md) | `Context` é imutável — trocar de Workspace produz uma nova Session |
+| [0067](0067-team-tipado.md) | `Team` é tipado — System Team vs. Business Team |
+| [0068](0068-autonomy-por-capability.md) | Autonomy é baseada em capability nomeada, não em nível numérico |

@@ -1,0 +1,34 @@
+{
+    "name": "sigma/identity-engine",
+    "description": "Identity Engine do SIGMA — responde 'quem'. Release 3A: apenas Domain (Value Objects, Entities, Aggregates, eventos de dominio), sem persistencia (ver ADR-0060, ADR-0061).",
+    "type": "library",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.2",
+        "sigma/core": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sigma\\IdentityEngine\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigma\\IdentityEngine\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../core"
+        }
+    ],
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable"
+}
