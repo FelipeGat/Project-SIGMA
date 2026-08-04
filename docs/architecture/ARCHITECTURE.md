@@ -238,7 +238,9 @@ Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decis
 | [MULTITENANCY.md](../../MULTITENANCY.md) | A hierarquia Tenant → Company → Workspace → User → Role |
 | [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md) | As dez entidades de identidade (incl. Permission e Session) e as relações entre elas — modelo completo que fundamenta o Identity Engine (Release 3) |
 | [IDENTITY_LIFECYCLE.md](../../IDENTITY_LIFECYCLE.md) | O fluxo runtime de uma Identity — criada, autenticada, contexto carregado, Session, Workspace selecionado, Permissions/Autonomy resolvidos |
-| [DOMAIN_EVENTS.md](../../DOMAIN_EVENTS.md) | Catálogo de eventos de domínio (camada Semantic) por Engine — hoje só Identity |
+| [DOMAIN_EVENTS.md](../../DOMAIN_EVENTS.md) | Catálogo de eventos de domínio (camada Semantic) por Engine — hoje só Identity, o porquê de cada evento existir |
+| [EVENT_CATALOG.md](../../EVENT_CATALOG.md) | Catálogo de **todo** evento do SIGMA, entre Engines — quem consome, versão, contrato |
+| [CHANGELOG.md](../../CHANGELOG.md) | O que o SIGMA passou a fazer, Release a Release — para quem usa, não para quem constrói |
 | [MEMORY_ARCHITECTURE.md](../../MEMORY_ARCHITECTURE.md) | Os três níveis de Memory |
 | [SYSTEM_MANIFEST.md](../../SYSTEM_MANIFEST.md) | O System Manifest (incl. `manifestVersion`) e Self-Describing Components |
 | [COMPATIBILITY.md](../../COMPATIBILITY.md) | Matriz de compatibilidade Kernel × Protocol × Plugin API |

@@ -2,28 +2,53 @@
 
 O SIGMA avança **uma Release por vez** ("Release" substitui "Sprint" a partir da aprovação da Release 0 — ver [ADR-0024](docs/adr/0024-terminologia-release.md)). Cada Release de código só entra em desenvolvimento após ser apresentada no formato Objetivo / Escopo / Arquitetura / Dependências / Riscos / Entrega / Testes / Critérios de Aceite e **aprovada explicitamente**. Ver [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md) e [ADR-0015](docs/adr/0015-roadmap-por-camadas-nao-por-feature.md).
 
-Este roadmap é a visão macro; o detalhamento formal de cada Release é produzido logo antes de sua execução, não com meses de antecedência — desenhar em detalhe uma Release distante hoje só gera retrabalho quando o contexto mudar.
+Este roadmap é a visão macro; o detalhamento formal de cada Release é produzido logo antes de sua execução, não com meses de antecedência — desenhar em detalhe uma Release distante hoje só gera retrabalho quando o contexto mudar. Estendido de 14 para 24 Releases em 2026-08-04, a partir de uma análise de longo prazo (5-10 anos) do Product Owner — ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md).
 
 ## Status
 
-| Release | Nome | Status |
+| Release | Nome | Status | Maturidade |
+|---|---|---|---|
+| 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Concluída | 100% |
+| 1 | SIGMA Protocol | ✅ Concluída | 100% |
+| 2 | SIGMA Bootstrap | ✅ Concluída | 100% |
+| 3A | Identity Domain | ✅ Concluída | 100% |
+| 3B | Identity Infrastructure | ✅ Concluída | 100% |
+| 3.5 | Architecture Consolidation | ✅ Concluída | 100% |
+| 4 | Memory Engine | ⏳ Não iniciada | 0% |
+| 5 | Mission Engine | ⏳ Não iniciada | 0% |
+| 6 | Planner Engine | ⏳ Não iniciada | 0% |
+| 7 | Intent Engine | ⏳ Não iniciada | 0% |
+| 8 | Skill Engine | ⏳ Não iniciada | 0% |
+| 9 | Agent Engine | ⏳ Não iniciada | 0% |
+| 10 | Execution Engine | ⏳ Não iniciada | 0% |
+| 11 | Audit Engine | ⏳ Não iniciada | 0% |
+| 12 | Gateway/API | ⏳ Não iniciada | 0% |
+| 13 | Interfaces (Web PWA + Mobile) | ⏳ Não iniciada | 0% |
+| 14 | Automation Engine | ⏳ Não iniciada | 0% |
+| 15 | Analytics | ⏳ Não iniciada | 0% |
+| 16 | Knowledge Engine | ⏳ Não iniciada | 0% |
+| 17 | Digital Twin (Engine própria) | ⏳ Não iniciada | 0% |
+| 18 | Capability Registry | ⏳ Não iniciada | 0% |
+| 19 | Council Engine | ⏳ Não iniciada | 0% |
+| 20 | Multi-Agent Runtime | ⏳ Não iniciada | 0% |
+| 21 | Marketplace | ⏳ Não iniciada | 0% |
+| 22 | Cloud Sync | ⏳ Não iniciada | 0% |
+| 23 | Production Hardening | ⏳ Não iniciada | 0% |
+| 24 | SIGMA v1.0 | ⏳ Não iniciada | 0% |
+
+> **Release 6/7 — pendência sinalizada, não decidida silenciosamente**: a numeração acima mantém `6 — Planner`, `7 — Intent`, conforme [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) (deliberado: Planner é construído primeiro com Intents mockadas). A visão de longo prazo mais recente do Product Owner listou `6 — Intent`, `7 — Planner` — pode ter sido uma simplificação da tabela de alto nível, ou uma intenção real de reabrir o ADR-0031. Fica como pergunta em aberto até confirmação explícita — ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md).
+
+## Componentes estruturais sinalizados, ainda sem Release própria
+
+Mapeados pelo Product Owner como necessidades arquiteturais que vão aparecer antes da Release 24, mas que ainda não têm um número de Release atribuído — cada um provavelmente se encaixa dentro de uma Release já listada acima, a confirmar quando a Release correspondente for desenhada em detalhe:
+
+| Componente | O que resolve | Onde provavelmente se encaixa |
 |---|---|---|
-| 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Aprovada, publicada |
-| 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
-| 2 | SIGMA Bootstrap | ✅ Implementada — 48 testes passando |
-| 3A | Identity Domain | ✅ Implementada — `packages/identity-engine/Domain`, 50 testes passando |
-| 3B | Identity Infrastructure | ✅ Implementada — 135 testes no monorepo, `docker compose up --build` validado de fato |
-| 4 | Memory Engine | ⚪ Não iniciado |
-| 5 | Mission Engine | ⚪ Não iniciado |
-| 6 | Planner Engine | ⚪ Não iniciado |
-| 7 | Intent Engine | ⚪ Não iniciado |
-| 8 | Skill Engine | ⚪ Não iniciado |
-| 9 | Agent Engine | ⚪ Não iniciado |
-| 10 | Execution Engine | ⚪ Não iniciado |
-| 11 | Audit Engine | ⚪ Não iniciado |
-| 12 | Interfaces (Web PWA + Mobile) | ⚪ Não iniciado |
-| 13 | Automation Engine | ⚪ Não iniciado |
-| 14 | Analytics | ⚪ Não iniciado |
+| **Scheduler** | Execução agendada (ex: "08:00 → Executar Missão → Enviar relatório → Fechar Sprint") | Release própria a definir, ou dentro de Automation Engine (14) |
+| **Secrets Manager** | Credenciais de provedores (OpenAI, Claude, GitHub, Telegram, SMTP, Banco) criptografadas — hoje só `Configuration Provider` por Module, sem criptografia | Production Hardening (23) ou release própria |
+| **Cache Layer** | Mission, Memory e Planner vão precisar de cache — não existe ainda | A confirmar quando Memory Engine (4) ou Mission Engine (5) forem desenhados em detalhe |
+| **Observability** | Tracing, Metrics, Performance, Latency, Errors — hoje só Logs (ver [TELEMETRY.md](TELEMETRY.md)) | Expansão do Audit Engine (11) |
+| **Policy Engine** | Unifica "pode? até quanto? precisa aprovação? executa sozinho?" — hoje espalhado entre Autonomia Progressiva ([SIGMA_PROTOCOL.md §5](SIGMA_PROTOCOL.md#5-autonomia-progressiva)) e Permission ([IDENTITY_MODEL.md](IDENTITY_MODEL.md#permission)) | Capability Registry (18) ou release própria |
 
 ## Release 0 — Foundation ✅
 
@@ -33,21 +58,25 @@ Entregou apenas documentação e estrutura de projeto, nenhum código de aplica�
 
 Especificação do protocolo de comunicação entre todas as peças do SIGMA, **antes** de qualquer Engine ser implementado — ver [ADR-0025](docs/adr/0025-protocol-antecede-kernel.md) e [SIGMA_PROTOCOL.md](SIGMA_PROTOCOL.md). Escopo: Envelope de resposta padronizado ([ADR-0026](docs/adr/0026-envelope-de-resposta-padronizado.md), [ADR-0030](docs/adr/0030-envelope-v2.md)), Capability e Capability Registry ([ADR-0027](docs/adr/0027-capability-unidade-de-skill.md), [ADR-0033](docs/adr/0033-capability-registry.md)), execução por Intenção com decomposição em múltiplas Missions ([ADR-0028](docs/adr/0028-intencao-nao-comando.md)), SIGMA Language ([ADR-0032](docs/adr/0032-sigma-language.md), [SGL.md](SGL.md)), Digital Twin ([ADR-0035](docs/adr/0035-digital-twin.md), [DIGITAL_TWIN.md](DIGITAL_TWIN.md)), eventos em três camadas ([ADR-0034](docs/adr/0034-eventos-tres-camadas.md)), Autonomia Progressiva ([ADR-0029](docs/adr/0029-autonomia-progressiva.md)), princípio Declarativo-não-Imperativo ([ADR-0037](docs/adr/0037-declarativo-nao-imperativo.md)). Aprovada pelo Product Owner; push realizado.
 
-## Release 2 — SIGMA Bootstrap (proposta formal em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md), aguardando aprovação)
+## Release 2 — SIGMA Bootstrap ✅
 
-Renomeada de "Kernel" — escopo reduzido ao bootstrap puro da plataforma, equivalente ao `Application` do Laravel/Spring Boot: Configuration Provider, Telemetry (Logs/Metrics/Tracing/Audit — não só Logger), DI Container, Modules (nunca Engines — ver nota abaixo), System Manifest, Lifecycle estendido (`discover → register → boot → start → ready → degraded → shutdown`), Health compatível com Kubernetes (`/health/live`, `/health/ready`, `/health/startup`), princípio de Self-Describing Components. **Fora do escopo**: Missions, IA/Agents, carregamento de Plugin real. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md), [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md)–[ADR-0046](docs/adr/0046-self-describing-components.md) e [BOOTSTRAP.md](BOOTSTRAP.md)/[SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md). **✅ Implementada.** Proposta final (revisão 3) em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md), Decision Log em [docs/releases/0002-sigma-bootstrap-decision-log.md](docs/releases/0002-sigma-bootstrap-decision-log.md). Primeiro código de aplicação do projeto — `packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway`, 48 testes automatizados passando, validado com HTTP real via `php -S`. Implementa o Envelope de resposta da Release 1 desde o primeiro endpoint de health-check.
+Renomeada de "Kernel" — escopo reduzido ao bootstrap puro da plataforma, equivalente ao `Application` do Laravel/Spring Boot: Configuration Provider, Telemetry (Logs/Metrics/Tracing/Audit — não só Logger), DI Container, Modules (nunca Engines — ver nota abaixo), System Manifest, Lifecycle estendido (`discover → register → boot → start → ready → degraded → shutdown`), Health compatível com Kubernetes (`/health/live`, `/health/ready`, `/health/startup`), princípio de Self-Describing Components. **Fora do escopo**: Missions, IA/Agents, carregamento de Plugin real. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md), [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md)–[ADR-0046](docs/adr/0046-self-describing-components.md) e [BOOTSTRAP.md](BOOTSTRAP.md)/[SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md). Proposta final (revisão 3) em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md), Decision Log e Validation Report completos. Primeiro código de aplicação do projeto — `packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway`.
 
 O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role — [MULTITENANCY.md](MULTITENANCY.md)), antes bundlado nesta Release, não vive aqui nem no Memory Engine — tem Release própria, ver Release 3 — Identity Engine abaixo.
 
-## Release 3 — Identity Engine
+## Release 3 — Identity Engine ✅
 
 Responde "quem sou, quem é o usuário, qual empresa, qual workspace, qual tenant, quais permissões, qual autonomia, qual contexto" — deliberadamente extraído do Memory Engine, por ser identidade e não memória (ver [ADR-0039](docs/adr/0039-identity-engine.md)). Contém o schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role, `tenant_id` obrigatório desde a primeira migration — [MULTITENANCY.md](MULTITENANCY.md), [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md)) e a resolução do nível de Autonomia Progressiva por User/Role ([ADR-0029](docs/adr/0029-autonomia-progressiva.md)). Todo Engine seguinte consome o contexto de identidade resolvido por este Engine através do Kernel — nunca resolve Tenant/Workspace por conta própria.
 
-Primeiro Engine a modelar domínio real, dividido em duas sub-Releases sequenciais ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **3A — Identity Domain** ([docs/releases/0003a-identity-domain.md](docs/releases/0003a-identity-domain.md)) modela o domínio em código puro, sem infraestrutura; **3B — Identity Infrastructure** ([docs/releases/0003b-identity-infrastructure.md](docs/releases/0003b-identity-infrastructure.md)) só começa depois que 3A estiver validada, e traz persistência, API e autenticação de verdade.
+Primeiro Engine a modelar domínio real, dividido em duas sub-Releases sequenciais ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **3A — Identity Domain** ([docs/releases/0003a-identity-domain.md](docs/releases/0003a-identity-domain.md)) modelou o domínio em código puro, sem infraestrutura; **3B — Identity Infrastructure** ([docs/releases/0003b-identity-infrastructure.md](docs/releases/0003b-identity-infrastructure.md)) trouxe persistência (MariaDB), API (`services/auth`) e autenticação de verdade, validado via `docker compose up --build` real.
+
+## Release 3.5 — Architecture Consolidation ✅
+
+Não mudou o produto — fortaleceu a base antes da Memory Engine, seguindo a recomendação do Product Owner de que "é muito mais barato consolidar agora do que corrigir depois da Mission, Planner e Agent". Ver [docs/releases/0003.5-architecture-consolidation.md](docs/releases/0003.5-architecture-consolidation.md): [EVENT_CATALOG.md](EVENT_CATALOG.md), [VERSION.md](packages/identity-engine/VERSION.md) por Engine, [CHANGELOG.md](CHANGELOG.md) do produto, `CredentialProvider` substituindo `PasswordHasher`, validação cruzada de Contracts/ADRs/Decision Logs (encontrou e corrigiu duas divergências reais em `contracts/Identity.contract.yaml`), revisão de testes por camada, teste completo `bootstrap → login → workspace → logout` em ambiente Docker genuinamente limpo (`down -v` + `build --no-cache`).
 
 ## Release 4 — Memory Engine
 
-Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)), custódia dos primeiros Digital Twins (ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md)). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Construído antes do Mission Engine para que o Planner (Release 6) já tenha uma fonte de contexto/heurística ao nascer. Consome identidade/contexto da Release 3, não os resolve por conta própria.
+**Segundo marco mais importante do projeto, depois da Foundation** — praticamente todo Engine seguinte (Mission, Intent, Planner, Agent, Council) depende da qualidade do que a Memory Engine expuser (avaliação do Product Owner, ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md)). Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)), custódia dos primeiros Digital Twins (ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md) — a versão madura vira Engine própria na Release 17). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Construído antes do Mission Engine para que o Planner (Release 6) já tenha uma fonte de contexto/heurística ao nascer. Consome identidade/contexto da Release 3, não os resolve por conta própria.
 
 ## Release 5 — Mission Engine
 
@@ -55,7 +84,7 @@ Entidade Mission, máquina de estados do ciclo de vida (ver [ARCHITECTURE.md §6
 
 ## Release 6 — Planner Engine
 
-Recebe uma Intent (ainda estruturada manualmente/mockada — Intent Engine só nasce na Release 7, ver a nota de transparência em [ADR-0025](docs/adr/0025-protocol-antecede-kernel.md)) e decompõe em uma ou mais Missions (Plan + Subtasks candidatas, Agent/Skill sugeridos). Primeira versão apoiada nos [Playbooks](playbooks/) já documentados como heurística inicial. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md).
+Recebe uma Intent (ainda estruturada manualmente/mockada — Intent Engine só nasce na Release 7, ver a nota de transparência em [ADR-0025](docs/adr/0025-protocol-antecede-kernel.md)) e decompõe em uma ou mais Missions (Plan + Subtasks candidatas, Agent/Skill sugeridos). Primeira versão apoiada nos [Playbooks](playbooks/) já documentados como heurística inicial. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md) e [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) (por que Planner vem antes de Intent no desenvolvimento, mesmo a Intent vindo antes em runtime — numeração em confirmação, ver nota na tabela de Status acima).
 
 ## Release 7 — Intent Engine
 
@@ -75,19 +104,59 @@ Acompanhamento e validação da execução de Subtasks em andamento: retry, time
 
 ## Release 11 — Audit Engine
 
-Persistência estruturada de Events e Logs com correlação completa (Intent → Mission → Subtask → Agent → Skill), e a API/consulta necessária para auditoria e para alimentar interfaces.
+Persistência estruturada de Events e Logs com correlação completa (Intent → Mission → Subtask → Agent → Skill), e a API/consulta necessária para auditoria e para alimentar interfaces. Candidato natural para absorver o componente estrutural **Observability** (Tracing/Metrics/Performance/Latency/Errors) sinalizado acima.
 
-## Release 12 — Interfaces
+## Release 12 — Gateway/API
+
+**Nova desde a extensão do roadmap (ADR-0070).** A superfície pública de API do SIGMA (REST/GraphQL) construída sobre `services/gateway` — infraestrutura que já existe desde a Release 2, mas hoje só expõe health-check. Aqui ganha rotas de domínio de verdade, para que a Release 13 (Interfaces) tenha o que consumir.
+
+## Release 13 — Interfaces
 
 React + TypeScript + Vite (PWA), Design System próprio, dark mode — dashboard de Missions em tempo real via WebSocket. React Native + Expo, mesmo Design System e mesmo backend, em seguida ou em paralelo conforme capacidade de execução no momento.
 
-## Release 13 — Automation Engine
+## Release 14 — Automation Engine
 
 Motor de automação declarativa reagindo a eventos de domínio (ex: "quando uma Mission do tipo Novo Orçamento concluir, disparar a Mission de Nova Obra").
 
-## Release 14 — Analytics
+## Release 15 — Analytics
 
 Métricas e indicadores sobre o que o SIGMA orquestra (tempo médio de Mission por tipo, taxa de falha por Skill, uso por Agent) — consome o histórico já registrado pelo Audit Engine.
+
+## Release 16 — Knowledge Engine
+
+**Nova desde a extensão do roadmap.** O "cérebro documental" do SIGMA — Clientes, Produtos, Playbooks, Empresa, Projetos, Normas, ADRs, Decisions, tudo indexado e consultável, não apenas arquivos estáticos em [/knowledge](knowledge/). Diferente da Memory Engine (Release 4, que responde "o que aconteceu/o que aprendi"), Knowledge Engine responde "o que a empresa sabe" — conhecimento curado, não experiência acumulada.
+
+## Release 17 — Digital Twin
+
+**Nova desde a extensão do roadmap.** [DIGITAL_TWIN.md](DIGITAL_TWIN.md) já existe como conceito desde a Release 1, com os primeiros Twins reais custodiados pela Memory Engine (Release 4). Esta Release matura o conceito em Engine própria — um modelo interno vivo do estado do mundo real (Cliente → Projetos → Reuniões → Chamados → Financeiro → Orçamentos → Relacionamentos), não apenas consulta a banco sob demanda.
+
+## Release 18 — Capability Registry
+
+**Nova desde a extensão do roadmap.** Evolução formal do [Plugin System](PLUGIN_SYSTEM.md): `Capability → Plugin → Agent → Permissões → Dependências`, formalizado como registro central para que o Planner saiba exatamente quem consegue executar cada ação antes de tentar. Candidato natural para absorver o componente estrutural **Policy Engine** sinalizado acima.
+
+## Release 19 — Council Engine
+
+**Nova desde a extensão do roadmap.** O [/council](council/) (hoje documentos de papéis — ProductOwner/CTO/LeadEngineer/Creative/Documentation) vira mecanismo executável de colaboração entre IAs (Claude/ChatGPT/Gemini/Manus/GitHub), com aprovação automática dentro de limites definidos pela Autonomia Progressiva — reduzindo a intermediação humana constante no fluxo de decisão entre especialistas.
+
+## Release 20 — Multi-Agent Runtime
+
+**Nova desde a extensão do roadmap.** Execução concorrente de múltiplos Agents (ex: Marketing, Financeiro, Jurídico, Comercial, Desenvolvimento simultaneamente), não mais um Agent de cada vez.
+
+## Release 21 — Marketplace
+
+**Nova desde a extensão do roadmap — escopo ainda não detalhado.**
+
+## Release 22 — Cloud Sync
+
+**Nova desde a extensão do roadmap — escopo ainda não detalhado.**
+
+## Release 23 — Production Hardening
+
+**Nova desde a extensão do roadmap — escopo ainda não detalhado.** Candidata a absorver os componentes estruturais **Secrets Manager** e possivelmente **Scheduler**/**Cache Layer** sinalizados acima.
+
+## Release 24 — SIGMA v1.0
+
+**Nova desde a extensão do roadmap.** Marco final desta fase do roadmap — escopo exato a definir quando a Release 23 estiver próxima de concluir.
 
 ---
 

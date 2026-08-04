@@ -75,3 +75,12 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0067](0067-team-tipado.md) | `Team` é tipado — System Team vs. Business Team |
 | [0068](0068-autonomy-por-capability.md) | Autonomy é baseada em capability nomeada, não em nível numérico |
 | [0069](0069-envelope-em-packages-core.md) | `Envelope` vive em `packages/core`, não em `services/gateway` |
+| [0070](0070-roadmap-estendido-24-releases.md) | Roadmap estendido a 24 Releases — cinco Engines novos, Gateway/API própria, cinco componentes estruturais sinalizados |
+| [0071](0071-event-catalog-obrigatorio.md) | `EVENT_CATALOG.md` como catálogo obrigatório de todo evento do SIGMA |
+| [0072](0072-credentialprovider-substitui-passwordhasher.md) | `CredentialProvider` substitui `PasswordHasher` |
+| [0073](0073-identity-independe-de-autenticacao.md) | Identity existe independentemente do método de autenticação |
+| [0074](0074-session-e-aggregate-autonomo.md) | `Session` é um Aggregate autônomo, não uma sub-entidade de `Identity` |
+| [0075](0075-workspace-context-pertencem-a-session.md) | `Workspace`/`Context` conceitualmente pertencem à `Session` — direção aprovada, implementação adiada |
+| [0076](0076-metadata-padrao-em-eventos-de-dominio.md) | Eventos de domínio ganham metadata padrão — direção aprovada, implementação adiada |
+| [0077](0077-version-md-e-semver-por-engine.md) | `VERSION.md` e Semantic Versioning por Engine |
+| [0078](0078-changelog-orientado-ao-usuario.md) | `CHANGELOG.md` orientado ao usuário, distinto de toda documentação técnica |

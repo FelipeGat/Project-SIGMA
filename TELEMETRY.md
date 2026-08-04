@@ -27,4 +27,4 @@ Na prática: todo evento relevante do Audit Engine também gera telemetria técn
 
 ## Onde vive
 
-Bootstrap de Telemetry pertence ao [Kernel](KERNEL.md). Persistência e consulta de Audit pertencem a [packages/audit-engine](packages/audit-engine/). Dashboards consumindo essa base pertencem à Release 14 — Analytics do [ROADMAP.md](ROADMAP.md).
+Bootstrap de Telemetry pertence ao [Kernel](KERNEL.md). Persistência e consulta de Audit pertencem a [packages/audit-engine](packages/audit-engine/). Dashboards consumindo essa base pertencem à Release 15 — Analytics do [ROADMAP.md](ROADMAP.md). Tracing/Metrics/Performance/Latency/Errors — hoje só Logs — são o componente estrutural **Observability** sinalizado no ROADMAP, candidato a expandir o Audit Engine (Release 11).

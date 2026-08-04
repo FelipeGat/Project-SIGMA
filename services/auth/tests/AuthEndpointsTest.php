@@ -28,7 +28,7 @@ use Sigma\IdentityEngine\Infrastructure\Pdo\PdoUserRepository;
 use Sigma\IdentityEngine\Infrastructure\Pdo\PdoWorkspaceRepository;
 use Sigma\IdentityEngine\Infrastructure\Migration\MigrationRunner;
 use Sigma\IdentityEngine\Infrastructure\Migration\Migrations\CreateSchema;
-use Sigma\IdentityEngine\Infrastructure\Security\Argon2idPasswordHasher;
+use Sigma\IdentityEngine\Infrastructure\Security\Argon2idCredentialProvider;
 use Sigma\Kernel\Container;
 use Sigma\Kernel\Contract\IEventBus;
 use Sigma\Kernel\InMemoryEventBus;
@@ -84,7 +84,7 @@ final class AuthEndpointsTest extends TestCase
         $roles = new PdoRoleRepository($this->pdo);
         $roleAssignments = new PdoRoleAssignmentRepository($this->pdo, $roles);
         $sessions = new PdoSessionRepository($this->pdo);
-        $passwordHasher = new Argon2idPasswordHasher();
+        $credentialProvider = new Argon2idCredentialProvider();
         $eventBus = new InMemoryEventBus();
 
         $this->tenant = new Tenant(TenantId::generate(), 'Alfa Soluções');
@@ -96,14 +96,14 @@ final class AuthEndpointsTest extends TestCase
 
         $container = new Container();
         $container->bind(IEventBus::class, $eventBus);
-        $container->bind(RegisterIdentity::class, new RegisterIdentity($tenants, $users, $credentials, $identities, $passwordHasher, $eventBus));
-        $container->bind(Authenticate::class, new Authenticate($users, $credentials, $identities, $passwordHasher, $sessions, $eventBus));
+        $container->bind(RegisterIdentity::class, new RegisterIdentity($tenants, $users, $credentials, $identities, $credentialProvider, $eventBus));
+        $container->bind(Authenticate::class, new Authenticate($users, $credentials, $identities, $credentialProvider, $sessions, $eventBus));
         $container->bind(SelectWorkspace::class, new SelectWorkspace($identities, $workspaces, $sessions, $eventBus));
         $container->bind(ResolveContext::class, new ResolveContext($identities, $workspaces, $companies, $teams, $roleAssignments, $sessions));
 
         $this->endpoints = new AuthEndpoints($container);
 
-        (new RegisterIdentity($tenants, $users, $credentials, $identities, $passwordHasher, $eventBus))
+        (new RegisterIdentity($tenants, $users, $credentials, $identities, $credentialProvider, $eventBus))
             ->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
     }
 

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Sigma\IdentityEngine\Infrastructure\Security;
 
-use Sigma\IdentityEngine\Application\PasswordHasher;
+use Sigma\IdentityEngine\Application\CredentialProvider;
 
 /**
  * Só primitivas padrão do PHP — nunca criptografia própria (ver Riscos
- * da Proposal da Release 3B).
+ * da Proposal da Release 3B). Renomeado de Argon2idPasswordHasher na
+ * Release 3.5 — mesmo algoritmo, mesmo comportamento (ver ADR-0072).
  */
-final class Argon2idPasswordHasher implements PasswordHasher
+final class Argon2idCredentialProvider implements CredentialProvider
 {
     public function hash(string $plain): string
     {

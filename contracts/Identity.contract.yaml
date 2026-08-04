@@ -29,19 +29,34 @@ input:
     # Workspaces acessíveis, Teams).
 
 output:
-  - name: identity
-    type: Identity
-    # Objeto imutável — Session + User + Workspace ativo + Permissions
-    # efetivas + Autonomy Level efetivo, ver IDENTITY_LIFECYCLE.md.
-    # Trocar de Workspace nunca muta esta saída; produz uma nova.
+  - name: context
+    type: Context
+    # Objeto imutável — Identity + User + Workspace ativo + Permissions
+    # efetivas + Autonomy Level efetivo, ver IDENTITY_LIFECYCLE.md e
+    # ADR-0066. Trocar de Workspace nunca muta esta saída; produz uma
+    # nova. Campo renomeado de "identity"/"Identity" para "context"/
+    # "Context" na Release 3.5, para bater com o código real — na
+    # Release 3 (antes da implementação), "Identity" era usado de
+    # forma solta para "o resultado da resolução"; ADR-0064/ADR-0066
+    # separaram formalmente o aggregate `Identity` do valor `Context`
+    # que ele produz. Ver validação cruzada no Decision Log da 3.5.
 
-events: []
-# Nenhum evento de domínio ainda — este contrato nasce antes do
-# código (ver ADR-0049: Sigma Contracts). Candidatos a formalizar
-# durante a Implementation da Release 3: identity.authenticated,
-# identity.workspace_selected, identity.session_expired — não
-# decididos aqui, para não fixar nomes de evento sem o código que os
-# publica de fato.
+events:
+  - identity.created
+  - identity.activated
+  - identity.disabled
+  - session.started
+  - session.ended
+  - workspace.selected
+  - role.assigned
+  - role.revoked
+  - permission.granted
+  - permission.revoked
+# Os dez eventos publicados de fato pela Release 3B — ver EVENT_CATALOG.md
+# para payload/consumidor/versão de cada um. Os três nomes "candidatos"
+# que este contrato listava antes do código existir (identity.authenticated,
+# identity.workspace_selected, identity.session_expired) não sobreviveram
+# tal como escritos — corrigido na validação cruzada da Release 3.5.
 
 permissions: []
 # Resolver a própria Identity não exige nenhuma Permission — é o

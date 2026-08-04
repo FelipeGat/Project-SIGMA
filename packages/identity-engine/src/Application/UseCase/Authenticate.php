@@ -7,7 +7,7 @@ namespace Sigma\IdentityEngine\Application\UseCase;
 use Sigma\Core\SigmaException;
 use Sigma\IdentityEngine\Application\CredentialRepository;
 use Sigma\IdentityEngine\Application\IdentityRepository;
-use Sigma\IdentityEngine\Application\PasswordHasher;
+use Sigma\IdentityEngine\Application\CredentialProvider;
 use Sigma\IdentityEngine\Application\SessionRepository;
 use Sigma\IdentityEngine\Application\UserRepository;
 use Sigma\IdentityEngine\Domain\Session;
@@ -27,7 +27,7 @@ final class Authenticate
         private readonly UserRepository $users,
         private readonly CredentialRepository $credentials,
         private readonly IdentityRepository $identities,
-        private readonly PasswordHasher $passwordHasher,
+        private readonly CredentialProvider $credentialProvider,
         private readonly SessionRepository $sessions,
         private readonly IEventBus $eventBus,
     ) {
@@ -38,7 +38,7 @@ final class Authenticate
         $user = $this->users->findByEmail($tenantId, $email);
         $hash = $user !== null ? $this->credentials->passwordHash($user->id()) : null;
 
-        if ($user === null || $hash === null || !$this->passwordHasher->verify($plainPassword, $hash)) {
+        if ($user === null || $hash === null || !$this->credentialProvider->verify($plainPassword, $hash)) {
             throw new SigmaException('Credenciais inválidas.', 'identity.invalid_credentials');
         }
 

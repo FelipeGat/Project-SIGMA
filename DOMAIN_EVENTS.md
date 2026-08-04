@@ -2,6 +2,8 @@
 
 Catálogo dos eventos de domínio que cada Engine publica — o contrato pelo qual o resto do SIGMA sabe o que aconteceu, sem nunca precisar conhecer o Engine que publicou (ver [ADR-0062](docs/adr/0062-identity-nunca-conhece-outro-engine.md)). Distinto do catálogo de [EVENT_MODEL.md](EVENT_MODEL.md), que cobre a sequência **Technical** de orquestração de uma Mission entre os Engines do núcleo — este documento cobre eventos de **domínio** (camada Semantic, ver [EVENT_MODEL.md — Três camadas de evento](EVENT_MODEL.md#três-camadas-de-evento)), publicados por um Engine específico sobre mudanças no seu próprio agregado. Entrega obrigatória antes de qualquer código da Release 3, junto de [IDENTITY_MODEL.md](IDENTITY_MODEL.md) e [IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md).
 
+Desde a Release 3.5, [EVENT_CATALOG.md](EVENT_CATALOG.md) é a referência para **listar** todo evento do SIGMA de uma vez (com quem consome, versão, contrato) — este documento continua sendo a referência para entender o porquê de cada evento de Identity existir. As duas tabelas devem sempre bater; se divergirem, é um bug de documentação a corrigir, não uma escolha entre uma ou outra.
+
 ## Identity Engine
 
 Todos na camada **Semantic** — fatos de negócio sobre o agregado `Identity` (ver [IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md)), não passos de orquestração de Mission. Consumidores esperados: Memory Engine (atualiza o Digital Twin de User/Company), Audit Engine (trilha de conformidade) — nenhum dos dois é conhecido pelo Identity Engine no momento da publicação (ver [ADR-0062](docs/adr/0062-identity-nunca-conhece-outro-engine.md)).
@@ -28,7 +30,7 @@ Todo evento desta lista carrega, além do payload mínimo indicado, os campos pa
 ## O que este documento não decide
 
 - O schema de serialização exato de cada payload (JSON Schema por evento) — nasce durante a Implementation da Release 3A, junto do código que publica cada evento.
-- Se algum destes eventos, com o tempo, é promovido a Business (ver [EVENT_MODEL.md](EVENT_MODEL.md)) — essa curadoria é decisão do Automation/Analytics Engine (Release 14), não deste documento.
+- Se algum destes eventos, com o tempo, é promovido a Business (ver [EVENT_MODEL.md](EVENT_MODEL.md)) — essa curadoria é decisão do Automation Engine (Release 14)/Analytics (Release 15), não deste documento.
 
 ## Onde vive
 

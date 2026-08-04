@@ -7,7 +7,7 @@ namespace Sigma\IdentityEngine\Application\UseCase;
 use Sigma\Core\SigmaException;
 use Sigma\IdentityEngine\Application\CredentialRepository;
 use Sigma\IdentityEngine\Application\IdentityRepository;
-use Sigma\IdentityEngine\Application\PasswordHasher;
+use Sigma\IdentityEngine\Application\CredentialProvider;
 use Sigma\IdentityEngine\Application\TenantRepository;
 use Sigma\IdentityEngine\Application\UserRepository;
 use Sigma\IdentityEngine\Domain\Identity;
@@ -27,7 +27,7 @@ final class RegisterIdentity
         private readonly UserRepository $users,
         private readonly CredentialRepository $credentials,
         private readonly IdentityRepository $identities,
-        private readonly PasswordHasher $passwordHasher,
+        private readonly CredentialProvider $credentialProvider,
         private readonly IEventBus $eventBus,
     ) {
     }
@@ -45,7 +45,7 @@ final class RegisterIdentity
 
         $user = new User(UserId::generate(), $tenantId, $name, $email);
         $this->users->save($user);
-        $this->credentials->setPasswordHash($user->id(), $this->passwordHasher->hash($plainPassword));
+        $this->credentials->setPasswordHash($user->id(), $this->credentialProvider->hash($plainPassword));
 
         $identity = Identity::create($user, $tenant);
         $identity->activate();

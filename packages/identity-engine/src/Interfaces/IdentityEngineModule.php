@@ -26,7 +26,7 @@ use Sigma\IdentityEngine\Infrastructure\Pdo\PdoTeamRepository;
 use Sigma\IdentityEngine\Infrastructure\Pdo\PdoTenantRepository;
 use Sigma\IdentityEngine\Infrastructure\Pdo\PdoUserRepository;
 use Sigma\IdentityEngine\Infrastructure\Pdo\PdoWorkspaceRepository;
-use Sigma\IdentityEngine\Infrastructure\Security\Argon2idPasswordHasher;
+use Sigma\IdentityEngine\Infrastructure\Security\Argon2idCredentialProvider;
 use Sigma\Kernel\ConfigurationProvider;
 use Sigma\Kernel\Contract\ComponentDescriptor;
 use Sigma\Kernel\Contract\ConfigSchema;
@@ -115,13 +115,13 @@ final class IdentityEngineModule implements IModule
         $roles = new PdoRoleRepository($this->pdo);
         $roleAssignments = new PdoRoleAssignmentRepository($this->pdo, $roles);
         $sessions = new PdoSessionRepository($this->pdo);
-        $passwordHasher = new Argon2idPasswordHasher();
+        $credentialProvider = new Argon2idCredentialProvider();
 
         /** @var IEventBus $eventBus */
         $eventBus = $container->get(IEventBus::class);
 
-        $container->bind(RegisterIdentity::class, new RegisterIdentity($tenants, $users, $credentials, $identities, $passwordHasher, $eventBus));
-        $container->bind(Authenticate::class, new Authenticate($users, $credentials, $identities, $passwordHasher, $sessions, $eventBus));
+        $container->bind(RegisterIdentity::class, new RegisterIdentity($tenants, $users, $credentials, $identities, $credentialProvider, $eventBus));
+        $container->bind(Authenticate::class, new Authenticate($users, $credentials, $identities, $credentialProvider, $sessions, $eventBus));
         $container->bind(SelectWorkspace::class, new SelectWorkspace($identities, $workspaces, $sessions, $eventBus));
         $container->bind(ResolveContext::class, new ResolveContext($identities, $workspaces, $companies, $teams, $roleAssignments, $sessions));
         $container->bind(Logout::class, new Logout($identities, $sessions, $eventBus));

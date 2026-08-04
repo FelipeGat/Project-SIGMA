@@ -25,7 +25,7 @@ use Sigma\IdentityEngine\Domain\Tenant;
 use Sigma\IdentityEngine\Domain\TenantId;
 use Sigma\IdentityEngine\Domain\Workspace;
 use Sigma\IdentityEngine\Domain\WorkspaceId;
-use Sigma\IdentityEngine\Infrastructure\Security\Argon2idPasswordHasher;
+use Sigma\IdentityEngine\Infrastructure\Security\Argon2idCredentialProvider;
 use Sigma\IdentityEngine\Tests\Application\Fake\InMemoryCompanyRepository;
 use Sigma\IdentityEngine\Tests\Application\Fake\InMemoryCredentialRepository;
 use Sigma\IdentityEngine\Tests\Application\Fake\InMemoryIdentityRepository;
@@ -56,7 +56,7 @@ final class IdentityApplicationFlowTest extends TestCase
     private InMemoryRoleRepository $roles;
     private InMemoryRoleAssignmentRepository $roleAssignments;
     private InMemorySessionRepository $sessions;
-    private Argon2idPasswordHasher $passwordHasher;
+    private Argon2idCredentialProvider $credentialProvider;
     private InMemoryEventBus $eventBus;
 
     private Tenant $tenant;
@@ -76,7 +76,7 @@ final class IdentityApplicationFlowTest extends TestCase
         $this->roles = new InMemoryRoleRepository();
         $this->roleAssignments = new InMemoryRoleAssignmentRepository();
         $this->sessions = new InMemorySessionRepository();
-        $this->passwordHasher = new Argon2idPasswordHasher();
+        $this->credentialProvider = new Argon2idCredentialProvider();
         $this->eventBus = new InMemoryEventBus();
 
         $this->tenant = new Tenant(TenantId::generate(), 'Alfa Soluções');
@@ -90,7 +90,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_the_full_flow_register_login_select_workspace_resolve_context(): void
     {
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
         $identity = $register->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
         $role = new Role(RoleId::generate(), $this->tenant->id(), 'Comercial', autonomyCapabilities: ['CanApproveBudget' => true]);
@@ -99,7 +99,7 @@ final class IdentityApplicationFlowTest extends TestCase
             ->execute($role->id(), SubjectType::User, $identity->user()->id(), Scope::workspace($this->workspace->id()));
         (new GrantPermission($this->roles, $this->eventBus))->execute($role->id(), 'mission.create');
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
         $session = $authenticate->execute($this->tenant->id(), 'felipe@alfa.com', 'senha-forte-123', $this->now);
 
         $selectWorkspace = new SelectWorkspace($this->identities, $this->workspaces, $this->sessions, $this->eventBus);
@@ -114,10 +114,10 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_authenticate_with_wrong_password_is_rejected(): void
     {
-        (new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus))
+        (new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus))
             ->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
 
         $this->expectException(SigmaException::class);
 
@@ -126,7 +126,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_authenticate_with_unknown_email_is_rejected_with_the_same_error_as_wrong_password(): void
     {
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
 
         try {
             $authenticate->execute($this->tenant->id(), 'nao-existe@alfa.com', 'qualquer-coisa', $this->now);
@@ -138,7 +138,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_register_identity_rejects_a_tenant_that_does_not_exist(): void
     {
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
 
         $this->expectException(SigmaException::class);
 
@@ -147,10 +147,10 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_logout_removes_the_session_and_a_second_resolve_context_fails(): void
     {
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
         $register->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
         $session = $authenticate->execute($this->tenant->id(), 'felipe@alfa.com', 'senha-forte-123', $this->now);
 
         (new Logout($this->identities, $this->sessions, $this->eventBus))->execute($session->id());
@@ -164,7 +164,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_revoke_role_removes_the_permission_from_a_future_context(): void
     {
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
         $identity = $register->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
         $role = new Role(RoleId::generate(), $this->tenant->id(), 'Comercial');
@@ -177,7 +177,7 @@ final class IdentityApplicationFlowTest extends TestCase
         (new RevokeRole($this->roleAssignments, $this->eventBus))
             ->execute($role->id(), SubjectType::User, $identity->user()->id(), $scope);
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
         $session = $authenticate->execute($this->tenant->id(), 'felipe@alfa.com', 'senha-forte-123', $this->now);
         $session = (new SelectWorkspace($this->identities, $this->workspaces, $this->sessions, $this->eventBus))
             ->execute($session->id(), $this->workspace->id(), $this->now);
@@ -190,7 +190,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
     public function test_revoke_permission_removes_it_from_a_future_context(): void
     {
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
         $identity = $register->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
         $role = new Role(RoleId::generate(), $this->tenant->id(), 'Comercial');
@@ -201,7 +201,7 @@ final class IdentityApplicationFlowTest extends TestCase
 
         (new RevokePermission($this->roles, $this->eventBus))->execute($role->id(), 'mission.create');
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
         $session = $authenticate->execute($this->tenant->id(), 'felipe@alfa.com', 'senha-forte-123', $this->now);
         $session = (new SelectWorkspace($this->identities, $this->workspaces, $this->sessions, $this->eventBus))
             ->execute($session->id(), $this->workspace->id(), $this->now);
@@ -222,10 +222,10 @@ final class IdentityApplicationFlowTest extends TestCase
             $published[] = 'session.started';
         });
 
-        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->eventBus);
+        $register = new RegisterIdentity($this->tenants, $this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->eventBus);
         $register->execute($this->tenant->id(), 'Felipe', 'felipe@alfa.com', 'senha-forte-123');
 
-        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->passwordHasher, $this->sessions, $this->eventBus);
+        $authenticate = new Authenticate($this->users, $this->credentials, $this->identities, $this->credentialProvider, $this->sessions, $this->eventBus);
         $authenticate->execute($this->tenant->id(), 'felipe@alfa.com', 'senha-forte-123', $this->now);
 
         self::assertSame(['identity.created', 'session.started'], $published);
