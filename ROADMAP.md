@@ -14,8 +14,9 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 3A | Identity Domain | ✅ Concluída | 100% |
 | 3B | Identity Infrastructure | ✅ Concluída | 100% |
 | 3.5 | Architecture Consolidation | ✅ Concluída | 100% |
-| 4A | Memory Domain | ⏳ Proposta apresentada, aguardando aprovação | 0% |
-| 4B | Memory Infrastructure | ⚪ Não iniciada | 0% |
+| 4A | Memory Domain | ✅ Concluída | 100% |
+| 4B | Memory Infrastructure | ✅ Concluída | 100% |
+| 4.5 | Platform Validation | ⏳ Não iniciada | 0% |
 | 5 | Mission Engine | ⏳ Não iniciada | 0% |
 | 6 | Planner Engine | ⏳ Não iniciada | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
@@ -37,7 +38,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 23 | Production Hardening | ⏳ Não iniciada | 0% |
 | 24 | SIGMA v1.0 | ⏳ Não iniciada | 0% |
 
-> **Release 6/7 — pendência sinalizada, não decidida silenciosamente**: a numeração acima mantém `6 — Planner`, `7 — Intent`, conforme [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) (deliberado: Planner é construído primeiro com Intents mockadas). A visão de longo prazo mais recente do Product Owner listou `6 — Intent`, `7 — Planner` — pode ter sido uma simplificação da tabela de alto nível, ou uma intenção real de reabrir o ADR-0031. Fica como pergunta em aberto até confirmação explícita — ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md).
+> **Release 6/7 — pendência encerrada em 2026-08-04**: o Product Owner confirmou explicitamente `6 — Planner`, `7 — Intent`, mantendo [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) sem alteração — "estamos falando de ordem de desenvolvimento, não de ordem lógica de execução [...] construir o Planner com Intents mockadas reduz dependências e já foi uma decisão registrada. Não vejo benefício em reabrir essa ADR agora." A tabela de 24 Releases que havia listado `6 — Intent`/`7 — Planner` foi, de fato, uma simplificação de alto nível — não uma intenção de reabrir a decisão.
 
 ## Componentes estruturais sinalizados, ainda sem Release própria
 
@@ -75,15 +76,21 @@ Primeiro Engine a modelar domínio real, dividido em duas sub-Releases sequencia
 
 Não mudou o produto — fortaleceu a base antes da Memory Engine, seguindo a recomendação do Product Owner de que "é muito mais barato consolidar agora do que corrigir depois da Mission, Planner e Agent". Ver [docs/releases/0003.5-architecture-consolidation.md](docs/releases/0003.5-architecture-consolidation.md): [EVENT_CATALOG.md](EVENT_CATALOG.md), [VERSION.md](packages/identity-engine/VERSION.md) por Engine, [CHANGELOG.md](CHANGELOG.md) do produto, `CredentialProvider` substituindo `PasswordHasher`, validação cruzada de Contracts/ADRs/Decision Logs (encontrou e corrigiu duas divergências reais em `contracts/Identity.contract.yaml`), revisão de testes por camada, teste completo `bootstrap → login → workspace → logout` em ambiente Docker genuinamente limpo (`down -v` + `build --no-cache`).
 
-## Release 4 — Memory Engine
+## Release 4 — Memory Engine ✅
 
 **Segundo marco mais importante do projeto, depois da Foundation** — praticamente todo Engine seguinte (Mission, Intent, Planner, Agent, Council) depende da qualidade do que a Memory Engine expuser (avaliação do Product Owner, ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md)). Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)), custódia dos primeiros Digital Twins (ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md) — a versão madura vira Engine própria na Release 17). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Construído antes do Mission Engine para que o Planner (Release 6) já tenha uma fonte de contexto/heurística ao nascer. Consome identidade/contexto da Release 3, não os resolve por conta própria.
 
-Mesmo padrão de modelagem cuidadosa e divisão Domain-first da Release 3 ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **4A — Memory Domain** ([docs/releases/0004a-memory-domain.md](docs/releases/0004a-memory-domain.md)) modela `MemoryRecord`/`KnowledgeRecord`/`DigitalTwin` em código puro, com a mecânica de promoção entre níveis ([ADR-0081](docs/adr/0081-mecanica-de-promocao-de-memory.md)) e a decisão de popular `UserTwin` desde já ([ADR-0079](docs/adr/0079-usertwin-desde-a-release-4.md)); **4B — Memory Infrastructure** ([docs/releases/0004b-memory-infrastructure.md](docs/releases/0004b-memory-infrastructure.md)) só começa depois que 4A estiver validada. Modelo completo em [MEMORY_MODEL.md](MEMORY_MODEL.md) e [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md).
+Mesmo padrão de modelagem cuidadosa e divisão Domain-first da Release 3 ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **4A — Memory Domain** ([docs/releases/0004a-memory-domain.md](docs/releases/0004a-memory-domain.md)) modelou `ContextMemory`/`MemoryRecord`/`KnowledgeRecord`/`DigitalTwin` em código puro, com a mecânica de promoção entre níveis gated por `confidence` ([ADR-0081](docs/adr/0081-mecanica-de-promocao-de-memory.md), [ADR-0084](docs/adr/0084-confidence-como-gate-de-promocao.md)) e a decisão de popular `UserTwin` desde já ([ADR-0079](docs/adr/0079-usertwin-desde-a-release-4.md)); **4B — Memory Infrastructure** ([docs/releases/0004b-memory-infrastructure.md](docs/releases/0004b-memory-infrastructure.md)) trouxe persistência real e, o achado mais importante da Release, o primeiro listener Redis cross-processo do projeto (`RedisSubscriber` + `services/memory-worker`) — validado via `docker compose up --build` real, `UserTwin` sincronizado entre containers distintos. Modelo completo em [MEMORY_MODEL.md](MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md) e [MEMORY_PROMOTION_RULES.md](MEMORY_PROMOTION_RULES.md).
+
+## Release 4.5 — Platform Validation
+
+**Não é uma Release funcional — é uma Release de engenharia**, marco acrescentado pelo Product Owner antes de abrir o Mission Engine: provar que tudo construído até aqui (Identity, Memory, Redis, Docker, Gateway, Worker, Event Bus) funciona **junto**, sob estresse e sob falha, não só isoladamente Release a Release. Inclui, no mínimo: stress test (1000 eventos), restart de containers com verificação de recuperação, perda e recuperação do Redis, perda e recuperação do Worker, múltiplos usuários concorrentes, ciclo completo de Memory Promotion, Twin Sync, latência, event replay, e um benchmark de referência. Detalhamento formal (Proposal) escrito quando esta Release começar, mesmo princípio de "não desenhar Release distante hoje" do topo deste documento.
 
 ## Release 5 — Mission Engine
 
-Entidade Mission, máquina de estados do ciclo de vida (ver [ARCHITECTURE.md §6](docs/architecture/ARCHITECTURE.md)), persistência, API REST mínima, eventos de domínio publicados no Event Bus. Suporta a cardinalidade Intent 1:N Mission desde o início (ver [ADR-0028](docs/adr/0028-intencao-nao-comando.md)), ainda que a Release 1:N completa só se materialize quando Planner (Release 6) e Intent (Release 7) existirem.
+A primeira Engine que faz o SIGMA **decidir**, não só guardar/autenticar/sincronizar — responde "o que deve acontecer, quem executa, quando, em qual ordem, com quais permissões" (avaliação do Product Owner). `Mission` é tratada como **Aggregate Root** (não um serviço): ciclo de vida, eventos, estado, histórico, autonomia, aprovação, retries, compensações, correlação — a "unidade de trabalho" do SIGMA. Suporta a cardinalidade Intent 1:N Mission desde o início (ver [ADR-0028](docs/adr/0028-intencao-nao-comando.md)), ainda que a Release 1:N completa só se materialize quando Planner (Release 6) e Intent (Release 7) existirem.
+
+Segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md) ([ADR-0082](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)), mesmo padrão de Identity e Memory: **5A — Mission Research** (`MISSION_MANIFESTO.md`, `MISSION_MODEL.md`, `MISSION_LIFECYCLE.md`, `MISSION_EVENTS.md`, `contracts/Mission.contract.yaml`, ADRs específicas, Proposal — sem código) → Review do Product Owner → **5B — Implementation** → Review → Push.
 
 ## Release 6 — Planner Engine
 

@@ -4,7 +4,7 @@ _Atualizado em: 2026-08-04._
 
 ## Fase
 
-**Release 4 — Memory Engine: COMPLETA (4A + 4B implementadas e validadas).** `packages/memory-engine` tem as quatro camadas DDD completas. `services/memory-worker` (novo) sincroniza `UserTwin` de fato, cross-processo, a partir dos eventos que `services/auth` já publica — provado via `docker compose up --build` real com dois containers distintos. Nenhuma API HTTP pública para o Memory Engine ainda (decisão deliberada — sem consumidor real).
+**Release 4.5 — Platform Validation: Proposal apresentada, aguardando aprovação.** Roadmap revisado pelo Product Owner em 2026-08-04: 4.5 inserida entre Memory (4, completa) e Mission (5) — engenharia, não produto, provar que tudo construído até aqui funciona junto sob volume/falha. Pergunta de numeração Planner×Intent (6/7) encerrada: mantido ADR-0031 sem alteração, por decisão explícita do Product Owner. **Release 4 — Memory Engine: COMPLETA (4A + 4B implementadas e validadas).** `packages/memory-engine` tem as quatro camadas DDD completas. `services/memory-worker` (novo) sincroniza `UserTwin` de fato, cross-processo, a partir dos eventos que `services/auth` já publica — provado via `docker compose up --build` real com dois containers distintos. Nenhuma API HTTP pública para o Memory Engine ainda (decisão deliberada — sem consumidor real).
 
 ## O que existe (documentação)
 
@@ -42,4 +42,4 @@ _Atualizado em: 2026-08-04._
 
 ## Bloqueios
 
-Nenhum bloqueio ativo. Push do(s) commit(s) desta rodada aguardando confirmação explícita (mesma regra de sempre). Próximo passo natural: Release 5 (Planner, conforme ADR-0031 — ou Intent, ver pergunta em aberto sobre numeração 6/7) ou uma Release de consolidação, a critério do Product Owner. Ver [NEXT.md](../memory/NEXT.md).
+**Aguardando aprovação da Proposal da Release 4.5 — Platform Validation** ([docs/releases/0004.5-platform-validation.md](../docs/releases/0004.5-platform-validation.md)) — nenhuma das dez verificações executada ainda. Push do(s) commit(s) desta rodada também aguardando confirmação explícita (mesma regra de sempre). Depois da 4.5: Release 5 — Mission Engine (Aggregate Root, processo 5A Research → 5B Implementation, ver ROADMAP.md). Ver [NEXT.md](../memory/NEXT.md).
