@@ -2,9 +2,9 @@
 
 **Sistema Operacional Corporativo da Alfa Soluções.**
 
-SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e nove Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
+SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e dez Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado (Release 0 — Foundation publicada em `github.com/FelipeGat/Project-SIGMA`). Proposta formal da **Release 2 — SIGMA Bootstrap** em preparação. Nenhum código de aplicação foi escrito ainda. Veja [ROADMAP.md](ROADMAP.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado (Release 0 — Foundation publicada em `github.com/FelipeGat/Project-SIGMA`). **Release 2 — SIGMA Bootstrap** aprovada com alteração obrigatória (Identity Engine extraído como Release própria, Bootstrap desacoplado de Engines, System Manifest, Self-Describing Components) — proposta revisada, aguardando confirmação final antes do primeiro código. Nenhum código de aplicação foi escrito ainda. Veja [ROADMAP.md](ROADMAP.md) e [memory/STATE.md](memory/STATE.md).
 
 ## Por onde começar
 
@@ -16,7 +16,8 @@ SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtua
 | Entender o produto — quem usa, quem paga, personas | [PRODUCT.md](PRODUCT.md) |
 | Entender o horizonte de longo prazo | [VISION_2030.md](VISION_2030.md) |
 | Entender como o sistema é desenhado (Engines, domínio, stack) | [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) |
-| Entender como o SIGMA inicia (boot, DI, ciclo de vida) | [BOOTSTRAP.md](BOOTSTRAP.md) |
+| Entender como o SIGMA inicia (boot, DI, ciclo de vida, Module) | [BOOTSTRAP.md](BOOTSTRAP.md) |
+| Entender o System Manifest e Self-Describing Components | [SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md) |
 | Entender o que pertence e o que nunca pertence ao Kernel | [KERNEL.md](KERNEL.md) |
 | Entender como uma Skill vira código (Plugin System) | [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) |
 | Entender a SIGMA Language (SGL) | [SGL.md](SGL.md) |
@@ -50,7 +51,7 @@ SIGMA nunca executa comandos — executa **Intenções**. Um Intent Engine inter
 ```
 project-sigma/
 ├── apps/          # Superfícies de usuário: web, mobile, admin, telegram, cli
-├── packages/       # Os nove Engines, core, design-system, sdk — bibliotecas
+├── packages/       # Os dez Engines, core, design-system, sdk — bibliotecas
 ├── services/         # Processos deployáveis: gateway, auth, scheduler, notifications, ai-router, event-bus
 ├── plugins/           # Empacotamento técnico de cada Skill (manifest.json)
 ├── docs/               # Arquitetura, ADRs, convenções

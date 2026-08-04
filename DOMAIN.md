@@ -53,7 +53,7 @@ Um fluxo ou procedimento reutilizável que uma Mission pode seguir — a versão
 
 ## Identidade & Organização
 
-Hierarquia completa de isolamento e contexto — ver [MULTITENANCY.md](MULTITENANCY.md) e [WORKSPACES.md](WORKSPACES.md).
+Hierarquia completa de isolamento e contexto, gerenciada pelo **Identity Engine** — ver [MULTITENANCY.md](MULTITENANCY.md), [WORKSPACES.md](WORKSPACES.md) e [ADR-0039](docs/adr/0039-identity-engine.md). Distinto do Memory Engine: Identity responde "quem", Memory responde "o que sei/aprendi".
 
 ### Tenant
 Fronteira de isolamento total de dados — o nível mais alto da hierarquia. Hoje existe um único Tenant real ("Alfa Soluções"); a modelagem já suporta mais de um desde o schema. Ver [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md).

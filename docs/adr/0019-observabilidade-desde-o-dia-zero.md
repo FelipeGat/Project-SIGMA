@@ -16,4 +16,4 @@ Telemetry (Logs, Metrics, Tracing) e Audit são requisitos não funcionais de pr
 - Toda Release de Engine, a partir da Release 2, inclui como Critério de Aceite a instrumentação básica (logs estruturados, correlação por `trace_id`) — não é uma tarefa "se sobrar tempo".
 - O Kernel carrega o bootstrap de Telemetry ([KERNEL.md](../../KERNEL.md)) antes de qualquer Engine de negócio inicializar, garantindo que nenhum Engine rode sem observabilidade mínima.
 - Custo real: cada épico carrega um pouco mais de trabalho de instrumentação desde o início, mesmo quando o volume de uso ainda não justificaria isso por si só — aceito conscientemente porque o custo de instrumentar depois, com o sistema já em produção e sem esse hábito estabelecido, é maior.
-- Dashboards e alertas (Release 13 — Analytics) só são possíveis porque a base de dados de Telemetry/Audit já existe desde o início — sem essa decisão, a Release 13 exigiria retrofitar tudo isso primeiro.
+- Dashboards e alertas (Release 14 — Analytics) só são possíveis porque a base de dados de Telemetry/Audit já existe desde o início — sem essa decisão, a Release 14 exigiria retrofitar tudo isso primeiro.

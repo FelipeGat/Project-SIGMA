@@ -11,9 +11,9 @@ A Release 2, até aqui chamada "Kernel", incluía em seu escopo bootstrap, conte
 
 A Release 2 é renomeada para **SIGMA Bootstrap** e seu escopo é reduzido ao equivalente do bootstrap de uma aplicação (comparável ao `Application` do Laravel): Config, Logger, DI Container, Modules, Events (mecanismo, não os eventos de domínio), Lifecycle (boot/start/ready/shutdown), Health. Explicitamente **fora** do escopo: Missions, IA/Agents, Plugins. Especificação de como isso funciona em [BOOTSTRAP.md](../../BOOTSTRAP.md).
 
-O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role), antes bundlado na Release 2, precisa de uma nova casa — proposto mover para a Release 3 (Memory Engine) ou para uma Release própria entre Bootstrap e Memory, já que Memory/Mission precisam desse contexto para escopar dados corretamente. **Não decidido nesta ADR** — sinalizado para resolução na proposta formal da Release 2, antes de seu início.
+O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role), antes bundlado na Release 2, precisa de uma nova casa — proposto mover para a Release 4 (Memory Engine) ou para uma Release própria entre Bootstrap e Memory, já que Memory/Mission precisam desse contexto para escopar dados corretamente. **Não decidido nesta ADR** — sinalizado para resolução na proposta formal da Release 2, antes de seu início.
 
-O carregamento do Plugin System, também antes bundlado na Release 2/Kernel, é adiado para a Release 7 (Skill Engine), quando Plugins de fato existirem para serem carregados — o Bootstrap apenas registra a *capacidade* de o sistema, no futuro, carregar módulos dinamicamente (via seu mecanismo de `Modules`), sem conhecer Plugin nenhum ainda.
+O carregamento do Plugin System, também antes bundlado na Release 2/Kernel, é adiado para a Release 8 (Skill Engine), quando Plugins de fato existirem para serem carregados — o Bootstrap apenas registra a *capacidade* de o sistema, no futuro, carregar módulos dinamicamente (via seu mecanismo de `Modules`), sem conhecer Plugin nenhum ainda.
 
 ## Consequências
 

@@ -15,23 +15,24 @@ Antes de qualquer diagrama: o SIGMA não é um chat inteligente com plugins. É 
 - **Desacoplamento físico** — SIGMA nunca acessa o banco de dados de outro sistema (Gestor.Alfa, AlfaControl, AlfaGym, AlfaJornada, AlfaCam...). Toda comunicação com sistemas externos é via API. Ver [ADR-0007](../adr/0007-comunicacao-somente-via-api.md).
 - **O Planner decide, a IA executa** — nenhum Agent decide o que uma Mission deve fazer; ele executa a Subtask que o Planner Engine já definiu. Ver [ADR-0012](../adr/0012-planner-decide-nunca-a-ia.md).
 
-## 2. Os nove Engines
+## 2. Os dez Engines
 
-O núcleo do SIGMA é composto por nove Engines, cada um com responsabilidade única. Ver [ADR-0011](../adr/0011-arquitetura-em-camadas-de-engines.md).
+O núcleo do SIGMA é composto por dez Engines, cada um com responsabilidade única. Ver [ADR-0011](../adr/0011-arquitetura-em-camadas-de-engines.md) (os nove originais) e [ADR-0039](../adr/0039-identity-engine.md) (Identity Engine, acrescentado em revisão da Release 2).
 
 | # | Engine | Responsabilidade |
 |---|---|---|
-| 0 | **Kernel** | Ciclo de vida da plataforma: bootstrap, configuração, contexto de execução, health |
-| 1 | **Intent Engine** | Interpreta linguagem natural/eventos em uma `Intent` estruturada |
-| 2 | **Planner Engine** | Monta o `Plan` de execução a partir de uma Intent — decide, nunca a IA |
-| 3 | **Mission Engine** | Gerencia a `Mission` e seu progresso a partir de um Plan |
-| 4 | **Memory Engine** | Organiza `Knowledge` (o que se sabe) e `Memory` (o que se aprendeu) |
-| 5 | **Agent Engine** | Decide qual `Agent` executa cada `Subtask` |
-| 6 | **Skill Engine** | Conversa com sistemas externos através de `Skills` |
-| 7 | **Execution Engine** | Acompanha e valida a execução de cada Subtask em andamento |
-| 8 | **Audit Engine** | Registra `Events` e `Logs` — rastreabilidade de tudo que acontece |
+| 0 | **Kernel** | Ciclo de vida da plataforma: bootstrap, Module genérico (nunca conhece Engine — ver [KERNEL.md](../../KERNEL.md)), configuração, health |
+| 1 | **Identity Engine** | Resolve quem é o usuário, empresa, workspace, tenant, permissões, nível de autonomia — disponibilizado a todo Engine via Kernel |
+| 2 | **Intent Engine** | Interpreta linguagem natural/eventos em uma `Intent` estruturada |
+| 3 | **Planner Engine** | Monta o `Plan` de execução a partir de uma Intent — decide, nunca a IA |
+| 4 | **Mission Engine** | Gerencia a `Mission` e seu progresso a partir de um Plan |
+| 5 | **Memory Engine** | Organiza `Knowledge` (o que se sabe) e `Memory` (o que se aprendeu) |
+| 6 | **Agent Engine** | Decide qual `Agent` executa cada `Subtask` |
+| 7 | **Skill Engine** | Conversa com sistemas externos através de `Skills` |
+| 8 | **Execution Engine** | Acompanha e valida a execução de cada Subtask em andamento |
+| 9 | **Audit Engine** | Registra `Events` e `Logs` — rastreabilidade de tudo que acontece |
 
-Interfaces (painel Web, App Mobile), **Automation Engine** e **Analytics** consomem estes nove Engines através de eventos e API — não fazem parte do núcleo de orquestração.
+A numeração desta tabela é conceitual, não a ordem de implementação — ver [ROADMAP.md](../../ROADMAP.md) e [SIGMA_PROTOCOL.md §8](../../SIGMA_PROTOCOL.md#8-ordem-de-runtime-vs-ordem-de-desenvolvimento) para a distinção entre Ordem de Runtime e Ordem de Desenvolvimento. Interfaces (painel Web, App Mobile), **Automation Engine** e **Analytics** consomem estes dez Engines através de eventos e API — não fazem parte do núcleo de orquestração.
 
 ## 3. Visão geral do sistema
 
@@ -68,6 +69,7 @@ graph TB
     Kernel["Kernel"] -.->|"config / bootstrap"| Intent
     Kernel -.-> Planner
     Kernel -.-> Mission
+    Identity["Identity Engine"] -.->|"contexto: Tenant/Workspace/User/autonomia"| Kernel
 ```
 
 SIGMA nunca fala diretamente com um sistema externo, e nenhum Engine decide fora do seu papel: **Intent Engine interpreta → Planner Engine decide → Mission Engine acompanha → Agent Engine delega → Skill Engine age → Execution Engine valida → Audit Engine registra.** Essa cadeia é o que permite trocar um provedor de IA ou uma integração sem tocar no núcleo, e auditar exatamente onde uma Mission está a qualquer momento.
@@ -108,7 +110,7 @@ Ver o glossário completo em [DOMAIN.md](../../DOMAIN.md). Os domínios se agrup
 | **Capacidade** | Agent, IA | Agent Engine |
 | **Integração** | Skill, Integration | Skill Engine |
 | **Rastreabilidade** | Event, Log | Audit Engine |
-| **Identidade & Organização** | User, Team, Company | (contexto de apoio, sem Engine dedicado) |
+| **Identidade & Organização** | Tenant, Company, Workspace, User, Team, Role | Identity Engine |
 | **Negócio** | Client, Contact, Project, Product, Budget, Document, Meeting | (referenciado via Skill, fonte da verdade externa) |
 | **Processo** | Process, Automation | Automation Engine |
 

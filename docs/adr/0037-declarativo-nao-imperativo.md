@@ -14,6 +14,6 @@ Uma Intent declara um **estado desejado**, não uma sequência de passos: não *
 ## Consequências
 
 - Uma Intent registrada permanece válida mesmo que a implementação por trás mude inteiramente (nova API do Gestor.Alfa, novo provedor de IA, nova Skill) — o desacoplamento entre intenção e implementação, já um princípio do [MANIFESTO.md](../../MANIFESTO.md), passa a valer também para a forma como uma Intent é expressa, não só para a arquitetura por trás dela.
-- Exige que o Planner Engine (Release 5) seja capaz de decidir uma sequência de passos a partir de um estado desejado — mais complexo do que apenas ordenar uma lista já dada pelo usuário. Esse é precisamente o trabalho que justifica a existência do Planner Engine como Engine próprio, não uma função trivial.
+- Exige que o Planner Engine (Release 6) seja capaz de decidir uma sequência de passos a partir de um estado desejado — mais complexo do que apenas ordenar uma lista já dada pelo usuário. Esse é precisamente o trabalho que justifica a existência do Planner Engine como Engine próprio, não uma função trivial.
 - Toda funcionalidade nova é avaliada por este princípio: se ela só funciona quando o usuário especifica o passo a passo, ela está pedindo para ser um script externo ao SIGMA, não uma Mission.
 - Os exemplos já publicados na documentação (Sea Master) foram atualizados nesta revisão para refletir a forma declarativa, evitando que a documentação ensine, por exemplo, o padrão errado.

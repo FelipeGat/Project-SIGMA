@@ -15,5 +15,5 @@ Toda Skill é implementada como um **Plugin**: um diretório em [/plugins](../..
 
 - Adicionar, remover ou atualizar uma integração não exige alterar ou recompilar o Kernel/Skill Engine — apenas adicionar/atualizar um diretório em `plugins/`.
 - Abre caminho para Plugins de terceiros no horizonte de [VISION_2030.md](../../VISION_2030.md) (`sigma-skills` como catálogo), já que o contrato de carregamento é público e não depende de acesso ao código-fonte do núcleo.
-- Exige que o Skill Engine implemente um mecanismo de descoberta e validação de manifest antes de qualquer Plugin real existir — trabalho adicional no épico da Release 7, em troca do desacoplamento.
+- Exige que o Skill Engine implemente um mecanismo de descoberta e validação de manifest antes de qualquer Plugin real existir — trabalho adicional no épico da Release 8, em troca do desacoplamento.
 - Um manifest malformado ou um Plugin que não cumpre seu contrato declarado é um erro de carregamento detectável cedo (na descoberta), não um bug silencioso em produção.

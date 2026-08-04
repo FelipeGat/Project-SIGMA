@@ -11,7 +11,7 @@ Essas duas leituras não são obviamente conciliáveis sem uma decisão: "Objeti
 
 ## Decisão (proposta)
 
-Adota-se a leitura (a): **"Objetivo" é o nome de produto, em português, para o campo `objective` de uma Intent** — a frase-resumo do estado desejado que uma Intent representa. Não se introduz uma camada nova. Esta leitura evita renomear Intent Engine, o evento `IntentDetected`, e a Release 6, já consolidados em seis ADRs, no [EVENT_MODEL.md](../../EVENT_MODEL.md) e no [ROADMAP.md](../../ROADMAP.md) — um custo de retrabalho real que a leitura (b) exigiria sem benefício estrutural claro, já que a decomposição em múltiplas Missions já é exatamente o que Intent faz desde ADR-0028.
+Adota-se a leitura (a): **"Objetivo" é o nome de produto, em português, para o campo `objective` de uma Intent** — a frase-resumo do estado desejado que uma Intent representa. Não se introduz uma camada nova. Esta leitura evita renomear Intent Engine, o evento `IntentDetected`, e a Release 7, já consolidados em seis ADRs, no [EVENT_MODEL.md](../../EVENT_MODEL.md) e no [ROADMAP.md](../../ROADMAP.md) — um custo de retrabalho real que a leitura (b) exigiria sem benefício estrutural claro, já que a decomposição em múltiplas Missions já é exatamente o que Intent faz desde ADR-0028.
 
 ## Consequências se confirmada
 
@@ -20,4 +20,4 @@ Adota-se a leitura (a): **"Objetivo" é o nome de produto, em português, para o
 
 ## Se a leitura (b) for a intenção correta
 
-Esta ADR precisa ser substituída por uma nova, introduzindo `Objective` como entidade de domínio própria, uma camada acima de `Intent` (uma Objective podendo gerar mais de uma Intent), com o remapeamento correspondente em `DOMAIN.md`, `SIGMA_PROTOCOL.md`, `ARCHITECTURE.md` e no roadmap. Não implementado nesta revisão — sinalizado para decisão explícita antes de a Release 5 (Planner) ou 6 (Intent) começarem, já que ambas dependem diretamente de qual leitura é a correta.
+Esta ADR precisa ser substituída por uma nova, introduzindo `Objective` como entidade de domínio própria, uma camada acima de `Intent` (uma Objective podendo gerar mais de uma Intent), com o remapeamento correspondente em `DOMAIN.md`, `SIGMA_PROTOCOL.md`, `ARCHITECTURE.md` e no roadmap. Não implementado nesta revisão — sinalizado para decisão explícita antes de a Release 6 (Planner) ou 6 (Intent) começarem, já que ambas dependem diretamente de qual leitura é a correta.

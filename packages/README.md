@@ -8,6 +8,7 @@ Mecânica técnica (PHP/Composer): cada pacote é um pacote Composer próprio (`
 |---|---|---|
 | [core/](core/) | Primitivas de domínio compartilhadas (Value Objects comuns, contratos base) | — |
 | [kernel/](kernel/) | Kernel — ver [KERNEL.md](../KERNEL.md) | core |
+| [identity-engine/](identity-engine/) | Identity Engine — ver [MULTITENANCY.md](../MULTITENANCY.md) | core, kernel |
 | [intent-engine/](intent-engine/) | Intent Engine | core, kernel |
 | [planner-engine/](planner-engine/) | Planner Engine | core, kernel, intent-engine |
 | [mission-engine/](mission-engine/) | Mission Engine | core, kernel, planner-engine |
@@ -19,4 +20,4 @@ Mecânica técnica (PHP/Composer): cada pacote é um pacote Composer próprio (`
 | [design-system/](design-system/) | Componentes/tokens visuais compartilhados por `apps/web` e `apps/mobile` | — |
 | [sdk/](sdk/) | SDK público para sistemas externos integrarem com o SIGMA sem depender de detalhes internos (ver [VISION_2030.md](../VISION_2030.md)) | core |
 
-`execution-engine` não constava na lista original da revisão que originou esta estrutura (Sprint 0.2) — incluído aqui para manter consistência com os nove Engines já aprovados em [ADR-0011](../docs/adr/0011-arquitetura-em-camadas-de-engines.md). Sinalizado explicitamente, não uma correção silenciosa.
+`execution-engine` não constava na lista original da revisão que originou esta estrutura (Sprint 0.2) — incluído para manter consistência com os Engines já aprovados em [ADR-0011](../docs/adr/0011-arquitetura-em-camadas-de-engines.md). `identity-engine` foi acrescentado na Release 1 (revisão de CTO), extraído do que seria `memory-engine` — ver [ADR-0039](../docs/adr/0039-identity-engine.md). O núcleo tem hoje dez Engines, não nove.

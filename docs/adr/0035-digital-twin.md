@@ -16,4 +16,4 @@ Client, Project, Company e User possuem um **Digital Twin**: uma representação
 - Contexto de negócio fica disponível rapidamente para o Planner e os Agents, sem uma chamada de API externa a cada leitura.
 - O histórico de eventos que atualizaram um Twin torna seu estado em qualquer momento passado reconstruível — uma forma de auditoria que uma leitura direta e sem estado nunca ofereceria.
 - Introduz o risco de um Twin desatualizado (a fonte externa mudou sem um evento correspondente do SIGMA) — mitigado por `warning` explícito no Envelope quando o Twin está fora da janela de refresh esperada, nunca falhando silenciosamente como se estivesse correto.
-- Custódia atribuída ao Memory Engine (Release 3) por afinidade — é o Engine já responsável por "o que o SIGMA sabe sobre o mundo" — mas Digital Twin é conceitualmente distinto de Knowledge e de Memory (factual e volátil, não curado nem experiencial).
+- Custódia atribuída ao Memory Engine (Release 4) por afinidade — é o Engine já responsável por "o que o SIGMA sabe sobre o mundo" — mas Digital Twin é conceitualmente distinto de Knowledge e de Memory (factual e volátil, não curado nem experiencial).

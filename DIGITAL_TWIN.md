@@ -33,4 +33,4 @@ Um Twin desatualizado (fora da janela de refresh esperada) produz um `warning` n
 
 ## Onde vive
 
-Persistência e atualização de Digital Twins ficam sob custódia do **Memory Engine** (Release 3) — é o Engine já responsável por "o que o SIGMA sabe sobre o mundo". A primeira implementação real de um Twin (`ClientTwin`) é candidata natural a acontecer junto com a Release 4 — Mission Engine ou a Release 7 — Skill Engine, quando a primeira Capability de leitura real (`GestorSkill.FindClient`) existir — não antecipado com mais detalhe aqui.
+Persistência e atualização de Digital Twins ficam sob custódia do **Memory Engine** (Release 4) — é o Engine já responsável por "o que o SIGMA sabe sobre o mundo". A primeira implementação real de um Twin (`ClientTwin`) é candidata natural a acontecer junto com a Release 5 — Mission Engine ou a Release 8 — Skill Engine, quando a primeira Capability de leitura real (`GestorSkill.FindClient`) existir — não antecipado com mais detalhe aqui.

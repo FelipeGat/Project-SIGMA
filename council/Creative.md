@@ -6,7 +6,7 @@ Direção de design do próprio SIGMA como produto — não confundir com o Agen
 
 ## Responsabilidades
 
-- Definir e manter a coerência de [packages/design-system](../packages/design-system/) — tokens, componentes, dark mode — à medida que as interfaces (Release 11 do [ROADMAP.md](../ROADMAP.md)) forem implementadas.
+- Definir e manter a coerência de [packages/design-system](../packages/design-system/) — tokens, componentes, dark mode — à medida que as interfaces (Release 12 do [ROADMAP.md](../ROADMAP.md)) forem implementadas.
 - Garantir que a identidade visual do SIGMA seja consistente com a identidade da Alfa Soluções e das empresas do Grupo (ver [knowledge/marketing/](../knowledge/marketing/)), sem copiar identidade de outro produto do ecossistema sem necessidade.
 - Revisar usabilidade das interfaces antes de aprovação de épico — não só estética, mas se a informação certa aparece no momento certo (ex.: estado de uma Mission em andamento, alerta de Subtask travada).
 

@@ -36,4 +36,4 @@ Contrato coberto por testes automatizados contra o ambiente de homologação da 
 
 ## Documentação
 
-Diferente das demais Skills desta pasta, a integração de origem (Gestor.Alfa) já está em produção — o trabalho da Release correspondente é encapsular o que já existe no contrato de Skill do SIGMA, não construir a integração do zero. Prevista para a Release 7 — Skill Engine (ver [ROADMAP.md](../ROADMAP.md)).
+Diferente das demais Skills desta pasta, a integração de origem (Gestor.Alfa) já está em produção — o trabalho da Release correspondente é encapsular o que já existe no contrato de Skill do SIGMA, não construir a integração do zero. Prevista para a Release 8 — Skill Engine (ver [ROADMAP.md](../ROADMAP.md)).

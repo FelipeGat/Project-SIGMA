@@ -32,4 +32,4 @@ Um Workspace pertence a uma Company dentro de um Tenant (ver [MULTITENANCY.md](M
 
 ## Onde vive
 
-Não tem Engine dedicado — é modelado como parte do contexto de execução do [Kernel](KERNEL.md) e materializado a partir de dados agregados via Skills/Digital Twins. Entra em escopo junto com o schema fundacional de multiempresa — proposto para a Release 3, a confirmar (ver [MULTITENANCY.md](MULTITENANCY.md) e [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md)), já que a Release 2 (SIGMA Bootstrap) foi reduzida a infraestrutura pura.
+Não tem Engine dedicado próprio — é modelado como parte do schema de multiempresa do **Identity Engine** (Release 3, ver [MULTITENANCY.md](MULTITENANCY.md) e [ADR-0039](docs/adr/0039-identity-engine.md)) e materializado a partir de dados agregados via Skills/Digital Twins, disponibilizado pelo [Kernel](KERNEL.md) como contexto de execução a qualquer Engine.

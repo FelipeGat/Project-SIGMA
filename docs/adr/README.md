@@ -44,3 +44,12 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0036](0036-objetivo-e-campo-da-intent.md) | "Objetivo" é o campo de propósito da Intent — não uma camada nova (proposto, aguardando confirmação) |
 | [0037](0037-declarativo-nao-imperativo.md) | SIGMA é declarativo, nunca imperativo |
 | [0038](0038-sigma-bootstrap-nao-kernel-completo.md) | Release 2 é o SIGMA Bootstrap — não o Kernel completo |
+| [0039](0039-identity-engine.md) | Identity Engine — extraído do Memory Engine, Release própria |
+| [0040](0040-bootstrap-nao-conhece-engines.md) | Bootstrap nunca conhece Engines — apenas Modules |
+| [0041](0041-lifecycle-estendido.md) | Lifecycle estendido — discover, register, e o estado degraded |
+| [0042](0042-health-estilo-kubernetes.md) | Health endpoints compatíveis com Kubernetes |
+| [0043](0043-telemetry-desde-o-bootstrap.md) | Bootstrap inicializa Telemetry completa — não apenas um Logger |
+| [0044](0044-configuration-provider.md) | Configuration Provider — cada Module declara sua própria configuração |
+| [0045](0045-system-manifest.md) | System Manifest — o Bootstrap lê um único arquivo, o resto é descoberto |
+| [0046](0046-self-describing-components.md) | Self-Describing Components |
+| [0047](0047-decision-log-por-release.md) | Toda Release produz Código e Decision Log |

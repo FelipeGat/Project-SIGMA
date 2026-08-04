@@ -9,11 +9,11 @@
 
 ## Decisão
 
-Cada Capability, no manifest de Plugin, ganha `version` (semver, independente da versão do Plugin), `owner` (responsável) e `dependencies` (nomes de outras Capabilities necessárias). O conjunto de todas as Capabilities de todos os Plugins carregados forma o **Capability Registry**, mantido pelo Skill Engine (Release 7). Ver [SIGMA_PROTOCOL.md §4](../../SIGMA_PROTOCOL.md#4-capability-e-capability-registry).
+Cada Capability, no manifest de Plugin, ganha `version` (semver, independente da versão do Plugin), `owner` (responsável) e `dependencies` (nomes de outras Capabilities necessárias). O conjunto de todas as Capabilities de todos os Plugins carregados forma o **Capability Registry**, mantido pelo Skill Engine (Release 8). Ver [SIGMA_PROTOCOL.md §4](../../SIGMA_PROTOCOL.md#4-capability-e-capability-registry).
 
 ## Consequências
 
 - Uma Capability pode evoluir de versão sem forçar todo o Plugin a subir de versão junto — reduz o raio de impacto de uma mudança.
 - `dependencies` permite ao Skill Engine recusar o carregamento de uma Capability cuja dependência não está presente, em vez de falhar em runtime na primeira invocação.
-- O Capability Registry se torna a fonte de consulta natural para o Planner Engine saber "o que é possível fazer" no sistema — capacidade adicional sobre a qual o épico do Planner (Release 5) pode se apoiar, mesmo que o Registry em si só exista de fato na Release 7.
+- O Capability Registry se torna a fonte de consulta natural para o Planner Engine saber "o que é possível fazer" no sistema — capacidade adicional sobre a qual o épico do Planner (Release 6) pode se apoiar, mesmo que o Registry em si só exista de fato na Release 8.
 - Os 6 manifests de Plugin já especificados (`gestor`, `github`, `telegram`, `calendar`, `email`, `whatsapp`) e o schema formal foram migrados nesta mesma revisão para incluir os novos campos.

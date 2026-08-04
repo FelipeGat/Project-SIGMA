@@ -62,10 +62,10 @@ A conversão SGL → JSON é determinística e sem perda — todo campo de um bl
 
 ## Quem fala SGL
 
-- O **Intent Engine** (Release 6) produz SGL a partir de linguagem natural — é aqui que a ambiguidade de uma frase humana vira uma estrutura previsível.
-- O **Planner Engine** (Release 5) consome SGL (ou o JSON equivalente já convertido) para decidir Missions e Subtasks.
+- O **Intent Engine** (Release 7) produz SGL a partir de linguagem natural — é aqui que a ambiguidade de uma frase humana vira uma estrutura previsível.
+- O **Planner Engine** (Release 6) consome SGL (ou o JSON equivalente já convertido) para decidir Missions e Subtasks.
 - Agents (Claude, ChatGPT, Gemini, Manus), ao raciocinar sobre uma Subtask, podem produzir e consumir SGL internamente antes de sua resposta ser normalizada no Envelope pelo `services/ai-router`.
 
 ## Escopo desta especificação
 
-Este documento define a gramática e o mapeamento — não um parser. Implementação (parser/serializer SGL↔JSON) nasce com a Release 5 — Planner Engine ou a Release 6 — Intent Engine, o que for construído primeiro (ver [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md)). Até lá, exemplos SGL na documentação são ilustrativos.
+Este documento define a gramática e o mapeamento — não um parser. Implementação (parser/serializer SGL↔JSON) nasce com a Release 6 — Planner Engine ou a Release 7 — Intent Engine, o que for construído primeiro (ver [ADR-0031](docs/adr/0031-ordem-runtime-vs-desenvolvimento.md)). Até lá, exemplos SGL na documentação são ilustrativos.

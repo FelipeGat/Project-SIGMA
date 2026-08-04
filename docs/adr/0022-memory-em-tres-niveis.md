@@ -15,5 +15,5 @@ Memory é organizada em três níveis — Operational Memory (escopo de uma Miss
 
 - Um Agent que consulta Memory sabe (ou pode saber) o nível de confiança da informação — algo observado uma vez numa Mission específica carrega peso diferente de um padrão consolidado em Long Term Memory.
 - Reduz o risco de "aprendizado" espúrio a partir de uma única interação ruim se tornar, sem revisão, conhecimento institucional tratado como verdade.
-- Exige uma mecânica de promoção entre níveis (a ser definida em detalhe no épico do Memory Engine, Release 3) — complexidade adicional em troca de Memory ser confiável, não apenas grande.
+- Exige uma mecânica de promoção entre níveis (a ser definida em detalhe no épico do Memory Engine, Release 4) — complexidade adicional em troca de Memory ser confiável, não apenas grande.
 - Conecta-se a [WORKSPACES.md](../../WORKSPACES.md): Project Memory é escopada por Workspace, não por Project isolado, pela mesma razão que motivou [ADR-0020](0020-workspace-como-unidade-de-contexto.md).

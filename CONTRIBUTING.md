@@ -17,11 +17,16 @@ Sem essa aprovação, não há branch de implementação — apenas documentaç�
 
 ## Fluxo de trabalho
 
-1. Branch a partir de `main`: `release/<numero>-<slug>` para código de Release aprovada (ex: `release/2-kernel`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
+1. Branch a partir de `main`: `release/<numero>-<slug>` para código de Release aprovada (ex: `release/2-sigma-bootstrap`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
 2. Commits seguindo [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 3. Pull Request descrevendo a que Critério de Aceite da Release ele atende.
 4. Revisão contra [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md) e [docs/conventions/naming-conventions.md](docs/conventions/naming-conventions.md).
 5. Merge somente após aprovação explícita.
+6. Ao final da Release, publicar o **Decision Log** correspondente (ver seção abaixo) — a Release não é considerada concluída sem ele.
+
+## Decision Log
+
+Toda Release que produz código produz também um Decision Log — `docs/releases/000N-<slug>-decision-log.md`, ver [ADR-0047](docs/adr/0047-decision-log-por-release.md). Diferente de uma ADR (decidida *antes*, para algo que afeta mais de um módulo ou muda contrato já estabelecido), o Decision Log é escrito *durante/depois* da implementação, dentro do escopo já aprovado na proposta da Release: que escolhas locais foram feitas, quais alternativas foram descartadas e por quê, qual impacto é esperado. Se uma decisão do Decision Log acaba afetando outro módulo ou mudando um contrato — ela é promovida a ADR, não fica só ali.
 
 ## Decisões arquiteturais
 

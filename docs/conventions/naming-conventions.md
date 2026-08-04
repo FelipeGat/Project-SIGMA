@@ -20,6 +20,8 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | **Workspace** | Unidade de contexto operacional (ex: um cliente) que agrega Client/Project/Budget/Meeting relacionados | "Project" isolado |
 | **Digital Twin** | Representação viva e sincronizada de um Client/Project/Company/User | Fonte da verdade — o Twin nunca é a fonte, o sistema externo é |
 | **Tenant** | Fronteira de isolamento total de dados | "Company" |
+| **Module** | A única unidade que o Kernel/Bootstrap conhece — Engine, Plugin, Service e Package são valores de `kind`, não conceitos que o Kernel reconhece nomeadamente | "Engine" dentro de código do Kernel — ver [ADR-0040](../adr/0040-bootstrap-nao-conhece-engines.md) |
+| **Identity Engine** | Resolve quem é o usuário/empresa/workspace/tenant/permissão/autonomia | "Memory Engine" — Identity responde "quem", Memory responde "o que sei" (ver [ADR-0039](../adr/0039-identity-engine.md)) |
 | **Objetivo** | Nome de produto, em português, para o campo `objective` de uma Intent | Entidade própria — ver [ADR-0036](../adr/0036-objetivo-e-campo-da-intent.md) (proposto, não confirmado) |
 | **Knowledge** | O que o sistema sabe | "Memory" |
 | **Memory** | O que o sistema aprendeu | "Knowledge" |
@@ -39,6 +41,8 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | `manifest.json` de Plugin | campos em snake_case (ver [plugins/manifest.schema.json](../../plugins/manifest.schema.json)) | `api_base_url`, `autonomy_level_required` |
 | Bloco SGL | Palavra-chave em MAIÚSCULAS (ver [SGL.md](../../SGL.md)) | `INTENT`, `MISSION`, `SUBTASK` |
 | Campo SGL | camelCase | `objective`, `dependsOn` |
+| `kind` de Module (ver [BOOTSTRAP.md](../../BOOTSTRAP.md)) | kebab-case, valor fixo | `engine`, `plugin`, `service`, `package` |
+| Arquivo de System Manifest | `system-manifest.yaml` (ver [SYSTEM_MANIFEST.md](../../SYSTEM_MANIFEST.md)) | — |
 
 ## Backend (Laravel / PHP 8.4, dentro de cada pacote)
 

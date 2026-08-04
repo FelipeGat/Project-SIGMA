@@ -5,7 +5,7 @@
 
 ## Contexto
 
-[ADR-0025](0025-protocol-antecede-kernel.md) sinalizou, sem resolver, uma aparente inconsistência: o roadmap coloca o Planner Engine (Release 5) antes do Intent Engine (Release 6), mas o fluxo de execução real de uma Mission sempre passa por Intent antes de Planner (ver [ADR-0012](0012-planner-decide-nunca-a-ia.md), [ADR-0013](0013-intent-engine-como-porta-de-entrada.md), e a sequência canônica em [EVENT_MODEL.md](../../EVENT_MODEL.md)).
+[ADR-0025](0025-protocol-antecede-kernel.md) sinalizou, sem resolver, uma aparente inconsistência: o roadmap coloca o Planner Engine (Release 6) antes do Intent Engine (Release 7), mas o fluxo de execução real de uma Mission sempre passa por Intent antes de Planner (ver [ADR-0012](0012-planner-decide-nunca-a-ia.md), [ADR-0013](0013-intent-engine-como-porta-de-entrada.md), e a sequência canônica em [EVENT_MODEL.md](../../EVENT_MODEL.md)).
 
 ## Decisão
 
@@ -14,7 +14,7 @@ Duas ordens distintas e igualmente válidas coexistem, e devem ser nomeadas sepa
 - **Ordem de Runtime** — como uma Mission percorre o sistema em produção: **Intent → Planner → Mission → Execution**.
 - **Ordem de Desenvolvimento** — a sequência em que os Engines são construídos: **Protocol → Kernel/Bootstrap → Memory → Mission → Planner → Intent → Skill → Agent → ...** (ver [ROADMAP.md](../../ROADMAP.md)).
 
-Um Engine é construído e testado contra um contrato já definido pelo SIGMA Protocol, usando entradas mockadas/manuais para dependências de runtime que ainda não existem como código — o Planner Engine (Release 5) é construído e testado contra Intents estruturadas manualmente, antes de o Intent Engine (Release 6) existir para produzi-las automaticamente a partir de linguagem natural.
+Um Engine é construído e testado contra um contrato já definido pelo SIGMA Protocol, usando entradas mockadas/manuais para dependências de runtime que ainda não existem como código — o Planner Engine (Release 6) é construído e testado contra Intents estruturadas manualmente, antes de o Intent Engine (Release 7) existir para produzi-las automaticamente a partir de linguagem natural.
 
 ## Consequências
 

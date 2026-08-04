@@ -13,6 +13,6 @@ Eventos passam a ter três camadas: **Technical** (orquestração entre Engines 
 
 ## Consequências
 
-- Analytics (Release 13) consome apenas a camada Business, um conjunto pequeno e deliberadamente curado — evita que dashboards fiquem poluídos por eventos técnicos.
+- Analytics (Release 14) consome apenas a camada Business, um conjunto pequeno e deliberadamente curado — evita que dashboards fiquem poluídos por eventos técnicos.
 - A curadoria de quais eventos Semantic viram Business é uma decisão explícita tomada no épico do Automation/Analytics Engine, não automática — um evento técnico nunca "vaza" para a camada Business sem essa curadoria.
 - Cada evento do catálogo (existente e futuro) precisa declarar a que camada pertence — checklist adicional ao propor um novo evento a partir de agora.

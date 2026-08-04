@@ -74,7 +74,7 @@ Nenhum consumidor interno do SIGMA (Mission Engine, Execution Engine, uma interf
 
 O SIGMA nunca interpreta uma frase como uma lista de comandos. Ele interpreta um objetivo — uma **Intent**, cujo propósito em linguagem natural fica no campo `objective` — que pode se decompor em múltiplas Missions relacionadas. Ver [ADR-0028](docs/adr/0028-intencao-nao-comando.md).
 
-> **Nota de terminologia — "Objetivo" e Intent.** Em revisão, o termo "Objetivo" foi proposto como conceito central, com o exemplo "Sigma, quero fechar a venda da Sea Master" gerando Missions/Subtasks/Eventos. Lido junto com a especificação de [SGL](#3-sigma-language-sgl), onde `objective` já aparece como **campo dentro de um bloco `INTENT`**, a leitura adotada aqui é: **"Objetivo" é o nome de produto, em português, para o campo `objective` de uma Intent — não uma camada nova acima dela.** Isso evita renomear Intent Engine/`IntentDetected`/Release 6, já consolidados em seis ADRs e no roadmap. Se a intenção do Product Owner era uma camada `Objective` distinta e acima de `Intent` (ex: um Objective gerando múltiplas Intents), esta leitura precisa ser revista — sinalizado explicitamente em [ADR-0036](docs/adr/0036-objetivo-e-campo-da-intent.md), não assumido silenciosamente.
+> **Nota de terminologia — "Objetivo" e Intent.** Em revisão, o termo "Objetivo" foi proposto como conceito central, com o exemplo "Sigma, quero fechar a venda da Sea Master" gerando Missions/Subtasks/Eventos. Lido junto com a especificação de [SGL](#3-sigma-language-sgl), onde `objective` já aparece como **campo dentro de um bloco `INTENT`**, a leitura adotada aqui é: **"Objetivo" é o nome de produto, em português, para o campo `objective` de uma Intent — não uma camada nova acima dela.** Isso evita renomear Intent Engine/`IntentDetected`/Release 7, já consolidados em seis ADRs e no roadmap. Se a intenção do Product Owner era uma camada `Objective` distinta e acima de `Intent` (ex: um Objective gerando múltiplas Intents), esta leitura precisa ser revista — sinalizado explicitamente em [ADR-0036](docs/adr/0036-objetivo-e-campo-da-intent.md), não assumido silenciosamente.
 
 ### Declarativo, não imperativo
 
@@ -119,7 +119,7 @@ expected:
   Follow-up Scheduled
 ```
 
-O Intent Engine (Release 6) produz SGL a partir de linguagem natural; o Planner Engine (Release 5) consome SGL (ou a Intent estruturada equivalente em JSON — ambas as formas são intercambiáveis, SGL → JSON é uma transformação sem perda) para decidir o Plan.
+O Intent Engine (Release 7) produz SGL a partir de linguagem natural; o Planner Engine (Release 6) consome SGL (ou a Intent estruturada equivalente em JSON — ambas as formas são intercambiáveis, SGL → JSON é uma transformação sem perda) para decidir o Plan.
 
 ---
 

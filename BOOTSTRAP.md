@@ -1,61 +1,73 @@
 # Bootstrap
 
-Como o SIGMA inicia — o design de referência da Release 2 (SIGMA Bootstrap, ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md)), escrito antes de qualquer código dela. Escopo estritamente de infraestrutura: Config, Logger, DI Container, Modules, Events (mecanismo), Lifecycle, Health. **Não cobre** Mission, IA/Agent, ou carregamento de Plugin — isso chega em Releases posteriores, sobre esta fundação.
+Como o SIGMA inicia — o design de referência da Release 2 (SIGMA Bootstrap), escrito antes de qualquer código dela. Escopo estritamente de infraestrutura: Configuration Provider, Telemetry, DI Container, Modules, System Manifest, Lifecycle, Health. **Não cobre** Mission, Identity, IA/Agent, ou carregamento de Plugin — isso chega em Releases posteriores, sobre esta fundação. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md).
+
+## O Bootstrap nunca conhece Engines
+
+Esta é a decisão mais importante deste documento. O Bootstrap não sabe que "Mission Engine", "Planner Engine" ou "Agent Engine" existem — ele conhece apenas **Module**, uma abstração genérica. Um Engine, um Plugin, um Service, um Package são todos, do ponto de vista do Bootstrap, apenas Modules que se registram, declaram dependências e têm um ciclo de vida. Ver [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md).
+
+Isso mantém o Kernel completamente genérico e reutilizável — nenhuma mudança no domínio (uma nova Engine, um novo tipo de Plugin) jamais exige tocar no Bootstrap.
 
 ## Como o SIGMA inicia
 
-1. **Config** carrega variáveis de ambiente e arquivos de configuração por ambiente (local/homologação/produção), validando presença dos valores obrigatórios antes de qualquer outra coisa iniciar — falhar cedo e alto, nunca silenciosamente com um valor `null` se propagando.
-2. **Logger** é inicializado em seguida — a partir deste ponto, toda falha de bootstrap já é registrada de forma estruturada (ver [TELEMETRY.md](TELEMETRY.md)), mesmo antes de qualquer Engine existir.
-3. O **DI Container** é montado, registrando os bindings declarados por cada Module (ver abaixo).
-4. Os **Modules** registrados são inicializados na ordem resolvida por suas dependências declaradas (ver "Como um módulo declara dependências de outro").
-5. O **Health** endpoint fica disponível assim que todos os Modules obrigatórios reportam `ready`.
+```
+discover → register → boot → start → ready → (degraded)* → shutdown
+```
 
-## Como um módulo é carregado
+1. **discover** — o Bootstrap lê o [System Manifest](SYSTEM_MANIFEST.md) (um único arquivo declarando o que deveria existir: quais Engines, Plugins, Providers, Workspace) e localiza os Modules correspondentes — nada além do que o Manifest declara é carregado.
+2. **register** — cada Module descoberto declara seus bindings no DI Container e sua configuração (ver Configuration Provider, abaixo) — nenhum `boot()` roda ainda.
+3. **boot** — Configuration Provider e Telemetry inicializam primeiro (falha aqui é sempre alta e explícita — nunca um valor `null` se propagando); em seguida cada Module roda seu `boot()`, na ordem topológica resolvida por `dependsOn`.
+4. **start** — Modules abrem conexões (banco, Redis, etc.) e ficam prontos para operar.
+5. **ready** — todos os Modules obrigatórios reportaram sucesso; `/health/ready` responde `200`.
+6. **degraded** *(não é uma etapa linear — um estado que qualquer Module pode assumir depois de `ready`)* — um Module específico para de funcionar (ex: a integração com o Telegram cai) sem derrubar o sistema inteiro; apenas aquele Module é marcado `degraded`, refletido em `/health/ready` de forma granular por Module, nunca como um "tudo ou nada".
+7. **shutdown** — ao receber sinal de encerramento, Modules encerram na ordem inversa de dependência, drenando trabalho em andamento antes de fechar conexões.
 
-Um **Module**, nesta especificação, é a unidade que o Bootstrap conhece — cada pacote de `packages/` (ex: `kernel`, e mais tarde `mission-engine`, `planner-engine`...) se registra como um Module. Um Module declara:
+Ver [ADR-0041](docs/adr/0041-lifecycle-estendido.md).
+
+## Module — a única unidade que o Bootstrap conhece
 
 ```
 Module {
   name: string
-  dependsOn: string[]        // nomes de outros Modules
-  register(container): void  // registra seus bindings no DI Container
-  boot(): Promise<void>       // lógica de inicialização, após todos os bindings existirem
+  kind: "engine" | "plugin" | "service" | "package"
+  dependsOn: string[]
+  config(): ConfigSchema           // o que este Module precisa de configuração — ver Configuration Provider
+  register(container): void         // registra bindings no DI Container
+  boot(): Promise<void>              // inicialização, após todos os bindings existirem
+  describe(): ComponentDescriptor      // ver SYSTEM_MANIFEST.md — Self-Describing Components
 }
 ```
 
-`register` acontece para todos os Modules antes de `boot` começar em qualquer um — garante que, quando um Module tenta resolver uma dependência durante seu `boot`, o binding já existe no Container, mesmo que o Module dono ainda não tenha terminado de inicializar.
+`kind` é metadado, não comportamento — o Bootstrap trata todo Module da mesma forma, independente do valor de `kind`. Um Engine (Release 4 em diante) é, tecnicamente, apenas um Module com `kind: "engine"`; o mesmo vale para um Plugin (Release 8) ou um Service (`services/*`).
 
-## Como um Engine registra seus serviços
+## Configuration Provider
 
-Um Engine (Release 3 em diante) é um Module que registra, no `register(container)`, os contratos que expõe a outros Engines (ex: o Mission Engine registra um `MissionRepository` que o Execution Engine pode resolver) — nunca uma implementação concreta importada diretamente por quem consome. Isso mantém o desacoplamento entre Engines mesmo dentro do mesmo processo/deploy.
+Não uma função `config()` global lida de qualquer lugar — cada Module registra, via `config()`, o schema da configuração que precisa (variáveis obrigatórias, opcionais, valores default). O Configuration Provider central resolve essas declarações contra o ambiente (variáveis de ambiente, arquivo por ambiente) e falha no `boot` — não depois — se algo obrigatório faltar. Nenhum Module lê variável de ambiente diretamente. Ver [ADR-0044](docs/adr/0044-configuration-provider.md).
+
+## Telemetry, não apenas Logger
+
+O Bootstrap inicializa Telemetry completa desde o primeiro instante — os quatro pilares já definidos em [TELEMETRY.md](TELEMETRY.md): Logs, Metrics, Tracing, Audit — não um logger isolado. A partir do primeiro `discover`, toda etapa do boot já é observável. Ver [ADR-0043](docs/adr/0043-telemetry-desde-o-bootstrap.md).
+
+## Health — compatível com Kubernetes
+
+Três endpoints, não um:
+
+| Endpoint | Responde |
+|---|---|
+| `GET /health/live` | O processo está vivo (não travado) — usado para decidir se o orquestrador deve reiniciar o processo |
+| `GET /health/ready` | Todos os Modules obrigatórios estão `ready` (não `degraded` nem `boot`) — usado para decidir se o processo deve receber tráfego |
+| `GET /health/startup` | O boot inicial já terminou (mesmo que ainda não esteja `ready`) — usado para dar mais tempo a processos que demoram para iniciar, sem que `/health/live` os mate prematuramente |
+
+Cada resposta é um [Envelope do SIGMA Protocol](SIGMA_PROTOCOL.md#1-o-envelope), com `data` detalhando o estado por Module quando relevante (permitindo granularidade `degraded` por Module, não apenas um booleano geral). Ver [ADR-0042](docs/adr/0042-health-estilo-kubernetes.md).
+
+## System Manifest e Self-Describing Components
+
+O Bootstrap lê **um único arquivo** na subida — o [System Manifest](SYSTEM_MANIFEST.md) — declarando o que deveria compor o sistema. Tudo além disso é descoberto: cada Module, ao ser carregado, é capaz de descrever a si mesmo (`describe()`) — quem é, o que oferece, do que depende, em que estado está. Ver [SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md), [ADR-0045](docs/adr/0045-system-manifest.md) e [ADR-0046](docs/adr/0046-self-describing-components.md).
 
 ## Como Plugins são descobertos
 
-**Fora do escopo da Release 2.** O mecanismo de `Modules` descrito aqui é genérico o suficiente para, na Release 7 (Skill Engine), Plugins serem descobertos e registrados da mesma forma — um Plugin válido se torna, na prática, um Module cujo manifest (ver [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md)) descreve seus bindings em vez de código TypeScript/PHP direto. A Release 2 não implementa esse carregamento; apenas não fecha portas para ele.
-
-## Ciclo de vida (boot, start, ready, shutdown)
-
-```
-boot → start → ready → (operando) → shutdown
-```
-
-| Estado | Significado |
-|---|---|
-| `boot` | Config/Logger/Container montados; Modules sendo registrados |
-| `start` | Todos os Modules chamando `boot()`; conexões (banco, Redis) sendo abertas |
-| `ready` | Todos os Modules obrigatórios reportaram sucesso; Health responde `200` |
-| `shutdown` | Sinal de encerramento recebido; Modules encerram na ordem inversa de dependência, drenando trabalho em andamento antes de fechar conexões |
-
-Um Module que falha em `start` impede o sistema de chegar a `ready` — nenhum Engine opera parcialmente inicializado; o Health reflete isso como não pronto, não como um erro genérico.
-
-## Injeção de dependências
-
-O DI Container resolve dependências por contrato (interface), nunca por implementação concreta — consistente com Clean Architecture já definida em [ARCHITECTURE.md §1](docs/architecture/ARCHITECTURE.md). Escopo de vida de cada binding (singleton por processo vs. por request) é declarado pelo Module que o registra; o padrão é singleton, salvo declaração em contrário.
-
-## Como um módulo declara dependências de outro
-
-Pelo campo `dependsOn` no Module — uma lista de nomes de outros Modules que precisam estar registrados (não necessariamente `ready`) antes deste. O Bootstrap resolve a ordem topológica de inicialização a partir dessas declarações e falha imediatamente, com mensagem explícita, se detectar dependência circular — nunca tenta "adivinhar" uma ordem que funcione.
+**Fora do escopo da Release 2.** O mecanismo de `Modules` descrito aqui é genérico o suficiente para, na Release 8 (Skill Engine), Plugins serem descobertos e registrados da mesma forma — um Plugin válido se torna, na prática, um Module com `kind: "plugin"`, cujo manifest (ver [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md)) descreve seus bindings. A Release 2 não implementa esse carregamento; apenas não fecha portas para ele.
 
 ## Relação com KERNEL.md
 
-[KERNEL.md](KERNEL.md) descreve o escopo conceitual completo do Kernel — incluindo carregamento de Plugin System e contexto de Tenant/Workspace, que este documento explicitamente não cobre. Este documento é o design da Release 2, o primeiro incremento daquele escopo — não sua totalidade. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md).
+[KERNEL.md](KERNEL.md) descreve o escopo conceitual completo do Kernel. Este documento é o design da Release 2, o primeiro incremento desse escopo — e confirma, especificamente, que o Kernel nunca conhece Engine, Mission, ou qualquer conceito de domínio: apenas Module. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md) e [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md).
