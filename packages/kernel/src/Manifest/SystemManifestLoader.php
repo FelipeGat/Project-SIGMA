@@ -17,6 +17,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class SystemManifestLoader
 {
+    private const SUPPORTED_MANIFEST_VERSION = 1;
+
     public function loadFromFile(string $path): SystemManifest
     {
         if (!is_file($path) || !is_readable($path)) {
@@ -45,6 +47,24 @@ final class SystemManifestLoader
             throw new SigmaException('System Manifest vazio ou não é um mapeamento YAML válido.', 'manifest.invalid_structure');
         }
 
+        if (!isset($data['manifestVersion']) || !is_int($data['manifestVersion'])) {
+            throw new SigmaException(
+                'System Manifest inválido: campo obrigatório "manifestVersion" ausente ou não é um inteiro.',
+                'manifest.missing_field',
+            );
+        }
+
+        if ($data['manifestVersion'] !== self::SUPPORTED_MANIFEST_VERSION) {
+            throw new SigmaException(
+                sprintf(
+                    'System Manifest com manifestVersion %d não suportado — esta versão do Bootstrap só entende manifestVersion %d.',
+                    $data['manifestVersion'],
+                    self::SUPPORTED_MANIFEST_VERSION,
+                ),
+                'manifest.unsupported_manifest_version',
+            );
+        }
+
         foreach (['project', 'version'] as $required) {
             if (!isset($data[$required]) || !is_string($data[$required]) || $data[$required] === '') {
                 throw new SigmaException(
@@ -60,6 +80,7 @@ final class SystemManifestLoader
         }
 
         return new SystemManifest(
+            manifestVersion: $data['manifestVersion'],
             project: $data['project'],
             version: (string) $data['version'],
             modules: $modules,

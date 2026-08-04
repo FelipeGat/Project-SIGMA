@@ -11,6 +11,7 @@ use Sigma\Gateway\Bootstrap;
 final class BootstrapTest extends TestCase
 {
     private const MANIFEST = <<<YAML
+        manifestVersion: 1
         project: SIGMA
         version: "1.0"
         modules:
@@ -39,6 +40,7 @@ final class BootstrapTest extends TestCase
     public function test_fails_when_the_manifest_requires_an_incompatible_event_bus_version(): void
     {
         $path = $this->writeManifest(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:

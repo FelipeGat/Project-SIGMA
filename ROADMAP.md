@@ -11,7 +11,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Aprovada, publicada |
 | 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
 | 2 | SIGMA Bootstrap | ✅ Implementada — 48 testes passando |
-| 3 | Identity Engine | ⚪ Não iniciado |
+| 3 | Identity Engine | ⏳ Proposta apresentada, aguardando aprovação — bloqueada por [IDENTITY_MODEL.md](IDENTITY_MODEL.md) |
 | 4 | Memory Engine | ⚪ Não iniciado |
 | 5 | Mission Engine | ⚪ Não iniciado |
 | 6 | Planner Engine | ⚪ Não iniciado |

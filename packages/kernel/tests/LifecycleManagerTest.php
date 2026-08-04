@@ -44,6 +44,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule($kernel);
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [kernel, event-bus]
@@ -61,6 +62,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule(new TestModule('kernel'));
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:
@@ -80,6 +82,7 @@ final class LifecycleManagerTest extends TestCase
         // "telegram" declarado no Manifest como opcional, mas nunca registrado.
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:
@@ -100,6 +103,7 @@ final class LifecycleManagerTest extends TestCase
         // "event-bus" é obrigatório no Manifest, mas não foi registrado.
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [kernel, event-bus]
@@ -124,6 +128,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule($telegram);
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [kernel, telegram]
@@ -145,6 +150,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule(new TestModule('event-bus', version: '0.9.0'));
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:
@@ -168,6 +174,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule(new TestModule('b', dependsOn: ['a']));
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [a, b]
@@ -192,6 +199,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule($broken);
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [kernel, broken]
@@ -214,6 +222,7 @@ final class LifecycleManagerTest extends TestCase
         $this->lifecycle->registerModule(new TestModule('event-bus', dependsOn: ['kernel']));
 
         $manifest = $this->manifestLoader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules: [kernel, event-bus]

@@ -236,4 +236,7 @@ Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decis
 | [TELEMETRY.md](../../TELEMETRY.md) | Logs, Metrics, Tracing, Audit — observabilidade desde o dia zero |
 | [WORKSPACES.md](../../WORKSPACES.md) | A unidade de contexto operacional (Workspace) |
 | [MULTITENANCY.md](../../MULTITENANCY.md) | A hierarquia Tenant → Company → Workspace → User → Role |
+| [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md) | As dez entidades de identidade (incl. Permission e Session) e as relações entre elas — modelo completo que fundamenta o Identity Engine (Release 3) |
 | [MEMORY_ARCHITECTURE.md](../../MEMORY_ARCHITECTURE.md) | Os três níveis de Memory |
+| [SYSTEM_MANIFEST.md](../../SYSTEM_MANIFEST.md) | O System Manifest (incl. `manifestVersion`) e Self-Describing Components |
+| [COMPATIBILITY.md](../../COMPATIBILITY.md) | Matriz de compatibilidade Kernel × Protocol × Plugin API |

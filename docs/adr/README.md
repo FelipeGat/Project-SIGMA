@@ -61,3 +61,6 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0053](0053-escopo-restrito-release-2.md) | Escopo restrito da Release 2 — lista explícita do que existe e do que não existe |
 | [0054](0054-tres-niveis-de-validacao.md) | Três níveis de validação obrigatórios por Release |
 | [0055](0055-sdk-multi-linguagem.md) | `/sdk` multi-linguagem como diretório próprio, distinto de `packages/sdk` |
+| [0056](0056-validation-report-obrigatorio.md) | `VALIDATION_REPORT.md` como artefato obrigatório de toda Release |
+| [0057](0057-eventbus-composicao-inmemory.md) | `RedisEventBus` compõe `InMemoryEventBus` em vez de reimplementar entrega local |
+| [0058](0058-manifest-version.md) | `manifestVersion` versiona o formato do System Manifest |

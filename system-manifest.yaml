@@ -2,6 +2,11 @@
 # Ver SYSTEM_MANIFEST.md. Nesta Release (2 — SIGMA Bootstrap), apenas
 # infraestrutura: nenhum Engine ou Plugin real existe ainda.
 
+# Versão do FORMATO deste arquivo (não do projeto SIGMA — isso é `version`,
+# abaixo). O Bootstrap rejeita qualquer manifestVersion que não reconheça.
+# Ver ADR-0058.
+manifestVersion: 1
+
 project: SIGMA
 version: "1.0"
 

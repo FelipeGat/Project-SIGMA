@@ -9,6 +9,8 @@ Não confundir com o `manifest.json` de um [Plugin](PLUGIN_SYSTEM.md) — aquele
 Um único arquivo, lido pelo Bootstrap no passo `discover` do [Lifecycle](BOOTSTRAP.md#como-o-sigma-inicia) — a única coisa que o Bootstrap precisa saber de antemão. Tudo o mais é descoberto a partir daqui.
 
 ```yaml
+manifestVersion: 1
+
 project: SIGMA
 version: 1
 
@@ -38,6 +40,7 @@ workspace:
 
 | Campo | Significa |
 |---|---|
+| `manifestVersion` | Versão do **formato** deste arquivo — não da instalação do SIGMA. O Bootstrap rejeita qualquer `manifestVersion` que não reconheça, em vez de tentar interpretar um formato desconhecido. Existe desde já (Release 2) porque o formato do Manifest vai crescer (`engines`, `plugins` completos chegam só com Releases futuras) — ver [ADR-0058](docs/adr/0058-manifest-version.md) |
 | `project`/`version` | Identidade e versão da instalação do SIGMA |
 | `engines` | Quais Engines (Modules de `kind: "engine"`) devem ser carregados |
 | `plugins` | Quais Plugins (ver [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md)) devem ser descobertos e registrados |

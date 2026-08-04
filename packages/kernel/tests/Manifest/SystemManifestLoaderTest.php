@@ -21,6 +21,7 @@ final class SystemManifestLoaderTest extends TestCase
     public function test_parses_a_valid_manifest(): void
     {
         $manifest = $this->loader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:
@@ -34,6 +35,7 @@ final class SystemManifestLoaderTest extends TestCase
             workspace: []
             YAML);
 
+        self::assertSame(1, $manifest->manifestVersion);
         self::assertSame('SIGMA', $manifest->project);
         self::assertSame('1.0', $manifest->version);
         self::assertCount(2, $manifest->modules);
@@ -46,6 +48,7 @@ final class SystemManifestLoaderTest extends TestCase
     public function test_accepts_a_bare_module_name_as_a_required_package_by_default(): void
     {
         $manifest = $this->loader->loadFromString(<<<YAML
+            manifestVersion: 1
             project: SIGMA
             version: "1.0"
             modules:
@@ -90,6 +93,7 @@ final class SystemManifestLoaderTest extends TestCase
 
         try {
             $this->loader->loadFromString(<<<YAML
+                manifestVersion: 1
                 project: SIGMA
                 version: "1.0"
                 modules:
@@ -108,6 +112,7 @@ final class SystemManifestLoaderTest extends TestCase
 
         try {
             $this->loader->loadFromString(<<<YAML
+                manifestVersion: 1
                 project: SIGMA
                 version: "1.0"
                 modules:
@@ -116,6 +121,41 @@ final class SystemManifestLoaderTest extends TestCase
                 YAML);
         } catch (SigmaException $exception) {
             self::assertSame('manifest.invalid_module_kind', $exception->errorCode());
+
+            throw $exception;
+        }
+    }
+
+    public function test_rejects_a_manifest_without_manifest_version(): void
+    {
+        $this->expectException(SigmaException::class);
+
+        try {
+            $this->loader->loadFromString(<<<YAML
+                project: SIGMA
+                version: "1.0"
+                modules: []
+                YAML);
+        } catch (SigmaException $exception) {
+            self::assertSame('manifest.missing_field', $exception->errorCode());
+
+            throw $exception;
+        }
+    }
+
+    public function test_rejects_an_unsupported_manifest_version(): void
+    {
+        $this->expectException(SigmaException::class);
+
+        try {
+            $this->loader->loadFromString(<<<YAML
+                manifestVersion: 2
+                project: SIGMA
+                version: "1.0"
+                modules: []
+                YAML);
+        } catch (SigmaException $exception) {
+            self::assertSame('manifest.unsupported_manifest_version', $exception->errorCode());
 
             throw $exception;
         }

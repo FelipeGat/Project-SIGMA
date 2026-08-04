@@ -22,11 +22,15 @@ Sem essa aprovação, não há branch de implementação — apenas documentaç�
 3. Pull Request descrevendo a que Critério de Aceite da Release ele atende.
 4. Revisão contra [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md) e [docs/conventions/naming-conventions.md](docs/conventions/naming-conventions.md).
 5. Merge somente após aprovação explícita.
-6. Ao final da Release, publicar o **Decision Log** correspondente (ver seção abaixo) — a Release não é considerada concluída sem ele.
+6. Ao final da Release, publicar o **Decision Log** e o **Validation Report** correspondentes (ver seções abaixo) — a Release não é considerada concluída sem os dois.
 
 ## Decision Log
 
 Toda Release que produz código produz também um Decision Log — `docs/releases/000N-<slug>-decision-log.md`, ver [ADR-0047](docs/adr/0047-decision-log-por-release.md). Diferente de uma ADR (decidida *antes*, para algo que afeta mais de um módulo ou muda contrato já estabelecido), o Decision Log é escrito *durante/depois* da implementação, dentro do escopo já aprovado na proposta da Release: que escolhas locais foram feitas, quais alternativas foram descartadas e por quê, qual impacto é esperado. Se uma decisão do Decision Log acaba afetando outro módulo ou mudando um contrato — ela é promovida a ADR, não fica só ali.
+
+## Validation Report
+
+Toda Release que produz código produz também um Validation Report — `docs/releases/000N-<slug>-validation-report.md`, a partir do [template](docs/releases/VALIDATION_REPORT.template.md), ver [ADR-0056](docs/adr/0056-validation-report-obrigatorio.md). É a prova de execução da fase de Validation do [processo de quatro fases](docs/adr/0048-processo-quatro-fases.md): ambiente, versões, testes rodados de fato (com contagem e comando), endpoints testados via requisição real, cada cenário de Scenario Validation com seu resultado, e toda pendência não validada — sem omissão, mesmo quando a pendência foi aceita conscientemente pelo Product Owner. Onde o Decision Log explica o porquê de uma escolha, o Validation Report prova o que foi de fato executado — os dois são complementares, nenhum substitui o outro.
 
 ## Decisões arquiteturais
 
