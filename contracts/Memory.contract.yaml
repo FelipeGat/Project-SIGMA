@@ -1,0 +1,62 @@
+# Sigma Contract — Memory
+# Contrato do conceito de dominio "Memory" (ver MEMORY_MODEL.md e
+# MEMORY_LIFECYCLE.md) — so o contrato, nenhum codigo ainda. Nasce
+# antes da implementacao da Release 4, mesmo espirito de
+# contracts/Identity.contract.yaml na Release 3.
+
+name: Memory
+version: "1.0.0"
+
+input:
+  - name: observation
+    type: MemoryObservation
+    required: false
+    # Presente no fluxo de registro de um fato (MemoryRecord Operational)
+    # — subjectKey, content, workspaceId, missionId, tenantId. Ausente
+    # quando o input é uma consulta ou uma avaliacao de promocao.
+  - name: query
+    type: MemoryQuery
+    required: false
+    # Presente na consulta de MemoryRecord/KnowledgeRecord/DigitalTwin
+    # ja existentes.
+  - name: semanticEvent
+    type: SemanticEvent
+    required: false
+    # Presente na sincronizacao de um DigitalTwin a partir de um evento
+    # Semantic publicado por outro Engine (ver EVENT_MODEL.md).
+
+output:
+  - name: record
+    type: MemoryRecord | KnowledgeRecord | DigitalTwin
+    # Um dos tres aggregates de MEMORY_MODEL.md, dependendo do input.
+    # Nunca a mesma coisa — Memory, Knowledge e Digital Twin sao
+    # conceitualmente distintos mesmo compartilhando custodiante
+    # (ver MEMORY_MODEL.md — "Tres conceitos, um custodiante").
+
+events:
+  - memory.record_observed
+  - memory.promoted
+  - knowledge.indexed
+  - digital_twin.created
+  - digital_twin.updated
+  - digital_twin.stale
+# Os seis eventos publicados pelo Memory Engine — ver DOMAIN_EVENTS.md
+# e EVENT_CATALOG.md para payload/consumidor/versao de cada um.
+
+permissions: []
+# Consultar/registrar Memory nao exige Permission propria nesta
+# Release — quem pode disparar uma observacao e decisao do Engine que
+# a origina (Mission/Planner), nao do Memory Engine em si.
+
+autonomy_level_required: 0
+# Observar, promover e sincronizar sao leitura/aprendizado passivo,
+# nunca uma acao que o SIGMA executa em nome do usuario sobre um
+# sistema externo — nao compete com o Autonomy Level de nenhuma
+# Mission. Escrita de negocio real continua sempre via Capability,
+# nunca via Memory Engine (ADR-0007).
+
+supported_versions:
+  - "1.0.0"
+
+compatible_with:
+  protocol: "1.0"

@@ -12,7 +12,7 @@ Um contrato só é escrito quando o conceito que ele descreve tem Release aprova
 |---|---|---|
 | [Module.contract.yaml](Module.contract.yaml) | Release 2 — SIGMA Bootstrap | ✅ Publicado |
 | [Identity.contract.yaml](Identity.contract.yaml) | Release 3 — Identity Engine | ✅ Publicado, validado contra o código real na Release 3.5 (ver [IDENTITY_MODEL.md](../IDENTITY_MODEL.md)) |
-| `Memory.contract.yaml` | Release 4 — Memory Engine | ⚪ Não iniciado |
+| [Memory.contract.yaml](Memory.contract.yaml) | Release 4 — Memory Engine | ✅ Publicado — antes do código, ver [MEMORY_MODEL.md](../MEMORY_MODEL.md) |
 | `Mission.contract.yaml` | Release 5 — Mission Engine | ⚪ Não iniciado |
 | `Intent.contract.yaml` | Release 7 — Intent Engine | ⚪ Não iniciado |
 | `Plugin.contract.yaml`, `Capability.contract.yaml` | Release 8 — Skill Engine | ⚪ Não iniciado |

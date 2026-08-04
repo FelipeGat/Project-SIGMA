@@ -24,7 +24,7 @@ Knowledge (ver [DOMAIN.md](DOMAIN.md)) é predominantemente Long Term — factua
 
 ## Promoção entre níveis
 
-Nada é promovido automaticamente de Operational para Long Term sem passar por Project — um fato observado uma única vez numa Mission não vira conhecimento institucional. A promoção depende de repetição (o mesmo padrão aparece em mais de uma Mission dentro do mesmo Workspace) ou de generalização (o mesmo padrão aparece em Workspaces diferentes). A mecânica exata de promoção é definida no épico do Memory Engine, não antecipada aqui.
+Nada é promovido automaticamente de Operational para Long Term sem passar por Project — um fato observado uma única vez numa Mission não vira conhecimento institucional. A promoção depende de repetição (o mesmo padrão aparece em mais de uma Mission dentro do mesmo Workspace) ou de generalização (o mesmo padrão aparece em Workspaces diferentes). A mecânica exata — chave estável (`subjectKey`), quando repetição/generalização disparam a promoção, e como a proveniência é preservada — está formalizada em [MEMORY_MODEL.md](MEMORY_MODEL.md) e [ADR-0081](docs/adr/0081-mecanica-de-promocao-de-memory.md).
 
 ## Por que separar em três níveis
 

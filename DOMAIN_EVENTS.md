@@ -23,6 +23,19 @@ Todos na camada **Semantic** — fatos de negócio sobre o agregado `Identity` (
 
 `RoleRevoked` foi adicionado por simetria com `RoleAssigned` — não estava na lista original do Product Owner, mas é indissociável dela: todo `RoleAssignment` que pode ser criado precisa poder ser desfeito, e o evento correspondente precisa existir desde já para quem for consumi-lo (ex: Audit Engine).
 
+## Memory Engine
+
+Todos na camada **Semantic** — fatos sobre o que o Memory Engine observou, promoveu ou sincronizou (ver [MEMORY_MODEL.md](MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md)). Escrito antes do código, mesmo padrão já usado para Identity antes da Release 3A — entrega obrigatória antes de qualquer código da Release 4. Consumidor esperado: Audit Engine (trilha de conformidade sobre o que o SIGMA aprendeu e quando).
+
+| Evento | Nome no Event Bus | Publicado quando | Payload mínimo |
+|---|---|---|---|
+| `MemoryRecordObserved` | `memory.record_observed` | Um `MemoryRecord` `Operational` é criado a partir de um fato observado numa Mission | `memoryRecordId`, `subjectKey`, `workspaceId`, `missionId` |
+| `MemoryPromoted` | `memory.promoted` | Um `MemoryRecord` é promovido a um nível mais alto (`Operational→Project` ou `Project→LongTerm`) | `memoryRecordId`, `subjectKey`, `fromLevel`, `toLevel`, `promotedFrom` |
+| `KnowledgeRecordIndexed` | `knowledge.indexed` | Um `KnowledgeRecord` é criado ou atualizado a partir de `/knowledge` | `knowledgeRecordId`, `area`, `sourcePath` |
+| `DigitalTwinCreated` | `digital_twin.created` | Um `DigitalTwin` é criado no primeiro contato com a entidade | `digitalTwinId`, `subjectType`, `externalRef` |
+| `DigitalTwinUpdated` | `digital_twin.updated` | O `state` de um `DigitalTwin` é atualizado a partir de um Semantic Event | `digitalTwinId`, `subjectType`, `lastSyncedAt` |
+| `DigitalTwinStale` | `digital_twin.stale` | Um `DigitalTwin` é consultado fora da janela de refresh esperada | `digitalTwinId`, `subjectType`, `lastSyncedAt` |
+
 ## Regra de payload
 
 Todo evento desta lista carrega, além do payload mínimo indicado, os campos padrão de correlação já exigidos por [EVENT_MODEL.md — Regras](EVENT_MODEL.md#regras): identificador de origem, timestamp, Engine publicador. `permissionKey` refere-se sempre à chave string definida em [IDENTITY_MODEL.md#permission](IDENTITY_MODEL.md#permission) (ex: `mission.create`), nunca a um identificador interno de linha de banco.

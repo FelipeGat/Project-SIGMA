@@ -2,12 +2,17 @@
 
 ## Imediato
 
-1. Aguardar confirmação para dar push do commit da Release 3.5 — commitado localmente, push ainda não realizado.
-2. **Próximo passo natural: Proposal da Release 4 — Memory Engine.** Reconhecida pelo Product Owner como o segundo marco mais importante do projeto, atrás só da Foundation — "praticamente todo Engine seguinte depende da qualidade do que ela expuser". Investir tempo extra na modelagem, mesmo que atrase o cronograma (recomendação explícita do Product Owner).
+1. **Aguardar aprovação da Proposal da Release 4A — Memory Domain** ([docs/releases/0004a-memory-domain.md](../docs/releases/0004a-memory-domain.md), revisão 1) — nenhum código do Memory Engine antes disso. Pode passar por mais revisões, mesmo padrão da Release 3A.
+2. Aguardar confirmação para dar push do commit desta rodada (MEMORY_MODEL.md/MEMORY_LIFECYCLE.md/ADRs 0079-0081/Proposal 4A) — commitado localmente, push ainda não realizado. (Release 3.5, commit anterior, já tem push feito.)
 3. **Pergunta em aberto, aguardando confirmação do Product Owner**: numeração das Releases 6/7 (Planner/Intent). `ROADMAP.md` mantém `6 — Planner, 7 — Intent` (conforme [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md), decisão deliberada de desenvolvimento). A visão de longo prazo mais recente listou `6 — Intent, 7 — Planner` — pode ter sido simplificação de tabela, ou intenção real de reabrir o ADR-0031. Não decidido silenciosamente, ver nota em `ROADMAP.md` e [ADR-0070](../docs/adr/0070-roadmap-estendido-24-releases.md).
 4. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
 5. Ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
 6. Toda decisão relevante de cada rodada precisa terminar registrada no repositório — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
+
+## Perguntas em aberto na Proposal da Release 4A (para a Architecture Review)
+
+- `Identifier` (base de Value Object de identificador, hoje só em `packages/identity-engine/src/Domain/Identifier.php`) deveria mover para `packages/core`, já que Memory Engine precisa do mesmo mecanismo — recomendado na Proposal, não decidido.
+- Onde a checagem de staleness de Twin de fato dispara o `warning` no Envelope — responsabilidade de quem consome o Twin ou do próprio Memory Engine — a confirmar na Release 4B.
 
 ## Cinco componentes estruturais sinalizados pelo Product Owner, sem Release própria ainda
 
@@ -22,7 +27,7 @@ Ver a tabela completa em `ROADMAP.md`. Scheduler, Secrets Manager, Cache Layer, 
 
 ## Achado técnico a levar para o próximo Engine com persistência
 
-Migrations do Identity Engine só rodam na primeira requisição HTTP (dentro de `IdentityEngineModule::boot()`), não há hook de inicialização de container — descoberto testando em ambiente Docker genuinamente limpo. Inofensivo na prática para um serviço HTTP, mas vale reavaliar explicitamente na Architecture Review da Release 4 se Memory Engine também tiver persistência própria.
+Migrations do Identity Engine só rodam na primeira requisição HTTP (dentro de `IdentityEngineModule::boot()`), não há hook de inicialização de container — descoberto testando em ambiente Docker genuinamente limpo. Inofensivo na prática para um serviço HTTP, mas vale reavaliar explicitamente na Architecture Review da Release 4B, já que Memory Engine também terá persistência própria.
 
 ## Backlog sinalizado, não implementado
 

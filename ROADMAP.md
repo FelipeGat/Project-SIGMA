@@ -14,7 +14,8 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 3A | Identity Domain | ✅ Concluída | 100% |
 | 3B | Identity Infrastructure | ✅ Concluída | 100% |
 | 3.5 | Architecture Consolidation | ✅ Concluída | 100% |
-| 4 | Memory Engine | ⏳ Não iniciada | 0% |
+| 4A | Memory Domain | ⏳ Proposta apresentada, aguardando aprovação | 0% |
+| 4B | Memory Infrastructure | ⚪ Não iniciada | 0% |
 | 5 | Mission Engine | ⏳ Não iniciada | 0% |
 | 6 | Planner Engine | ⏳ Não iniciada | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
@@ -77,6 +78,8 @@ Não mudou o produto — fortaleceu a base antes da Memory Engine, seguindo a re
 ## Release 4 — Memory Engine
 
 **Segundo marco mais importante do projeto, depois da Foundation** — praticamente todo Engine seguinte (Mission, Intent, Planner, Agent, Council) depende da qualidade do que a Memory Engine expuser (avaliação do Product Owner, ver [ADR-0070](docs/adr/0070-roadmap-estendido-24-releases.md)). Modelagem e primeira persistência/consulta de Knowledge e Memory nos três níveis (ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md)), custódia dos primeiros Digital Twins (ver [DIGITAL_TWIN.md](DIGITAL_TWIN.md) — a versão madura vira Engine própria na Release 17). Primeira fonte real de Knowledge: o conteúdo já existente em [/knowledge](knowledge/). Construído antes do Mission Engine para que o Planner (Release 6) já tenha uma fonte de contexto/heurística ao nascer. Consome identidade/contexto da Release 3, não os resolve por conta própria.
+
+Mesmo padrão de modelagem cuidadosa e divisão Domain-first da Release 3 ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **4A — Memory Domain** ([docs/releases/0004a-memory-domain.md](docs/releases/0004a-memory-domain.md)) modela `MemoryRecord`/`KnowledgeRecord`/`DigitalTwin` em código puro, com a mecânica de promoção entre níveis ([ADR-0081](docs/adr/0081-mecanica-de-promocao-de-memory.md)) e a decisão de popular `UserTwin` desde já ([ADR-0079](docs/adr/0079-usertwin-desde-a-release-4.md)); **4B — Memory Infrastructure** ([docs/releases/0004b-memory-infrastructure.md](docs/releases/0004b-memory-infrastructure.md)) só começa depois que 4A estiver validada. Modelo completo em [MEMORY_MODEL.md](MEMORY_MODEL.md) e [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md).
 
 ## Release 5 — Mission Engine
 

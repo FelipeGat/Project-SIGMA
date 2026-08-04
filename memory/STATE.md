@@ -4,38 +4,35 @@ _Atualizado em: 2026-08-04._
 
 ## Fase
 
-**Release 3.5 — Architecture Consolidation: COMPLETA.** Não mudou o produto — fortaleceu a base antes da Memory Engine. Roadmap estendido de 14 para 24 Releases (visão de 5-10 anos do Product Owner). Release 3 (3A+3B) segue completa e com push feito. Próximo passo: Release 4 — Memory Engine, reconhecida como o segundo marco mais importante do projeto.
+**Release 4A — Memory Domain: Proposal apresentada, aguardando aprovação.** Modelo completo do Memory Engine ([MEMORY_MODEL.md](../MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](../MEMORY_LIFECYCLE.md)) publicado, seguindo a recomendação explícita do Product Owner de investir tempo extra na modelagem — Release 4 é o "segundo marco mais importante do projeto". Nenhum código do Memory Engine escrito ainda. Release 3.5 (Consolidation) segue completa e com push feito.
 
 ## O que existe (documentação)
 
-- Visão, produto, filosofia, [SIGMA_PROTOCOL.md](../SIGMA_PROTOCOL.md), [SGL.md](../SGL.md), [DIGITAL_TWIN.md](../DIGITAL_TWIN.md), [BOOTSTRAP.md](../BOOTSTRAP.md), [SYSTEM_MANIFEST.md](../SYSTEM_MANIFEST.md), [KERNEL.md](../KERNEL.md), [COMPATIBILITY.md](../COMPATIBILITY.md), [IDENTITY_MODEL.md](../IDENTITY_MODEL.md), [IDENTITY_LIFECYCLE.md](../IDENTITY_LIFECYCLE.md), [DOMAIN_EVENTS.md](../DOMAIN_EVENTS.md), **[EVENT_CATALOG.md](../EVENT_CATALOG.md)** (novo), **[CHANGELOG.md](../CHANGELOG.md)** (novo, orientado ao usuário), `contracts/`, `docs/rfc/`, `sdk/`.
-- **[ROADMAP.md](../ROADMAP.md) estendido a 24 Releases** — 5 Engines novos (Knowledge=16, Digital Twin=17, Capability Registry=18, Council=19, Multi-Agent Runtime=20), Gateway/API própria (12), 5 componentes estruturais sinalizados (Scheduler/Secrets Manager/Cache Layer/Observability/Policy Engine).
-- **78 ADRs** — [docs/adr/](../docs/adr/). Novas nesta rodada (0070-0078): roadmap estendido, EVENT_CATALOG obrigatório, CredentialProvider, Identity independe de autenticação (confirmação), Session é Aggregate autônomo (confirmação), Workspace/Context→Session (direção adiada), metadata de evento (direção adiada), VERSION.md+SemVer por Engine, CHANGELOG.md.
-- **[packages/identity-engine/VERSION.md](../packages/identity-engine/VERSION.md)** (novo) — primeiro Engine com Semantic Versioning formalizado.
-- Releases 2, 3A, 3B, 3.5: Proposal + Decision Log + Validation Report completos para todas.
+- Tudo da Release 3.5, mais: **[MEMORY_MODEL.md](../MEMORY_MODEL.md)** (novo) — `MemoryRecord`/`KnowledgeRecord`/`DigitalTwin`, mecânica de promoção entre níveis, fronteira com Identity Engine (UserTwin) e com a Release 16 (Knowledge simples vs. semântico).
+- **[MEMORY_LIFECYCLE.md](../MEMORY_LIFECYCLE.md)** (novo) — fluxo de observação/promoção de Memory + sincronização de Digital Twin.
+- **`contracts/Memory.contract.yaml`** (novo) — contrato antes do código, mesmo padrão de `Identity.contract.yaml`.
+- **[DOMAIN_EVENTS.md](../DOMAIN_EVENTS.md)/[EVENT_CATALOG.md](../EVENT_CATALOG.md)** — seção "Memory Engine" nova, seis eventos catalogados antes do código.
+- **81 ADRs** — novas: 0079 (UserTwin desde a Release 4), 0080 (Knowledge simples nesta Release, semântico fica para a 16), 0081 (mecânica de promoção — repetição/generalização por `subjectKey`).
+- Release 4A: [Proposal](../docs/releases/0004a-memory-domain.md) — aguardando aprovação. Release 4B: [placeholder](../docs/releases/0004b-memory-infrastructure.md).
+- Correções de nomenclatura obsoleta: "Épico E5"/"Camada L5" → "Release 4" em `knowledge/README.md` e `packages/memory-engine/README.md`.
 
 ## O que existe (código)
 
-Igual à Release 3B, com uma renomeação: **`PasswordHasher` → `CredentialProvider`** (`Argon2idPasswordHasher` → `Argon2idCredentialProvider`) em `packages/identity-engine` — renomeação pura, sem mudança de comportamento (ADR-0072). `contracts/Identity.contract.yaml` corrigido (events reais, output `Context` não `Identity`) via validação cruzada.
+Sem mudança em relação à Release 3.5 — **135 testes automatizados, todos passando**. Nenhum código de `packages/memory-engine` existe ainda.
 
-**Total: 135 testes automatizados, todos passando** (8+36+6+8+72+5) — confirmados também via `docker compose down -v` + `build --no-cache` + `up`, ambiente genuinamente limpo.
+## Decisões de fronteira resolvidas nesta rodada
 
-## Achado real desta rodada
-
-Migrations do Identity Engine só rodam na **primeira requisição HTTP** ao `services/auth` (dentro de `IdentityEngineModule::boot()`, disparado só quando `Bootstrap` roda) — não há hook de inicialização de container. Descoberto ao testar em ambiente Docker genuinamente limpo (`down -v`), quando um seed via `docker exec` falhou antes de qualquer requisição HTTP ter acontecido. Não corrigido (mudaria comportamento, fora do escopo "sem mudar comportamento" desta Release) — documentado como característica conhecida, sinalizado para quando um Engine futuro com persistência for desenhado.
+- **`UserTwin` populado desde a Release 4** (não espera a Release 8) — os eventos do Identity Engine já são reais hoje. `ClientTwin`/`ProjectTwin`/`CompanyTwin` ficam com schema pronto, sem instância até a Release 8.
+- **Knowledge da Release 4 é índice simples** (busca textual sobre `/knowledge`) — busca semântica/embeddings fica para a Release 16.
+- **Mecânica de promoção formalizada**: `subjectKey` estável por registro; repetição (mesmo Workspace, Missions diferentes) promove Operational→Project; generalização (Workspaces diferentes) promove Project→LongTerm; `promotedFrom` preserva proveniência, nunca apaga o original.
 
 ## Pendências / riscos sinalizados
 
-- **PHP local é 8.2, ADR-0009 pede 8.4** — adiado para a Release de CI/CD.
-- Divergência `autonomy_level_required` (numérico) vs. `autonomyCapabilities` (nomeado) — reconciliação adiada para o Skill Engine (Release 8).
-- `PermissionId` sem uso na Infrastructure.
-- `IDENTITY_MODEL.md` ainda descreve `Context` como objeto de mais alto nível, não `Identity` — mantido por princípio (ADR-0064 documenta a divergência, texto original não reescrito).
-- Migrations lazy na primeira requisição, não no startup do container (achado desta rodada, ver acima).
-- Duas direções aprovadas, não implementadas: Workspace/Context migrarem de `Identity` para `Session` (ADR-0075); metadata padrão em eventos de domínio (ADR-0076) — aguardando a próxima vez que o Identity Engine for tocado com mudança de comportamento real.
-- Numeração Release 6/7 (Planner/Intent) — mantida conforme ADR-0031, diverge da tabela recebida do Product Owner; sinalizado em ROADMAP.md, aguardando confirmação.
-- **[ADR-0036](../docs/adr/0036-objetivo-e-campo-da-intent.md)** — "Objetivo" como campo de Intent vs. camada nova. Relevante antes da Release 6/7.
-- Backlog sinalizado, não implementado: `/health/details`, `LogContext`, validação de Bootstrap para dependência ausente, endpoint HTTP para `RegisterIdentity`.
+- Mesmas da Release 3.5 (PHP 8.2, `autonomy_level_required` vs. `autonomyCapabilities`, `PermissionId` sem uso, migrations lazy, numeração Release 6/7).
+- Pergunta em aberto na Proposal de 4A: `Identifier` (base de Value Object de identificador) deveria mover de `packages/identity-engine` para `packages/core`, já que Memory Engine precisa do mesmo mecanismo — recomendado, não decidido.
+- Componente estrutural **Scheduler** (ainda sem Release própria) é dependência da automação de promoção/refresh de Twin — Release 4A entrega a mecânica como operação explícita, não agendada.
+- Cache Layer segue sem reivindicação — não claimado pela Release 4.
 
 ## Bloqueios
 
-Nenhum. Push do commit da Release 3.5 aguardando confirmação. Próximo passo: Proposal da Release 4 — Memory Engine. Ver [NEXT.md](../memory/NEXT.md).
+**Aguardando aprovação da Proposal da Release 4A** — nenhum código do Memory Engine antes disso. Ver [NEXT.md](../memory/NEXT.md).

@@ -84,3 +84,6 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0076](0076-metadata-padrao-em-eventos-de-dominio.md) | Eventos de domínio ganham metadata padrão — direção aprovada, implementação adiada |
 | [0077](0077-version-md-e-semver-por-engine.md) | `VERSION.md` e Semantic Versioning por Engine |
 | [0078](0078-changelog-orientado-ao-usuario.md) | `CHANGELOG.md` orientado ao usuário, distinto de toda documentação técnica |
+| [0079](0079-usertwin-desde-a-release-4.md) | `UserTwin` é populado desde a Release 4 — os demais Digital Twins esperam a Release 8 |
+| [0080](0080-knowledge-release4-indice-simples.md) | Knowledge da Release 4 é índice estruturado simples — busca semântica fica para a Release 16 |
+| [0081](0081-mecanica-de-promocao-de-memory.md) | Mecânica de promoção de Memory — repetição dentro do Workspace, generalização entre Workspaces |

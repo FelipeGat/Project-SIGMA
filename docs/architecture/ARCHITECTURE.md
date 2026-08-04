@@ -242,5 +242,7 @@ Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decis
 | [EVENT_CATALOG.md](../../EVENT_CATALOG.md) | Catálogo de **todo** evento do SIGMA, entre Engines — quem consome, versão, contrato |
 | [CHANGELOG.md](../../CHANGELOG.md) | O que o SIGMA passou a fazer, Release a Release — para quem usa, não para quem constrói |
 | [MEMORY_ARCHITECTURE.md](../../MEMORY_ARCHITECTURE.md) | Os três níveis de Memory |
+| [MEMORY_MODEL.md](../../MEMORY_MODEL.md) | As entidades do Memory Engine (MemoryRecord/KnowledgeRecord/DigitalTwin) e a mecânica de promoção entre níveis |
+| [MEMORY_LIFECYCLE.md](../../MEMORY_LIFECYCLE.md) | O fluxo runtime de observação/promoção de Memory e sincronização de Digital Twin |
 | [SYSTEM_MANIFEST.md](../../SYSTEM_MANIFEST.md) | O System Manifest (incl. `manifestVersion`) e Self-Describing Components |
 | [COMPATIBILITY.md](../../COMPATIBILITY.md) | Matriz de compatibilidade Kernel × Protocol × Plugin API |

@@ -43,12 +43,25 @@ Nenhum destes é publicado de fato no `IEventBus` ainda além do que a `Applicat
 
 Nenhum evento de domínio — Release 2 é infraestrutura pura ([ADR-0053](docs/adr/0053-escopo-restrito-release-2.md)). A sequência Technical de orquestração de Mission (`MissionRequested`, `IntentDetected`, etc.) já está catalogada em [EVENT_MODEL.md](EVENT_MODEL.md#catálogo-de-eventos-canônico) — não duplicada aqui porque nasce com Releases futuras (Intent/Planner/Mission Engine), nenhuma delas implementada ainda.
 
-## Memory / Mission / Planner / Intent / Skill / Agent / Execution / Audit Engine
+## Memory Engine
 
-Nenhum evento ainda — nenhum destes Engines tem código. Cada um ganha sua seção aqui no momento em que a Release correspondente é implementada, mesmo padrão desta seção de Identity: o catálogo só lista o que existe de fato em código, nunca eventos hipotéticos ainda não publicados por nenhuma implementação real.
+Ver [DOMAIN_EVENTS.md#memory-engine](DOMAIN_EVENTS.md#memory-engine) — catalogados antes do código, junto do [MEMORY_MODEL.md](MEMORY_MODEL.md)/[MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md), mesmo padrão usado para Identity antes da Release 3A.
+
+| Evento | Bus | Camada | Publica | Consome | Versão | Contrato |
+|---|---|---|---|---|---|---|
+| `MemoryRecordObserved` | `memory.record_observed` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` (a nascer com a Release 4) |
+| `MemoryPromoted` | `memory.promoted` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `KnowledgeRecordIndexed` | `knowledge.indexed` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `DigitalTwinCreated` | `digital_twin.created` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `DigitalTwinUpdated` | `digital_twin.updated` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `DigitalTwinStale` | `digital_twin.stale` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+
+## Mission / Planner / Intent / Skill / Agent / Execution / Audit Engine
+
+Nenhum evento ainda — nenhum destes Engines tem Proposal aprovada nem código. Cada um ganha sua seção aqui quando a modelagem de domínio correspondente for escrita (mesmo momento em que ganhou uma seção o Identity Engine, antes da Release 3A, e o Memory Engine, antes da Release 4A) — nunca eventos hipotéticos sem nenhum plano de implementação próximo.
 
 ## Processo
 
-1. Todo evento novo nasce junto do código que o publica — nunca antes (mesmo princípio de [DOMAIN_EVENTS.md](DOMAIN_EVENTS.md), que já seguia isso para Identity).
+1. Todo evento novo é catalogado aqui e em [DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) junto da modelagem de domínio do Engine que o publica — antes do código, não depois (mesmo padrão de [IDENTITY_MODEL.md](IDENTITY_MODEL.md)/[DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) antes da Release 3A, e [MEMORY_MODEL.md](MEMORY_MODEL.md)/[DOMAIN_EVENTS.md](DOMAIN_EVENTS.md) antes da Release 4A). Um evento só entra aqui quando a Release que o publica já tem uma Proposal em preparação — nunca especulativo sem plano de implementação.
 2. Ao publicar um evento novo, a linha correspondente entra nesta tabela **e** no campo `events:` do Contract correspondente, no mesmo Pull Request — as duas fontes nunca divergem por mais que um PR.
 3. Uma mudança incompatível de payload sobe a versão (`v1` → `v2`) e o evento antigo continua existindo até todo consumidor migrar — nunca uma edição silenciosa da mesma versão.

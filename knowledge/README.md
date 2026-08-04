@@ -1,6 +1,6 @@
 # Knowledge
 
-Esta pasta não é documentação do SIGMA — é o **conhecimento de negócio da Alfa** que alimenta o Memory Engine ([DOMAIN.md](../DOMAIN.md)). É o material bruto a partir do qual, quando o Épico E5 — Knowledge & Memory for implementado, o SIGMA passa a consultar contexto estruturado em vez de depender de alguém lembrar e explicar de novo a cada Mission.
+Esta pasta não é documentação do SIGMA — é o **conhecimento de negócio da Alfa** que alimenta o Memory Engine ([DOMAIN.md](../DOMAIN.md)). É o material bruto a partir do qual, a partir da Release 4 — Memory Engine ([ROADMAP.md](../ROADMAP.md)), o SIGMA passa a consultar contexto estruturado em vez de depender de alguém lembrar e explicar de novo a cada Mission.
 
 Diferença em relação a `/docs`: `docs/` explica **como o SIGMA é construído**. `knowledge/` registra **o que a Alfa sabe sobre seu próprio negócio** — independente do SIGMA existir ou não.
 
@@ -18,4 +18,4 @@ Diferença em relação a `/docs`: `docs/` explica **como o SIGMA é construído
 
 ## Como popular
 
-Cada subpasta começa com um `README.md` descrevendo seu escopo e o formato esperado de conteúdo — não com dados fictícios. O conteúdo real é adicionado por quem detém o conhecimento (comercial, técnico, diretoria), incrementalmente, e passa a alimentar o Memory Engine a partir do Épico E5.
+Cada subpasta começa com um `README.md` descrevendo seu escopo e o formato esperado de conteúdo — não com dados fictícios. O conteúdo real é adicionado por quem detém o conhecimento (comercial, técnico, diretoria), incrementalmente, e passa a alimentar o Memory Engine a partir da Release 4.
