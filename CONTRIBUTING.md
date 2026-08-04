@@ -1,0 +1,36 @@
+# Como contribuir com o SIGMA
+
+## O processo é por épico, não por PR isolado
+
+O SIGMA avança um épico por vez (ver [ROADMAP.md](ROADMAP.md) e [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md)). Antes de escrever código para um épico, ele precisa ter sido apresentado e aprovado no formato:
+
+- **Objetivo** — o que o épico resolve.
+- **Escopo** — o que entra e, explicitamente, o que não entra.
+- **Arquitetura** — como se encaixa no domínio já existente (contextos, entidades, eventos envolvidos).
+- **Dependências** — o que precisa existir antes.
+- **Riscos** — o que pode dar errado e como é mitigado.
+- **Entrega** — o incremento concreto e verificável que o épico produz.
+- **Testes** — o que será coberto e como.
+- **Critérios de Aceite** — como se sabe que o épico está pronto.
+
+Sem essa aprovação, não há branch de implementação — apenas documentação e discussão são aceitas.
+
+## Fluxo de trabalho
+
+1. Branch a partir de `main`: `epic/<numero>-<slug>` para código de épico aprovado, `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
+2. Commits seguindo [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+3. Pull Request descrevendo a que Critério de Aceite do épico ele atende.
+4. Revisão contra [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md) e [docs/conventions/naming-conventions.md](docs/conventions/naming-conventions.md).
+5. Merge somente após aprovação explícita.
+
+## Decisões arquiteturais
+
+Toda decisão que afeta mais de um módulo, introduz uma dependência nova, ou muda um contrato já estabelecido, vira uma ADR — ver [docs/adr/template.md](docs/adr/template.md) e [docs/adr/README.md](docs/adr/README.md). Uma ADR não é revogada por edição; decisões que mudam geram uma nova ADR referenciando a anterior.
+
+## Padrão de código
+
+Todo código de aplicação segue [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md): documentação do porquê, testes, logs, tratamento de erro, versionamento de contratos públicos, nomes padronizados, alta legibilidade, comentários apenas quando o "porquê" não é óbvio.
+
+## Código de conduta
+
+Contribuições seguem o [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

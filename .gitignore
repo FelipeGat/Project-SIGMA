@@ -1,0 +1,40 @@
+# SO
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Backend (Laravel) — a partir do E1
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/storage/*.key
+backend/bootstrap/cache/*
+backend/public/hot
+backend/public/storage
+backend/public/build
+
+# Frontend web (Vite/React) — a partir do E6
+frontend-web/node_modules/
+frontend-web/dist/
+frontend-web/.env
+frontend-web/.env.*
+!frontend-web/.env.example
+
+# Frontend mobile (Expo/React Native) — a partir do E7
+frontend-mobile/node_modules/
+frontend-mobile/.expo/
+frontend-mobile/dist/
+frontend-mobile/.env
+frontend-mobile/.env.*
+!frontend-mobile/.env.example
+
+# Logs e artefatos locais
+*.log
+.env
