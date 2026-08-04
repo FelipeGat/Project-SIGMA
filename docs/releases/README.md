@@ -12,4 +12,4 @@ O Decision Log explica o porquê das escolhas; o Validation Report prova o que f
 | Release | Proposta | Decision Log | Validation Report | Status |
 |---|---|---|---|---|
 | 2 — SIGMA Bootstrap | [0002-sigma-bootstrap.md](0002-sigma-bootstrap.md) (revisão 3) | [0002-sigma-bootstrap-decision-log.md](0002-sigma-bootstrap-decision-log.md) | [0002-sigma-bootstrap-validation-report.md](0002-sigma-bootstrap-validation-report.md) | ✅ Implementada — 48 testes passando, Validation concluída (docker-compose não verificado, ver Validation Report) |
-| 3 — Identity Engine | [0003-identity-engine.md](0003-identity-engine.md) (revisão 1) | — | — | ⏳ Aguardando aprovação — bloqueada por [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md), que precisa ser aprovado antes de qualquer código |
+| 3 — Identity Engine | [0003-identity-engine.md](0003-identity-engine.md) (revisão 2) | — | — | ✅ Aprovada para implementação — [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md) e [IDENTITY_LIFECYCLE.md](../../IDENTITY_LIFECYCLE.md) + `contracts/Identity.contract.yaml` entregues; nenhum código ainda |

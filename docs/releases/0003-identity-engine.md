@@ -1,8 +1,20 @@
 # Release 3 — Identity Engine
 
-Proposta formal, no formato exigido por [ADR-0010](../adr/0010-processo-por-epicos-com-aprovacao.md), seguindo o processo de quatro fases de [ADR-0048](../adr/0048-processo-quatro-fases.md). **Revisão 1 — aguardando aprovação do Product Owner.** Nenhuma linha de código do Identity é escrita antes de duas aprovações explícitas e separadas: (1) o [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md), que esta proposta implementa; (2) esta própria Proposal.
+Proposta formal, no formato exigido por [ADR-0010](../adr/0010-processo-por-epicos-com-aprovacao.md), seguindo o processo de quatro fases de [ADR-0048](../adr/0048-processo-quatro-fases.md). **Revisão 2 — aprovada para implementação.** Aprovada mediante a inclusão de dois documentos, ambos agora entregues: [IDENTITY_LIFECYCLE.md](../../IDENTITY_LIFECYCLE.md) e `contracts/Identity.contract.yaml`. Nenhuma linha de código do Identity é escrita antes de três aprovações explícitas e separadas: (1) [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md); (2) esta Proposal; (3) os dois documentos acima — todas já concedidas.
 
-Ver [ADR-0039](../adr/0039-identity-engine.md) (Identity Engine — extraído do Memory Engine), [MULTITENANCY.md](../../MULTITENANCY.md), [WORKSPACES.md](../../WORKSPACES.md) e [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md) (design de referência que esta proposta implementa).
+Ver [ADR-0039](../adr/0039-identity-engine.md) (Identity Engine — extraído do Memory Engine), [MULTITENANCY.md](../../MULTITENANCY.md), [WORKSPACES.md](../../WORKSPACES.md), [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md) e [IDENTITY_LIFECYCLE.md](../../IDENTITY_LIFECYCLE.md) (design de referência que esta proposta implementa).
+
+## Direção aprovada, reconciliação durante a Implementation
+
+O Product Owner aprovou cinco refinamentos de direção sobre [IDENTITY_MODEL.md](../../IDENTITY_MODEL.md), sem exigir reabertura desta Proposal — cada um vira uma ADR própria durante a Implementation, não uma reescrita do modelo agora:
+
+1. **`Identity` como objeto raiz** — `Identity → User → Workspace → Permissions → Context → Autonomy`, em vez do `Context` isolado como hoje descrito em IDENTITY_MODEL.md. Já adotado no vocabulário de [IDENTITY_LIFECYCLE.md](../../IDENTITY_LIFECYCLE.md).
+2. **`Session` autentica uma `Identity`, não diretamente um `User`** — prepara múltiplas Sessions concorrentes por pessoa, uma por contexto (ex: Workspace Comercial e Workspace Financeiro simultâneos).
+3. **`Context` imutável** — trocar de Workspace implica nova Session e novo Context, nunca mutação do vigente.
+4. **`Team` tipado** — `System Team` (CTO, Developer, Support) vs. `Business Team` (Comercial, Financeiro, Obras), preparando automações futuras que discriminam por tipo de Team.
+5. **`Autonomy` baseada em capacidade, não em nível numérico** — `CanApproveBudget`/`CanDeleteMission`/`CanDeploy` como booleanos nomeados, em vez de um inteiro 0–3 único. Mais flexível; substitui o esquema de "menor valor entre User/Role e Capability" de [SIGMA_PROTOCOL.md §5](../../SIGMA_PROTOCOL.md#5-autonomia-progressiva) por checagem direta de capability — o próprio ADR-0029 precisa ser revisitado quando isso for formalizado.
+
+Estes cinco pontos afetam diretamente o schema desta Release (Escopo, abaixo) — a Implementation já parte deles, e a ADR correspondente a cada um é escrita como parte do trabalho, não depois.
 
 ## Objetivo
 

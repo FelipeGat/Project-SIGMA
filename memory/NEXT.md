@@ -2,16 +2,17 @@
 
 ## Imediato
 
-1. **Aguardar aprovação do Product Owner para [IDENTITY_MODEL.md](../IDENTITY_MODEL.md)** — bloqueante, sem exceção, para qualquer código do Identity Engine.
-2. **Aguardar aprovação da Proposal da Release 3** ([docs/releases/0003-identity-engine.md](../docs/releases/0003-identity-engine.md), revisão 1) — pode passar por mais revisões, mesmo padrão da Release 2 (3 revisões antes de aprovada).
-3. Aguardar confirmação para dar push do commit com os refinamentos pré-Release-3 (EventBus por composição, `manifestVersion`, ADRs 0056-0058, `VALIDATION_REPORT.md`, `IDENTITY_MODEL.md`, Proposal da Release 3) — commitado localmente, push **não realizado** ainda.
-4. Validar `docker-compose up --build` num ambiente com Docker Desktop ativo — pendência repetida desde a Release 2, idealmente resolvida antes ou durante a Release 3 (que já introduz MariaDB no compose).
-5. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD, não antes.
+1. **Release 3 está aprovada para implementação** — próximo passo natural é a Architecture Review seguida da Implementation real (schema/migrations, `IdentityEngineModule`, `services/auth`). Nenhum código ainda.
+2. Ao implementar, escrever as **cinco ADRs de direção já aprovadas** como parte do trabalho (não depois): Identity como objeto raiz, Session presa a Identity (não a User), Context imutável, Team tipado (System/Business), Autonomy baseada em capability (revisita ADR-0029). Ver `docs/releases/0003-identity-engine.md`, seção "Direção aprovada".
+3. Validar `docker-compose up --build` com MariaDB de fato — agora é Critério de Aceite explícito da Release 3, não pode repetir a pendência da Release 2.
+4. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD, não antes.
+5. A partir de agora, ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema — orientação estratégica permanente do Product Owner a partir da Release 3.
 
 ## Perguntas em aberto na Proposal da Release 3 (para a Architecture Review)
 
 - Camada de acesso a dados em `packages/identity-engine`: PDO puro + runner de migration próprio (recomendado, mantém o precedente framework-agnóstico) vs. Doctrine DBAL. Sinalizado na Proposal, não decidido.
-- Um Sigma Contract por entidade de Identity, ou um só para o Engine inteiro — a definir.
+- Um Sigma Contract por entidade de Identity, ou um só para o Engine inteiro — `Identity.contract.yaml` já cobre o conceito agregado; entidades internas (Tenant/Role/Permission/etc.) podem não precisar de contrato próprio, a confirmar durante a Implementation.
+- Nomes de evento de domínio do Identity Engine (`identity.authenticated`, `identity.workspace_selected`, etc.) — listados como candidatos em `contracts/Identity.contract.yaml`, não fixados ainda.
 
 ## Aguardando confirmação do Product Owner (não bloqueia a Release 2, nem a Release 3 em si)
 

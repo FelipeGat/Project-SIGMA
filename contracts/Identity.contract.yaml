@@ -1,0 +1,61 @@
+# Sigma Contract — Identity
+# Contrato do conceito de domínio "Identity" (ver IDENTITY_MODEL.md e
+# IDENTITY_LIFECYCLE.md) — só o contrato, nenhum código ainda. Nasce
+# antes da implementação da Release 3, por decisão do Product Owner,
+# no mesmo espírito de contracts/Module.contract.yaml na Release 2.
+
+name: Identity
+version: "1.0.0"
+
+input:
+  - name: credentials
+    type: Credentials
+    required: false
+    # Presente no fluxo de autenticação (Identity Lifecycle, etapa
+    # "Autenticada") — e-mail/senha nesta Release. Ausente quando o
+    # input é sessionToken (resolução de uma Identity já autenticada).
+  - name: sessionToken
+    type: string
+    required: false
+    # Presente na resolução de uma Identity a partir de uma Session
+    # já emitida (Identity Lifecycle, etapas 4 em diante). Ausente no
+    # primeiro login, quando ainda não existe Session.
+  - name: workspaceId
+    type: string
+    required: false
+    # Seleciona o Workspace ativo (Identity Lifecycle, etapa 5). Sem
+    # ele, a Identity resolvida fica sem Permissions/Autonomy — só
+    # o que é estável independente de Workspace (Tenant, Companies e
+    # Workspaces acessíveis, Teams).
+
+output:
+  - name: identity
+    type: Identity
+    # Objeto imutável — Session + User + Workspace ativo + Permissions
+    # efetivas + Autonomy Level efetivo, ver IDENTITY_LIFECYCLE.md.
+    # Trocar de Workspace nunca muta esta saída; produz uma nova.
+
+events: []
+# Nenhum evento de domínio ainda — este contrato nasce antes do
+# código (ver ADR-0049: Sigma Contracts). Candidatos a formalizar
+# durante a Implementation da Release 3: identity.authenticated,
+# identity.workspace_selected, identity.session_expired — não
+# decididos aqui, para não fixar nomes de evento sem o código que os
+# publica de fato.
+
+permissions: []
+# Resolver a própria Identity não exige nenhuma Permission — é o
+# contrário: é o que produz o conjunto de Permissions que toda outra
+# chamada de Capability vai exigir. Autenticação (login) tem sua
+# própria verificação (credencial válida), não uma Permission.
+
+autonomy_level_required: 0
+# Resolver/autenticar uma Identity é leitura/autenticação, nunca uma
+# ação que o SIGMA executa em nome do usuário — não compete com o
+# Autonomy Level de nenhuma Mission.
+
+supported_versions:
+  - "1.0.0"
+
+compatible_with:
+  protocol: "1.0"
