@@ -4,16 +4,17 @@ _Atualizado em: 2026-08-04._
 
 ## Fase
 
-**Release 4A — Memory Domain: IMPLEMENTADA.** `packages/memory-engine/src/Domain/` completo — `ContextMemory`, `MemoryRecord`, `KnowledgeRecord`, `DigitalTwin`, 35 testes automatizados, 100% passando. Proposal revisão 2 aprovada ("aprovado e pode seguir") e implementada na mesma rodada. Release 4B (Infrastructure) ainda não iniciada — próximo passo do Memory Engine.
+**Release 4A — Memory Domain: IMPLEMENTADA.** `packages/memory-engine/src/Domain/` completo — `ContextMemory`, `MemoryRecord`, `KnowledgeRecord`, `DigitalTwin`, 35 testes automatizados, 100% passando. **Release 4B — Memory Infrastructure: Proposal revisão 1 apresentada, aguardando aprovação.** Achado real durante a escrita da Proposal: `RedisEventBus` nunca implementou entrega cross-processo de eventos (só local, mesmo processo) — sinalizado desde a Release 2/ADR-0057 como "fica para quando houver um consumidor de verdade". `UserTwin` sendo sincronizado a partir de `services/auth` é esse consumidor — a Proposal 4B passa a incluir, como escopo central, o primeiro listener Redis cross-processo real do projeto (`RedisSubscriber` + `services/memory-worker`).
 
 ## O que existe (documentação)
 
 Tudo da rodada anterior (MEMORY_MODEL.md/MEMORY_LIFECYCLE.md revisão 2, MEMORY_PROMOTION_RULES.md, ADRs 0082-0088), mais:
 
 - **[Proposal 4A](../docs/releases/0004a-memory-domain.md)** marcada como aprovada e implementada.
-- **[Decision Log](../docs/releases/0004a-memory-domain-decision-log.md)** — decisões locais da Implementation, incluindo por que `Identifier` não foi movida para `packages/core` nesta rodada, e o achado real do evento `MemoryReactivated` faltante.
-- **[Validation Report](../docs/releases/0004a-memory-domain-validation-report.md)** — 35 testes, 103 assertions, 100% passando; suíte completa do monorepo (170 testes) revalidada.
+- **[Decision Log 4A](../docs/releases/0004a-memory-domain-decision-log.md)** — decisões locais da Implementation, incluindo por que `Identifier` não foi movida para `packages/core` nesta rodada, e o achado real do evento `MemoryReactivated` faltante.
+- **[Validation Report 4A](../docs/releases/0004a-memory-domain-validation-report.md)** — 35 testes, 103 assertions, 100% passando; suíte completa do monorepo (170 testes) revalidada.
 - **`DOMAIN_EVENTS.md`/`EVENT_CATALOG.md`/`contracts/Memory.contract.yaml`** — evento `MemoryReactivated` (`memory.reactivated`) acrescentado durante a Implementation (doze eventos agora, não onze).
+- **[Proposal 4B](../docs/releases/0004b-memory-infrastructure.md)** (novo, revisão 1) — substitui o placeholder anterior; escopo agora inclui `RedisSubscriber` (listener Redis cross-processo real, primeiro do projeto) e `services/memory-worker`, além de `Application/Infrastructure/Interfaces` do Memory Engine. Nenhuma API HTTP pública nesta Release — sem consumidor real ainda.
 
 ## O que existe (código)
 
@@ -38,4 +39,4 @@ Tudo da rodada anterior (MEMORY_MODEL.md/MEMORY_LIFECYCLE.md revisão 2, MEMORY_
 
 ## Bloqueios
 
-Nenhum bloqueio ativo. Push do commit desta rodada aguardando confirmação explícita (mesma regra de sempre — commit de código, não só documentação, ainda mais motivo para não pressupor). Próximo passo natural: Proposal da Release 4B — Memory Infrastructure. Ver [NEXT.md](../memory/NEXT.md).
+**Aguardando aprovação da Proposal 4B** — nenhum código de `Application/Infrastructure/Interfaces` do Memory Engine antes disso. Push do(s) commit(s) desta rodada aguardando confirmação explícita (mesma regra de sempre). Ver [NEXT.md](../memory/NEXT.md).
