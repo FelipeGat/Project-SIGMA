@@ -2,29 +2,34 @@
 
 ## Imediato
 
-1. **Aguardar aprovação da Proposal da Release 5A — Mission Research** ([docs/releases/0005a-mission-research.md](../docs/releases/0005a-mission-research.md)) — nenhum código de `packages/mission-engine` antes disso. Bundle completo já entregue: [MISSION_MANIFESTO.md](../MISSION_MANIFESTO.md)/[MISSION_MODEL.md](../MISSION_MODEL.md)/[MISSION_LIFECYCLE.md](../MISSION_LIFECYCLE.md)/[MISSION_EVENTS.md](../MISSION_EVENTS.md)/`contracts/Mission.contract.yaml`/ADRs 0089-0093.
-2. Depois de aprovada a 5A: **Release 5B — Implementation** — `packages/mission-engine/src/Domain/`. Decidir nessa Proposal se divide em sub-Releases Domain/Infrastructure (ADR-0060), não antecipado.
-3. **Achado de alta prioridade da Release 4.5, ainda não endereçado**: nenhum serviço do `docker-compose.yml` tem `restart policy` — `memory-worker` não recupera sozinho de nenhuma interrupção de conexão Redis. Recomendado, não implementado: `restart: on-failure` (baixo risco) + considerar Redis Streams (mudança maior). A critério do Product Owner quando priorizar isso vs. seguir direto para Mission.
-4. Aguardar confirmação para dar push do(s) commit(s) pendentes (Implementation completa de 4A/4B, ROADMAP.md, Implementation/Validation da 4.5, e agora a Release 5A) — commitado localmente, push ainda não realizado.
+1. **Release 5 — Mission Engine: COMPLETA (5A + 5B).** `packages/mission-engine/src/Domain/` implementado — aggregate `Mission`, `Subtask`/`ApprovalGate`, os treze eventos, 37 testes, 100% verde. Ver [Decision Log](../docs/releases/0005b-mission-implementation-decision-log.md)/[Validation Report](../docs/releases/0005b-mission-implementation-validation-report.md).
+2. **Próxima decisão real**: numerar e nomear a Release que entrega `Application`/`Infrastructure`/`Interfaces` do Mission Engine — 5B deliberadamente não se subdividiu mais (decisão registrada no Decision Log da 5B), então essa camada ainda não tem Release própria no ROADMAP.md.
+3. **Achado de alta prioridade da Release 4.5, ainda não endereçado**: nenhum serviço do `docker-compose.yml` tem `restart policy` — `memory-worker` não recupera sozinho de nenhuma interrupção de conexão Redis. Recomendado, não implementado: `restart: on-failure` (baixo risco) + considerar Redis Streams (mudança maior). A critério do Product Owner quando priorizar isso vs. seguir direto para Mission Application/Infrastructure.
+4. Aguardar confirmação para dar push do(s) commit(s) pendentes (Implementation completa de 4A/4B, ROADMAP.md, Implementation/Validation da 4.5, Release 5A completa, e agora a Release 5B) — commitado localmente, push ainda não realizado.
 5. **Pergunta de numeração Planner/Intent (6/7) ENCERRADA em 2026-08-04** — Product Owner confirmou explicitamente `6 — Planner, 7 — Intent`, mantendo [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md) sem alteração. Não é mais pendência.
 6. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
 7. Ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
 8. Toda decisão relevante de cada rodada precisa terminar registrada no repositório — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
 9. **A partir da Release 4, todo Engine com domínio novo segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](../docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)** (ADR-0082, documentado em [CONTRIBUTING.md](../CONTRIBUTING.md)) — Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push, nesta ordem, sem pular etapa.
 
-## Perguntas em aberto para a Architecture Review da Release 5B
+## Perguntas resolvidas durante a Implementation da Release 5B (ver Decision Log)
 
-- Onde exatamente a distinção "a Subtask já produziu efeito colateral ou não" (o gatilho para `Compensating` em vez de `Failed` direto) é resolvida — [MISSION_MODEL.md](../MISSION_MODEL.md) deixa explicitamente para Implementation.
-- Número exato de tentativas de retry e política de backoff — parâmetro de configuração, não decidido em [MISSION_MODEL.md](../MISSION_MODEL.md)/[MISSION_LIFECYCLE.md](../MISSION_LIFECYCLE.md).
+- "A Subtask já produziu efeito colateral ou não" — resolvido como parâmetro explícito (`bool $hasProducedEffect`) passado por quem chama `failSubtask()`/`failValidation()`, o próprio `Domain/` não infere isso sozinho (permanece decisão de Application/quem chama, como o modelo já previa).
+- `Mission::advanceToNextSubtask()` (não `addSubtask()`/`evaluateApproval()` separados) e `passValidation()`/`failValidation()` (não um único `completeValidation()`) — ver Decision Log para o porquê.
+- `Subtask::compensate()` aceita origem `Failed` **ou** `Validated` — achado de modelagem ao implementar `failValidation()`.
+- Se a Release 5B se divide em sub-Releases Domain/Infrastructure (ADR-0060) — **decidido: não**, 5B entrega só `Domain/`, mesmo escopo que 4A cobriu para Memory.
+
+## Perguntas ainda em aberto
+
+- Número exato de tentativas de retry e política de backoff — parâmetro de configuração, decisão de Application, não decidido ainda.
 - Timeout de um `ApprovalGate` pendente — expira sozinho ou fica pendente indefinidamente?
-- Se a Release 5B se divide em sub-Releases Domain/Infrastructure (ADR-0060) — decisão da Proposal de 5B, não antecipada em 5A.
 - `packages/README.md` ainda tem outras dependências não revisadas nesta rodada (ex: `agent-engine`/`execution-engine` → `mission-engine` — essas fazem sentido pela Ordem de Desenvolvimento, mas não foram auditadas em detalhe).
 
 ## Pendências reais deixadas pela Release 4 (4A + 4B) e 4.5, para quando fizerem falta
 
 - **PRIORIDADE ALTA — `docker-compose.yml` sem `restart policy` em nenhum serviço** (achado da 4.5, não previsto) — `memory-worker` fica fora do ar até um restart manual mesmo após uma interrupção momentânea do Redis. Correção recomendada: `restart: on-failure` em todos os serviços, mudança pequena e de baixo risco.
 - **Perda de mensagem durante queda do `memory-worker` é definitiva, sem fila/replay** (confirmado com evidência real na 4.5) — Redis pub/sub não persiste para assinante ausente. Migrar para Redis Streams resolveria; não decidido em que Release.
-- `Identifier` (base de Value Object de identificador) segue **duplicada** entre `packages/identity-engine` e `packages/memory-engine` — consolidação em `packages/core` ainda recomendada, ainda não decidida.
+- `Identifier` (base de Value Object de identificador) segue **duplicada**, agora em três pacotes (`packages/identity-engine`, `packages/memory-engine`, `packages/mission-engine`) — consolidação em `packages/core` ainda recomendada, ainda não decidida.
 - Onde a checagem de staleness de Twin de fato dispara o `warning` no Envelope — só passa a importar quando um consumidor real existir (Mission/Planner, Release 6+).
 - Três Permissions no vocabulário (`memory.promote`/`memory.block_promotion`/`knowledge.curate`, [ADR-0088](../docs/adr/0088-retracao-expiracao-e-governanca-de-promocao.md)) — sem checagem real ainda, sem API pública que precise delas.
 - **`KnowledgeFolderIndexer` implementado (testado, inclusive contra MariaDB real) mas sem gatilho de execução em produção** — nada chama automaticamente; decidir quando (comando CLI, cron via Scheduler futuro) fica para quando houver necessidade real.

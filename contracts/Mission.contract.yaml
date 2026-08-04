@@ -46,12 +46,13 @@ events:
   - mission.rejected
   - mission.started
   - subtask.retried
+  - mission.failed
   - mission.compensation_started
   - subtask.compensated
   - mission.compensation_finished
   - mission.finished
   - mission.cancelled
-# Os doze eventos publicados pelo Mission Engine (tres ja catalogados
+# Os treze eventos publicados pelo Mission Engine (tres ja catalogados
 # desde a Foundation em EVENT_MODEL.md, nove novos nesta Release) -
 # ver MISSION_EVENTS.md e EVENT_CATALOG.md para payload/consumidor/
 # versao de cada um.

@@ -16,7 +16,7 @@ Três dos doze eventos originais já eram, de fato, do Mission Engine — só nu
 
 Os demais nove eventos do catálogo original (`MissionRequested`, `IntentDetected`, `IntentRejected`, `MissionPlanned`, `SubtaskAssigned`, `SkillRequested`, `ExecutionStarted`, `ExecutionValidated`, `ExecutionFailed`) **não são publicados pelo Mission Engine** — pertencem a Kernel/Intent Engine/Planner Engine (antes de uma Mission existir) ou a Agent/Skill/Execution Engine (depois, orquestrando uma Subtask específica). Mission Engine os **consome** (quando existirem — Releases 6-10), nunca os publica.
 
-## O que é novo nesta Release — os nove eventos que faltavam
+## O que é novo nesta Release — os dez eventos que faltavam
 
 Formalizam exatamente o que [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md#o-que-este-manifesto-acrescenta--a-parte-nova-pedida-explicitamente) pedia: aprovação, retry e compensação como parte de primeira classe do ciclo de vida, não um efeito colateral de log.
 
@@ -31,6 +31,10 @@ Formalizam exatamente o que [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md#o-que-es
 ### Execução e retry (Fluxo 2)
 
 - **`SubtaskRetried`** — uma Subtask falhou de forma transiente e uma nova tentativa foi registrada (`RetryAttempt`). A Mission continua `InProgress` — isto nunca muda o `MissionStatus`, só o histórico da Subtask.
+
+### Falha sem compensação (Fluxo 2)
+
+- **`MissionFailed`** — uma Subtask falhou definitivamente **sem** ter produzido efeito colateral (a distinção que decide entre este caminho e `Compensating` — ver [MISSION_LIFECYCLE.md — Fluxo 2, etapa 4](MISSION_LIFECYCLE.md#fluxo-2--execução-retry-e-novos-gates)). **Achado real durante a Implementation da Release 5B**: a primeira versão de [MISSION_LIFECYCLE.md](MISSION_LIFECYCLE.md) descrevia esse caminho em prosa ("a Mission pode ir direto a `Failed` também") mas não catalogava um evento próprio para ele — só o caminho com compensação (`MissionCompensationFinished`) tinha um. Corrigido antes de escrever a classe de evento correspondente, mesma disciplina já aplicada ao achado de `MemoryReactivated` na Release 4A.
 
 ### Compensação (Fluxo 3)
 
@@ -49,6 +53,7 @@ Formalizam exatamente o que [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md#o-que-es
 | `MissionRejected` | `mission.rejected` | `missionId`, `approvalGateId`, `decidedBy` |
 | `MissionStarted` | `mission.started` | `missionId` |
 | `SubtaskRetried` | `subtask.retried` | `missionId`, `subtaskId`, `attemptNumber`, `reason` |
+| `MissionFailed` | `mission.failed` | `missionId`, `subtaskId` |
 | `MissionCompensationStarted` | `mission.compensation_started` | `missionId`, `subtaskId` |
 | `SubtaskCompensated` | `subtask.compensated` | `missionId`, `subtaskId`, `result` (`Compensated`\|`CompensationFailed`) |
 | `MissionCompensationFinished` | `mission.compensation_finished` | `missionId` |

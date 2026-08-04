@@ -51,13 +51,14 @@ Nome de classe (PHP, PascalCase) e nome publicado no Event Bus (dot.case — ver
 | `ExecutionStarted` | Execution Engine | `execution.started` |
 | `ExecutionValidated` | Execution Engine | `execution.validated` |
 | `ExecutionFailed` | Execution Engine | `execution.failed` |
+| `MissionFailed` | Mission Engine | `mission.failed` |
 | `MissionCompensationStarted` | Mission Engine | `mission.compensation_started` |
 | `SubtaskCompensated` | Mission Engine | `subtask.compensated` |
 | `MissionCompensationFinished` | Mission Engine | `mission.compensation_finished` |
 | `MissionFinished` | Mission Engine | `mission.finished` |
 | `MissionCancelled` | Mission Engine | `mission.cancelled` |
 
-Este catálogo é a fonte única da verdade para nomes de evento do fluxo de Mission — [ARCHITECTURE.md §6](docs/architecture/ARCHITECTURE.md) referencia este documento em vez de duplicar a lista, para não divergir com o tempo. Nove eventos novos ([MISSION_EVENTS.md](MISSION_EVENTS.md), Release 5) — `MissionCreated`, `MissionApprovalRequested`, `MissionApproved`, `MissionRejected`, `MissionStarted`, `SubtaskRetried`, `MissionCompensationStarted`, `SubtaskCompensated`, `MissionCompensationFinished` — formalizam aprovação, retry e compensação como parte do ciclo de vida de uma Mission, ver [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md).
+Este catálogo é a fonte única da verdade para nomes de evento do fluxo de Mission — [ARCHITECTURE.md §6](docs/architecture/ARCHITECTURE.md) referencia este documento em vez de duplicar a lista, para não divergir com o tempo. Dez eventos novos ([MISSION_EVENTS.md](MISSION_EVENTS.md), Release 5) — `MissionCreated`, `MissionApprovalRequested`, `MissionApproved`, `MissionRejected`, `MissionStarted`, `SubtaskRetried`, `MissionFailed`, `MissionCompensationStarted`, `SubtaskCompensated`, `MissionCompensationFinished` — formalizam aprovação, retry e compensação como parte do ciclo de vida de uma Mission, ver [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md). `MissionFailed` foi encontrado faltando só durante a Implementation da 5B (o caminho "falha sem compensação" não tinha evento próprio) — catalogado antes de escrever a classe de evento, ver [MISSION_EVENTS.md](MISSION_EVENTS.md).
 
 ## Três camadas de evento
 

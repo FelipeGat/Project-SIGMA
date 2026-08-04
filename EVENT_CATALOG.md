@@ -75,6 +75,7 @@ Todos camada **Technical** — orquestração do ciclo de vida de uma `Mission`,
 | `MissionRejected` | `mission.rejected` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
 | `MissionStarted` | `mission.started` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
 | `SubtaskRetried` | `subtask.retried` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
+| `MissionFailed` | `mission.failed` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
 | `MissionCompensationStarted` | `mission.compensation_started` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
 | `SubtaskCompensated` | `subtask.compensated` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |
 | `MissionCompensationFinished` | `mission.compensation_finished` | Technical | Mission Engine | Audit Engine | v1 | `Mission.contract.yaml` |

@@ -11,7 +11,7 @@ Modelar completamente o domínio de Mission — a primeira Engine que faz o SIGM
 - **[MISSION_MANIFESTO.md](../../MISSION_MANIFESTO.md)** — por que Mission é diferente de tudo que o SIGMA já construiu; o que já estava decidido (ADR-0003/0028/0031) e o que esta rodada acrescenta.
 - **[MISSION_MODEL.md](../../MISSION_MODEL.md)** — as entidades (`Mission`, `Subtask`, `Plan`, `ApprovalGate`, `RetryAttempt`, `Compensation`), a fronteira explícita entre o que é responsabilidade do Mission Engine e o que pertence a Intent/Planner/Agent/Skill/Execution Engine (nenhum dos quais existe ainda).
 - **[MISSION_LIFECYCLE.md](../../MISSION_LIFECYCLE.md)** — quatro fluxos (criação/aprovação inicial, execução/retry/novos gates, compensação, validação/conclusão), reconciliando três descrições pré-existentes e parciais do mesmo fluxo (`ADR-0003`, `ARCHITECTURE.md §6`, `EVENT_MODEL.md`).
-- **[MISSION_EVENTS.md](../../MISSION_EVENTS.md)** — doze eventos Technical (três já catalogados desde a Foundation, sem dono real até agora; nove novos formalizando aprovação/retry/compensação), refletidos em [EVENT_MODEL.md](../../EVENT_MODEL.md) e [EVENT_CATALOG.md](../../EVENT_CATALOG.md#mission-engine).
+- **[MISSION_EVENTS.md](../../MISSION_EVENTS.md)** — treze eventos Technical (três já catalogados desde a Foundation, sem dono real até agora; dez novos formalizando aprovação/retry/compensação), refletidos em [EVENT_MODEL.md](../../EVENT_MODEL.md) e [EVENT_CATALOG.md](../../EVENT_CATALOG.md#mission-engine).
 - **`contracts/Mission.contract.yaml`** — o contrato antes do código, mesmo padrão de Identity/Memory.
 - **Cinco ADRs de direção** ([0089](../adr/0089-mission-nasce-do-plan-nao-da-intent.md)–[0093](../adr/0093-mission-workspace-opcional.md))**:** onde o domínio de Mission começa (não na Intent); aprovação como estado de primeira classe; retry é histórico de Subtask, compensação é estado da Mission; `Plan`/Subtask candidata são conceito próprio do Mission Engine, sem dependência de código em `planner-engine`; `Mission.workspaceId` é opcional.
 - **Duas correções de documentação, achado real desta pesquisa**: `packages/README.md` e `packages/mission-engine/README.md` listavam incorretamente `mission-engine` dependendo de `planner-engine` (e `planner-engine` de `intent-engine`) — contradizia diretamente [ADR-0031](../adr/0031-ordem-runtime-vs-desenvolvimento.md). Corrigido nesta rodada, ver Decision Log.
@@ -21,7 +21,7 @@ Modelar completamente o domínio de Mission — a primeira Engine que faz o SIGM
 **Existe, para aprovação:** os sete artefatos acima — nenhuma linha de código.
 
 **Não existe ainda, fica para a Release 5B — Implementation:**
-- `packages/mission-engine/src/Domain/` — Value Objects, Enums, os Aggregates/Value Objects (`Mission`, `Subtask`, `Plan`, `ApprovalGate`, `RetryAttempt`, `Compensation`), os doze eventos como classes reais.
+- `packages/mission-engine/src/Domain/` — Value Objects, Enums, os Aggregates/Value Objects (`Mission`, `Subtask`, `Plan`, `ApprovalGate`, `RetryAttempt`, `Compensation`), os treze eventos como classes reais.
 - Se a Release 5B se divide em sub-Releases (Domain/Infrastructure, mesmo padrão de [ADR-0060](../adr/0060-release-dividida-em-sub-releases.md) já usado em Identity/Memory) — decisão a tomar quando a Proposal de 5B for escrita, não antecipada aqui.
 - Qualquer Application/Infrastructure/Interfaces, persistência, consumo real de eventos.
 

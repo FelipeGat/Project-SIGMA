@@ -17,8 +17,8 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 4A | Memory Domain | ✅ Concluída | 100% |
 | 4B | Memory Infrastructure | ✅ Concluída | 100% |
 | 4.5 | Platform Validation | ✅ Concluída | 100% |
-| 5A | Mission Research | ⏳ Proposta apresentada, aguardando aprovação | 0% |
-| 5B | Mission Implementation | ⚪ Não iniciada | 0% |
+| 5A | Mission Research | ✅ Concluída | 100% |
+| 5B | Mission Implementation | ✅ Concluída | 100% |
 | 6 | Planner Engine | ⏳ Não iniciada | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
 | 8 | Skill Engine | ⏳ Não iniciada | 0% |
@@ -91,7 +91,7 @@ Mesmo padrão de modelagem cuidadosa e divisão Domain-first da Release 3 ([ADR-
 
 A primeira Engine que faz o SIGMA **decidir**, não só guardar/autenticar/sincronizar — responde "o que deve acontecer, quem executa, quando, em qual ordem, com quais permissões" (avaliação do Product Owner). `Mission` é tratada como **Aggregate Root** (não um serviço): ciclo de vida, eventos, estado, histórico, autonomia, aprovação, retries, compensações, correlação — a "unidade de trabalho" do SIGMA. Suporta a cardinalidade Intent 1:N Mission desde o início (ver [ADR-0028](docs/adr/0028-intencao-nao-comando.md)), ainda que a Release 1:N completa só se materialize quando Planner (Release 6) e Intent (Release 7) existirem.
 
-Segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md) ([ADR-0082](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)), mesmo padrão de Identity e Memory: **5A — Mission Research** ([docs/releases/0005a-mission-research.md](docs/releases/0005a-mission-research.md), Proposal apresentada) já entregou [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md), [MISSION_MODEL.md](MISSION_MODEL.md), [MISSION_LIFECYCLE.md](MISSION_LIFECYCLE.md), [MISSION_EVENTS.md](MISSION_EVENTS.md), `contracts/Mission.contract.yaml` e cinco ADRs de direção ([0089](docs/adr/0089-mission-nasce-do-plan-nao-da-intent.md)–[0093](docs/adr/0093-mission-workspace-opcional.md)) — sem código, aguardando Review do Product Owner → **5B — Implementation** → Review → Push.
+Segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md) ([ADR-0082](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)), mesmo padrão de Identity e Memory: **5A — Mission Research** ([docs/releases/0005a-mission-research.md](docs/releases/0005a-mission-research.md), aprovada) entregou [MISSION_MANIFESTO.md](MISSION_MANIFESTO.md), [MISSION_MODEL.md](MISSION_MODEL.md), [MISSION_LIFECYCLE.md](MISSION_LIFECYCLE.md), [MISSION_EVENTS.md](MISSION_EVENTS.md), `contracts/Mission.contract.yaml` e cinco ADRs de direção ([0089](docs/adr/0089-mission-nasce-do-plan-nao-da-intent.md)–[0093](docs/adr/0093-mission-workspace-opcional.md)). **5B — Mission Implementation** ([docs/releases/0005b-mission-implementation.md](docs/releases/0005b-mission-implementation.md), implementada) entregou `packages/mission-engine/src/Domain/` completo — o aggregate `Mission`, `Subtask`/`ApprovalGate`, os treze eventos, 37 testes — sem nenhuma dependência de `planner-engine` (ADR-0092 verificado na prática). `Application`/`Infrastructure`/`Interfaces` ainda não têm Release nomeada.
 
 ## Release 6 — Planner Engine
 
