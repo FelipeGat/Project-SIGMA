@@ -4,38 +4,38 @@ _Atualizado em: 2026-08-04._
 
 ## Fase
 
-**Release 4A — Memory Domain: Proposal revisão 2, aguardando aprovação.** A revisão 1 do modelo foi aprovada nota 10/10 pelo Product Owner ("a decisão arquitetural mais importante desde o Envelope"), com uma evolução pedida antes do código — incorporada nesta rodada. Nenhum código do Memory Engine escrito ainda. Release 3.5 (Consolidation) e o commit `5596372` (Release 4A revisão 1) seguem completos e com push feito.
+**Release 4A — Memory Domain: IMPLEMENTADA.** `packages/memory-engine/src/Domain/` completo — `ContextMemory`, `MemoryRecord`, `KnowledgeRecord`, `DigitalTwin`, 35 testes automatizados, 100% passando. Proposal revisão 2 aprovada ("aprovado e pode seguir") e implementada na mesma rodada. Release 4B (Infrastructure) ainda não iniciada — próximo passo do Memory Engine.
 
 ## O que existe (documentação)
 
-- Tudo da Release 3.5, mais **[MEMORY_MODEL.md](../MEMORY_MODEL.md) revisão 2** — quatro entidades agora: `ContextMemory` (novo, estágio bruto/efêmero pré-Memory), `MemoryRecord` (com `confidence` e `origin` novos, `status` para contradição/retração), `KnowledgeRecord` (agora imutável/versionado — `version`/`previousVersionId`), `DigitalTwin` (agora estritamente Event-Driven, inclusive a primeira população).
-- **[MEMORY_LIFECYCLE.md](../MEMORY_LIFECYCLE.md) revisão 2** — três fluxos: engajamento→destilação (`ContextMemory`→`MemoryRecord`), promoção gated por `confidence`, sincronização de Digital Twin sempre via evento.
-- **[MEMORY_PROMOTION_RULES.md](../MEMORY_PROMOTION_RULES.md)** (novo) — exigência única do Product Owner antes do código; responde as oito perguntas de governança (sobe/desce/expira/vira Knowledge/vira Twin/quem promove/quem impede/quem revisa), com números concretos (pisos de `confidence`: 0.50/0.70/0.90; expiração: `ContextMemory` 30 dias, `MemoryRecord Operational` não-promovido 90 dias).
-- **`contracts/Memory.contract.yaml`** atualizado — quatro tipos de output (`ContextMemory`/`MemoryRecord`/`KnowledgeRecord`/`DigitalTwin`), onze eventos, três Permissions novas no vocabulário (`memory.promote`/`memory.block_promotion`/`knowledge.curate`).
-- **[DOMAIN_EVENTS.md](../DOMAIN_EVENTS.md)/[EVENT_CATALOG.md](../EVENT_CATALOG.md)** — seção "Memory Engine" com onze eventos (cinco novos: `ContextMemoryStarted`/`ContextMemoryClosed`/`MemoryDeprecated`/`MemoryRetracted`/`MemorySubjectPinned`).
-- **88 ADRs** — sete novas nesta rodada: 0082 (Processo Oficial de Desenvolvimento de Engines do SIGMA), 0083 (`ContextMemory`), 0084 (`confidence` como gate), 0085 (Digital Twin estritamente Event-Driven), 0086 (`KnowledgeRecord` imutável/versionado), 0087 (`origin` + candidatura a Knowledge), 0088 (retração/expiração/governança).
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — nova seção documentando o Processo Oficial de Desenvolvimento de Engines como obrigatório a partir da Release 4.
-- Release 4A: [Proposal revisão 2](../docs/releases/0004a-memory-domain.md) — aguardando aprovação. Release 4B: [placeholder](../docs/releases/0004b-memory-infrastructure.md), sem mudança.
+Tudo da rodada anterior (MEMORY_MODEL.md/MEMORY_LIFECYCLE.md revisão 2, MEMORY_PROMOTION_RULES.md, ADRs 0082-0088), mais:
+
+- **[Proposal 4A](../docs/releases/0004a-memory-domain.md)** marcada como aprovada e implementada.
+- **[Decision Log](../docs/releases/0004a-memory-domain-decision-log.md)** — decisões locais da Implementation, incluindo por que `Identifier` não foi movida para `packages/core` nesta rodada, e o achado real do evento `MemoryReactivated` faltante.
+- **[Validation Report](../docs/releases/0004a-memory-domain-validation-report.md)** — 35 testes, 103 assertions, 100% passando; suíte completa do monorepo (170 testes) revalidada.
+- **`DOMAIN_EVENTS.md`/`EVENT_CATALOG.md`/`contracts/Memory.contract.yaml`** — evento `MemoryReactivated` (`memory.reactivated`) acrescentado durante a Implementation (doze eventos agora, não onze).
 
 ## O que existe (código)
 
-Sem mudança em relação à Release 3.5 — **135 testes automatizados, todos passando**. Nenhum código de `packages/memory-engine` existe ainda.
+- **`packages/memory-engine/src/Domain/`** (novo) — `Identifier` (cópia própria, não compartilhada com Identity Engine) + 7 Value Objects de identificador (`ContextMemoryId`/`MemoryRecordId`/`KnowledgeRecordId`/`DigitalTwinId`/`TenantId`/`WorkspaceId`/`MissionId`); 4 enums; `DistilledFact` (Value Object de suporte); os quatro Aggregates (`ContextMemory`, `MemoryRecord`, `KnowledgeRecord`, `DigitalTwin`); `RecordsDomainEvents`; 12 classes de evento em `Domain/Event/`.
+- **170 testes automatizados no monorepo** (135 anteriores + 35 novos do memory-engine), todos passando — `core` 8, `kernel` 36, `event-bus` 6, `gateway` 8, `identity-engine` 72 (10 skipped, infra indisponível), `auth` 5 (5 skipped), `memory-engine` 35.
+- Nenhum código de `Application/`/`Infrastructure/`/`Interfaces/` do Memory Engine ainda — escopo da Release 4B.
 
-## Decisões de fronteira resolvidas nesta rodada
+## Decisões de Implementation desta rodada
 
-- **Tensão real identificada e resolvida, não decidida em silêncio**: o pipeline `Conversation→ContextMemory→MemoryRecord→KnowledgeRecord→DigitalTwin` pedido pelo Product Owner, lido literalmente, sugeria promoção automática de Memory a Knowledge — conflitava com a curadoria humana já fixada. Resolvido como **candidatura**: `MemoryPromoted` (`toLevel: LongTerm`) sinaliza, nunca cria um `KnowledgeRecord` sozinho.
-- **`confidence` é um gate independente da estrutura de repetição/generalização** — os dois precisam ser satisfeitos, nenhum substitui o outro.
-- **"Quando uma Memory desce" exigiu um atributo novo** (`status: Active/Deprecated/Retracted`), não previsto na revisão 1 — contradição automática marca `Deprecated`; só ação humana explícita marca `Retracted`.
-- **Digital Twin não tem mais um caminho de "primeira leitura direta"** — mesmo a primeira população passa a exigir um evento (para `Client`/`Project`/`Company`, a própria Capability de leitura publica um evento antes do Twin existir — desenho exato fica para a Release 8).
+- **`Identifier` permanece duplicada** entre `identity-engine` e `memory-engine` — a Proposal recomendava consolidar em `packages/core`, mas a aprovação desta rodada não endereçou a pergunta explicitamente; escolhida a opção de menor risco (não tocar no Identity Engine já validado). Consolidação segue recomendada, sinalizada em NEXT.md.
+- **`TenantId`/`WorkspaceId`/`MissionId` são referências opacas próprias do Memory Engine**, nunca os tipos do Identity Engine — bounded context cunha seu próprio identificador para referência cross-Engine, mesmo com o mesmo valor de string.
+- **`ContextMemory::distill()`/`MemoryRecord::evaluatePromotion*()` recebem dados já resolvidos** (`DistilledFact`, listas de Missions/Workspaces reforçando) — o algoritmo real (destilação, detecção de contradição, generalização de `subjectKey`) é decisão de Implementation da Release 4B, não desta.
+- **`MemorySubjectPinned` não tem Aggregate próprio** — ação de governança sem estado de domínio associado; produzido diretamente pela Application 4B, não por um método de `Domain/`.
+- **Achado real**: faltava o evento `MemoryReactivated` para "Deprecated volta a Active" — catalogado antes do código, dentro da própria Implementation, quando o gap apareceu.
 
 ## Pendências / riscos sinalizados
 
-- Mesmas da Release 3.5 (PHP 8.2, `autonomy_level_required` vs. `autonomyCapabilities`, `PermissionId` sem uso, migrations lazy, numeração Release 6/7).
-- Pergunta em aberto na Proposal de 4A: `Identifier` deveria mover de `packages/identity-engine` para `packages/core` — recomendado, não decidido.
-- Algoritmo de destilação de `ContextMemory` em `MemoryRecord` (cálculo de `confidence`) e algoritmo de detecção de contradição — ambos decisão de Implementation da Release 4B, não desta rodada.
-- Três Permissions novas (`memory.promote`/`memory.block_promotion`/`knowledge.curate`) registradas no Contract e em ADR-0088, mas não implementadas — Identity Engine não muda nesta rodada.
-- Componente estrutural **Scheduler** (ainda sem Release própria) continua sendo dependência da automação de promoção/refresh — Release 4A entrega a mecânica como operação explícita, não agendada.
+- Mesmas de sempre (PHP 8.2, `autonomy_level_required` vs. `autonomyCapabilities`, `PermissionId` sem uso, migrations lazy, numeração Release 6/7).
+- `Identifier` duplicada — consolidação em `packages/core` recomendada, não decidida.
+- `MemorySubjectPinned` sem lugar de persistência definido — decisão da Release 4B.
+- Algoritmos de destilação/contradição/generalização — Implementation da Release 4B.
 
 ## Bloqueios
 
-**Aguardando aprovação da Proposal 4A revisão 2** (e de MEMORY_MODEL.md/MEMORY_LIFECYCLE.md/MEMORY_PROMOTION_RULES.md revisão 2, já incorporados) — nenhum código do Memory Engine antes disso. Push do commit desta rodada aguardando confirmação explícita, separada da confirmação já dada para `5596372`. Ver [NEXT.md](../memory/NEXT.md).
+Nenhum bloqueio ativo. Push do commit desta rodada aguardando confirmação explícita (mesma regra de sempre — commit de código, não só documentação, ainda mais motivo para não pressupor). Próximo passo natural: Proposal da Release 4B — Memory Infrastructure. Ver [NEXT.md](../memory/NEXT.md).

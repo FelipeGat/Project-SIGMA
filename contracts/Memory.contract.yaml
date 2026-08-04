@@ -52,13 +52,14 @@ events:
   - memory.record_observed
   - memory.promoted
   - memory.deprecated
+  - memory.reactivated
   - memory.retracted
   - memory.subject_pinned
   - knowledge.indexed
   - digital_twin.created
   - digital_twin.updated
   - digital_twin.stale
-# Os onze eventos publicados pelo Memory Engine — ver DOMAIN_EVENTS.md
+# Os doze eventos publicados pelo Memory Engine — ver DOMAIN_EVENTS.md
 # e EVENT_CATALOG.md para payload/consumidor/versao de cada um.
 
 permissions:
