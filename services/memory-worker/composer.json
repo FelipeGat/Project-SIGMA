@@ -1,0 +1,38 @@
+{
+    "name": "sigma/memory-worker",
+    "description": "Worker do Memory Engine — sem HTTP. Assina identity.created/workspace.selected via RedisSubscriber e sincroniza UserTwin. Release 4B, ver docs/releases/0004b-memory-infrastructure.md.",
+    "type": "project",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "sigma/core": "^1.0",
+        "sigma/kernel": "^1.0",
+        "sigma/event-bus": "^1.0",
+        "sigma/memory-engine": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sigma\\MemoryWorker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigma\\MemoryWorker\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        { "type": "path", "url": "../../packages/core" },
+        { "type": "path", "url": "../../packages/kernel" },
+        { "type": "path", "url": "../event-bus" },
+        { "type": "path", "url": "../../packages/memory-engine" }
+    ],
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable"
+}

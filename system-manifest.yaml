@@ -27,6 +27,12 @@ modules:
     # Log da Release 3B — gap descoberto ao validar via HTTP real.
     optional: true
     minVersion: "1.0.0"
+  - name: memory-engine
+    kind: engine
+    # Mesmo raciocínio de identity-engine acima — só services/memory-worker
+    # registra este Module. Ver docs/releases/0004b-memory-infrastructure.md.
+    optional: true
+    minVersion: "1.0.0"
 
 # Providers de IA — não interpretados pelo Bootstrap ainda. Chega com o
 # Agent Engine (Release 9). Vazio propositalmente aqui.

@@ -59,6 +59,29 @@ services:
       mariadb:
         condition: service_healthy
 
+  memory-worker:
+    build:
+      context: ..
+      dockerfile: docker/memory-worker.Dockerfile
+    # Sem "ports": é um worker, nunca escuta HTTP (Release 4B, ver
+    # docs/releases/0004b-memory-infrastructure.md). Reaproveita a
+    # mesma MariaDB do Identity Engine — schema novo (tabelas), nao
+    # banco/container novo.
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: sigma_identity
+      DB_USER: sigma
+      DB_PASSWORD: sigma
+      SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
+    depends_on:
+      redis:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+
 # MariaDB entra no ambiente a partir da Release 3B (Identity
 # Infrastructure) — primeira Release do projeto com persistencia
 # (ver ADR-0053, que a excluiu deliberadamente da Release 2).

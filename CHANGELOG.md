@@ -2,6 +2,17 @@
 
 O que o SIGMA passou a fazer, Release a Release — escrito para quem vai usar o sistema, não para quem o constrói. Documentação técnica (por quê, como foi validado) fica em `docs/releases/*-decision-log.md` e `*-validation-report.md`; aqui só o que mudou na prática. Ver [ADR-0078](docs/adr/0078-changelog-orientado-ao-usuario.md).
 
+## Release 4 — Memory
+
+Agora o SIGMA consegue:
+
+- ✔ Guardar um "retrato" sempre atualizado de cada pessoa (`UserTwin`) — sincronizado automaticamente assim que alguém faz login e escolhe um Workspace, sem nenhuma ação manual
+- ✔ Registrar um fato observado (`MemoryRecord`) e promovê-lo a um padrão confiável quando ele se repete o suficiente, com um nível de confiança explícito
+- ✔ Indexar e versionar o conteúdo de `/knowledge` — nunca perder uma versão anterior quando o conteúdo muda
+- ✔ Sinalizar quando algo aprendido parece durável o bastante para virar conhecimento institucional — sem nunca decidir isso sozinho, sempre com um humano confirmando
+
+Ainda sem nenhuma tela nem API pública consumindo isso — a mesma disciplina da Release 3: primeiro a base certa, depois a interface. Ver [docs/releases/0004a-memory-domain.md](docs/releases/0004a-memory-domain.md) e [docs/releases/0004b-memory-infrastructure.md](docs/releases/0004b-memory-infrastructure.md).
+
 ## Release 3.5 — Architecture Consolidation
 
 Nenhuma capacidade nova para o usuário final — esta Release fortaleceu a base (documentação, nomenclatura, testes) antes da próxima fase do projeto. Ver [docs/releases/0003.5-architecture-consolidation.md](docs/releases/0003.5-architecture-consolidation.md).

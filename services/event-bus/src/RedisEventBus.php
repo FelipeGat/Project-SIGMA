@@ -39,4 +39,20 @@ final class RedisEventBus implements IEventBus
     {
         $this->local->subscribe($event, $handler);
     }
+
+    /**
+     * Invoca os handlers já registrados localmente via `subscribe()`
+     * para um evento **recebido de fora** (via `RedisSubscriber`, de
+     * outro processo) — nunca publica de volta no Redis, ao contrário
+     * de `publish()`. Sem este método, um worker cross-processo não
+     * tinha como entregar uma mensagem recebida aos handlers já
+     * registrados no mesmo processo sem causar eco (ADR-0057 previa
+     * esta lacuna; resolvida na Release 4B).
+     *
+     * @param array<string, mixed> $payload
+     */
+    public function dispatchLocally(string $event, array $payload): void
+    {
+        $this->local->publish($event, $payload);
+    }
 }

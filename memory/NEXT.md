@@ -2,20 +2,23 @@
 
 ## Imediato
 
-1. **Aguardar aprovação da Proposal da Release 4B — Memory Infrastructure** ([docs/releases/0004b-memory-infrastructure.md](../docs/releases/0004b-memory-infrastructure.md), revisão 1) — nenhum código de `Application/Infrastructure/Interfaces` do Memory Engine antes disso. Escopo maior que o placeholder original previa: inclui `RedisSubscriber` (primeiro listener Redis cross-processo real do projeto) e `services/memory-worker`, achado ao escrever a Proposal (ver "O que mudou" nela e a entrada em DECISIONS.md desta rodada).
-2. Aguardar confirmação para dar push do(s) commit(s) desta rodada (Implementation completa da Release 4A: `packages/memory-engine/`, Decision Log, Validation Report, evento `MemoryReactivated` acrescentado aos catálogos; e a Proposal da Release 4B) — commitado localmente, push ainda não realizado.
+1. **Release 4 — Memory Engine COMPLETA (4A + 4B).** Próximo passo natural: decidir a próxima Release — Planner ou Intent (Release 6/7, ver pergunta de numeração no item 3 abaixo) — ou uma Release de consolidação, a critério do Product Owner. Nenhuma Proposal nova escrita ainda; aguardando direção.
+2. Aguardar confirmação para dar push do(s) commit(s) desta rodada (Implementation completa de 4A e 4B: `packages/memory-engine/` completo, `services/event-bus` com `RedisSubscriber`, `services/memory-worker` novo, Decision Logs e Validation Reports de ambas, `VERSION.md`, `CHANGELOG.md`) — commitado localmente, push ainda não realizado.
 3. **Pergunta em aberto, aguardando confirmação do Product Owner**: numeração das Releases 6/7 (Planner/Intent). `ROADMAP.md` mantém `6 — Planner, 7 — Intent` (conforme [ADR-0031](../docs/adr/0031-ordem-runtime-vs-desenvolvimento.md), decisão deliberada de desenvolvimento). A visão de longo prazo mais recente listou `6 — Intent, 7 — Planner` — pode ter sido simplificação de tabela, ou intenção real de reabrir o ADR-0031. Não decidido silenciosamente, ver nota em `ROADMAP.md` e [ADR-0070](../docs/adr/0070-roadmap-estendido-24-releases.md).
 4. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
 5. Ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
 6. Toda decisão relevante de cada rodada precisa terminar registrada no repositório — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
 7. **A partir da Release 4, todo Engine com domínio novo segue o [Processo Oficial de Desenvolvimento de Engines do SIGMA](../docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)** (ADR-0082, documentado em [CONTRIBUTING.md](../CONTRIBUTING.md)) — Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push, nesta ordem, sem pular etapa.
 
-## Perguntas em aberto para a Architecture Review da Release 4B
+## Pendências reais deixadas pela Release 4 (4A + 4B), para quando fizerem falta
 
-- `Identifier` (base de Value Object de identificador) segue **duplicada** entre `packages/identity-engine` e `packages/memory-engine` — a Proposal 4A recomendava mover para `packages/core`, mas a aprovação não endereçou a pergunta explicitamente; a Proposal 4B também não a resolve (não é escopo de Infrastructure). Ainda recomendado, ainda não decidido.
-- Onde a checagem de staleness de Twin de fato dispara o `warning` no Envelope — responsabilidade de quem consome o Twin ou do próprio Memory Engine — como não há API pública na 4B, isso só passa a importar de fato quando um consumidor real existir (Mission/Planner, Release 6+).
-- Três Permissions novas no vocabulário (`memory.promote`/`memory.block_promotion`/`knowledge.curate`, [ADR-0088](../docs/adr/0088-retracao-expiracao-e-governanca-de-promocao.md)) — quando o Identity Engine precisar registrá-las de fato como Roles/Permissions reais, ainda não decidido em que Release isso acontece. A Proposal 4B também não checa Permission nenhuma (sem API pública, sem quem autentique a chamada).
-- **Novo, achado ao escrever a Proposal 4B**: `RedisEventBus`/`InMemoryEventBus` nunca implementaram entrega cross-processo real (só local) — sinalizado desde a Release 2/[ADR-0057](../docs/adr/0057-eventbus-composicao-inmemory.md). A Proposal 4B propõe resolver isso com `RedisSubscriber` (`pubSubLoop`) + `services/memory-worker`, o primeiro consumidor cross-processo real do projeto — pendente de aprovação na Architecture Review, não decidido unilateralmente.
+- `Identifier` (base de Value Object de identificador) segue **duplicada** entre `packages/identity-engine` e `packages/memory-engine` — consolidação em `packages/core` ainda recomendada, ainda não decidida.
+- Onde a checagem de staleness de Twin de fato dispara o `warning` no Envelope — só passa a importar quando um consumidor real existir (Mission/Planner, Release 6+).
+- Três Permissions no vocabulário (`memory.promote`/`memory.block_promotion`/`knowledge.curate`, [ADR-0088](../docs/adr/0088-retracao-expiracao-e-governanca-de-promocao.md)) — sem checagem real ainda, sem API pública que precise delas.
+- **`KnowledgeFolderIndexer` implementado (testado, inclusive contra MariaDB real) mas sem gatilho de execução em produção** — nada chama automaticamente; decidir quando (comando CLI, cron via Scheduler futuro) fica para quando houver necessidade real.
+- **`handleWorkspaceSelected()` ignora silenciosamente entrega fora de ordem** (`workspace.selected` antes de `identity.created` ter sido processado) — sem retry/fila nesta Release.
+- **`read_write_timeout: -1` no `RedisSubscriber` é uma correção pragmática** (achado real: o worker morria após ~60s ocioso sem isso) — uma estratégia de reconexão mais robusta é desejável quando o Scheduler existir.
+- `RedisSubscriber`/`services/memory-worker` (o padrão de worker cross-processo sem HTTP) ficam disponíveis para qualquer Engine futuro que precise consumir eventos entre processos — Audit Engine é o candidato mais óbvio.
 
 ## Cinco componentes estruturais sinalizados pelo Product Owner, sem Release própria ainda
 

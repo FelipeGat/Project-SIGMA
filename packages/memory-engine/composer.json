@@ -1,12 +1,14 @@
 {
     "name": "sigma/memory-engine",
-    "description": "Memory Engine do SIGMA — responde 'o que sei/aprendi'. Domain (Release 4A) — ver ADR-0060, ADR-0061, MEMORY_MODEL.md.",
+    "description": "Memory Engine do SIGMA — responde 'o que sei/aprendi'. Domain (Release 4A) + Application/Infrastructure/Interfaces (Release 4B) — ver ADR-0060, ADR-0061, MEMORY_MODEL.md.",
     "type": "library",
     "license": "proprietary",
     "version": "1.0.0",
     "require": {
         "php": "^8.2",
-        "sigma/core": "^1.0"
+        "sigma/core": "^1.0",
+        "sigma/kernel": "^1.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.0"
@@ -25,6 +27,10 @@
         {
             "type": "path",
             "url": "../core"
+        },
+        {
+            "type": "path",
+            "url": "../kernel"
         }
     ],
     "scripts": {

@@ -4,14 +4,76 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "979ab569c85fbc800c4aa0f14f362622",
+    "content-hash": "0829505228c0b6cc6129f44f8a9212f6",
     "packages": [
+        {
+            "name": "predis/predis",
+            "version": "v2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "07105e050622ed80bd60808367ced9e379f31530"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/07105e050622ed80bd60808367ced9e379f31530",
+                "reference": "07105e050622ed80bd60808367ced9e379f31530",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpcov": "^6.0 || ^8.0",
+                "phpunit/phpunit": "^8.0 || ^9.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis/Valkey client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.4.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-12T18:00:11+00:00"
+        },
         {
             "name": "sigma/core",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../core",
+                "url": "../../packages/core",
                 "reference": "66ded89b9bc114c5c969578ee17a56b622207807"
             },
             "require": {
@@ -45,11 +107,52 @@
             }
         },
         {
+            "name": "sigma/event-bus",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../event-bus",
+                "reference": "084db43bbf3c29d2387f126afac72984e99e0557"
+            },
+            "require": {
+                "php": "^8.2",
+                "predis/predis": "^2.0",
+                "sigma/core": "^1.0",
+                "sigma/kernel": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sigma\\EventBus\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Sigma\\EventBus\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Wrapper de publish/subscribe sobre Redis, implementando IEventBus do Kernel. Infraestrutura apenas — nenhum evento de dominio nesta Release.",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "sigma/kernel",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../kernel",
+                "url": "../../packages/kernel",
                 "reference": "e73719262c27c835c0bf040456153dc388a36900"
             },
             "require": {
@@ -80,6 +183,47 @@
                 "proprietary"
             ],
             "description": "Bootstrap do SIGMA: DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, System Manifest Loader. Expoe apenas interfaces (ver ADR-0052) — nunca conhece Engine (ADR-0040).",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "sigma/memory-engine",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/memory-engine",
+                "reference": "736db23a76c7ff30070eba88a3739c989fc0f85a"
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": "^8.2",
+                "sigma/core": "^1.0",
+                "sigma/kernel": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sigma\\MemoryEngine\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Sigma\\MemoryEngine\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Memory Engine do SIGMA — responde 'o que sei/aprendi'. Domain (Release 4A) + Application/Infrastructure/Interfaces (Release 4B) — ver ADR-0060, ADR-0061, MEMORY_MODEL.md.",
             "transport-options": {
                 "relative": true
             }

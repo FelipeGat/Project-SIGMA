@@ -71,4 +71,36 @@ final class RedisEventBusTest extends TestCase
 
         self::assertFalse($called);
     }
+
+    /**
+     * dispatchLocally() é o método novo da Release 4B — entrega uma
+     * mensagem já recebida de outro processo (via RedisSubscriber) aos
+     * handlers locais, sem nunca publicar de volta no Redis (o que
+     * causaria eco). Ver ADR-0057 e o Decision Log da 4B.
+     */
+    public function test_dispatch_locally_invokes_subscribers_without_publishing_to_redis(): void
+    {
+        $redis = new class implements RedisPublisher {
+            public array $published = [];
+
+            public function publish(string $channel, string $message): int
+            {
+                $this->published[] = [$channel, $message];
+
+                return 1;
+            }
+        };
+
+        $bus = new RedisEventBus($redis);
+        $received = null;
+
+        $bus->subscribe('identity.created', function (array $payload) use (&$received): void {
+            $received = $payload;
+        });
+
+        $bus->dispatchLocally('identity.created', ['identityId' => 'abc']);
+
+        self::assertSame(['identityId' => 'abc'], $received);
+        self::assertSame([], $redis->published, 'dispatchLocally nunca deve publicar de volta no Redis');
+    }
 }
