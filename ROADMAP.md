@@ -10,7 +10,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 |---|---|---|
 | 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Aprovada, publicada |
 | 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
-| 2 | SIGMA Bootstrap | 🟢 Aprovada — implementação em andamento |
+| 2 | SIGMA Bootstrap | ✅ Implementada — 48 testes passando |
 | 3 | Identity Engine | ⚪ Não iniciado |
 | 4 | Memory Engine | ⚪ Não iniciado |
 | 5 | Mission Engine | ⚪ Não iniciado |
@@ -34,7 +34,7 @@ Especificação do protocolo de comunicação entre todas as peças do SIGMA, **
 
 ## Release 2 — SIGMA Bootstrap (proposta formal em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md), aguardando aprovação)
 
-Renomeada de "Kernel" — escopo reduzido ao bootstrap puro da plataforma, equivalente ao `Application` do Laravel/Spring Boot: Configuration Provider, Telemetry (Logs/Metrics/Tracing/Audit — não só Logger), DI Container, Modules (nunca Engines — ver nota abaixo), System Manifest, Lifecycle estendido (`discover → register → boot → start → ready → degraded → shutdown`), Health compatível com Kubernetes (`/health/live`, `/health/ready`, `/health/startup`), princípio de Self-Describing Components. **Fora do escopo**: Missions, IA/Agents, carregamento de Plugin real. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md), [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md)–[ADR-0046](docs/adr/0046-self-describing-components.md) e [BOOTSTRAP.md](BOOTSTRAP.md)/[SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md). **Aprovada. Implementação autorizada** — ver proposta final (revisão 3) em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md). Primeiro código de aplicação do projeto. Implementa o Envelope de resposta da Release 1 desde o primeiro endpoint de health-check.
+Renomeada de "Kernel" — escopo reduzido ao bootstrap puro da plataforma, equivalente ao `Application` do Laravel/Spring Boot: Configuration Provider, Telemetry (Logs/Metrics/Tracing/Audit — não só Logger), DI Container, Modules (nunca Engines — ver nota abaixo), System Manifest, Lifecycle estendido (`discover → register → boot → start → ready → degraded → shutdown`), Health compatível com Kubernetes (`/health/live`, `/health/ready`, `/health/startup`), princípio de Self-Describing Components. **Fora do escopo**: Missions, IA/Agents, carregamento de Plugin real. Ver [ADR-0038](docs/adr/0038-sigma-bootstrap-nao-kernel-completo.md), [ADR-0040](docs/adr/0040-bootstrap-nao-conhece-engines.md)–[ADR-0046](docs/adr/0046-self-describing-components.md) e [BOOTSTRAP.md](BOOTSTRAP.md)/[SYSTEM_MANIFEST.md](SYSTEM_MANIFEST.md). **✅ Implementada.** Proposta final (revisão 3) em [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md), Decision Log em [docs/releases/0002-sigma-bootstrap-decision-log.md](docs/releases/0002-sigma-bootstrap-decision-log.md). Primeiro código de aplicação do projeto — `packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway`, 48 testes automatizados passando, validado com HTTP real via `php -S`. Implementa o Envelope de resposta da Release 1 desde o primeiro endpoint de health-check.
 
 O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role — [MULTITENANCY.md](MULTITENANCY.md)), antes bundlado nesta Release, não vive aqui nem no Memory Engine — tem Release própria, ver Release 3 — Identity Engine abaixo.
 

@@ -1,0 +1,21 @@
+# System Manifest do SIGMA — lido pelo Bootstrap na etapa `discover`.
+# Ver SYSTEM_MANIFEST.md. Nesta Release (2 — SIGMA Bootstrap), apenas
+# infraestrutura: nenhum Engine ou Plugin real existe ainda.
+
+project: SIGMA
+version: "1.0"
+
+modules:
+  - name: kernel
+    kind: package
+    optional: false
+  - name: event-bus
+    kind: service
+    optional: false
+    minVersion: "1.0.0"
+
+# Providers de IA e Workspaces — não interpretados pelo Bootstrap
+# (Release 2). Chegam com o Agent Engine (Release 9) e o Identity
+# Engine (Release 3), respectivamente. Vazios propositalmente aqui.
+providers: []
+workspace: []

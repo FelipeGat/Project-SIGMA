@@ -8,14 +8,12 @@ Formato de referência em [template.contract.yaml](template.contract.yaml).
 
 Um contrato só é escrito quando o conceito que ele descreve tem Release aprovada — escrever contrato de algo que ainda não existe geraria documentação fictícia (mesmo princípio já seguido em toda a Fase Foundation).
 
-| Contrato | Nasce com |
-|---|---|
-| `Module.contract.yaml` | Release 2 — SIGMA Bootstrap |
-| `Identity.contract.yaml` | Release 3 — Identity Engine |
-| `Memory.contract.yaml` | Release 4 — Memory Engine |
-| `Mission.contract.yaml` | Release 5 — Mission Engine |
-| `Intent.contract.yaml` | Release 7 — Intent Engine |
-| `Plugin.contract.yaml`, `Capability.contract.yaml` | Release 8 — Skill Engine |
-| `Workspace.contract.yaml` | Quando Workspace ganhar Release própria (hoje modelado dentro do Identity Engine) |
-
-Nenhum destes existe ainda na Fase Foundation — apenas este README e o template.
+| Contrato | Nasce com | Status |
+|---|---|---|
+| [Module.contract.yaml](Module.contract.yaml) | Release 2 — SIGMA Bootstrap | ✅ Publicado |
+| `Identity.contract.yaml` | Release 3 — Identity Engine | ⚪ Não iniciado |
+| `Memory.contract.yaml` | Release 4 — Memory Engine | ⚪ Não iniciado |
+| `Mission.contract.yaml` | Release 5 — Mission Engine | ⚪ Não iniciado |
+| `Intent.contract.yaml` | Release 7 — Intent Engine | ⚪ Não iniciado |
+| `Plugin.contract.yaml`, `Capability.contract.yaml` | Release 8 — Skill Engine | ⚪ Não iniciado |
+| `Workspace.contract.yaml` | Quando Workspace ganhar Release própria (hoje modelado dentro do Identity Engine) | ⚪ Não iniciado |

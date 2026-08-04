@@ -1,0 +1,26 @@
+{
+    "name": "sigma/core",
+    "description": "Primitivas de dominio compartilhadas pelos Engines do SIGMA (identificadores, excecoes base).",
+    "type": "library",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sigma\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigma\\Core\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

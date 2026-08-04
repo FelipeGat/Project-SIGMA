@@ -1,0 +1,27 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/gateway.Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
+    depends_on:
+      redis:
+        condition: service_healthy
+
+# Sem MariaDB — nenhuma entidade de dominio existe ainda nesta Release
+# (ver ADR-0053). Entra no ambiente local a partir da Release 3.

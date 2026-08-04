@@ -6,4 +6,4 @@ Toda Release que produz código também produz um **Decision Log** (`000N-<nome>
 
 | Release | Proposta | Decision Log | Status |
 |---|---|---|---|
-| 2 — SIGMA Bootstrap | [0002-sigma-bootstrap.md](0002-sigma-bootstrap.md) (revisão 3) | `0002-sigma-bootstrap-decision-log.md` (a publicar ao final da implementação) | ✅ Aprovada — implementação em andamento |
+| 2 — SIGMA Bootstrap | [0002-sigma-bootstrap.md](0002-sigma-bootstrap.md) (revisão 3) | [0002-sigma-bootstrap-decision-log.md](0002-sigma-bootstrap-decision-log.md) | ✅ Implementada — 48 testes passando, Validation concluída (docker-compose não verificado, ver Decision Log) |

@@ -1,0 +1,34 @@
+{
+    "name": "sigma/event-bus",
+    "description": "Wrapper de publish/subscribe sobre Redis, implementando IEventBus do Kernel. Infraestrutura apenas — nenhum evento de dominio nesta Release.",
+    "type": "library",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.2",
+        "sigma/core": "^1.0",
+        "sigma/kernel": "^1.0",
+        "predis/predis": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sigma\\EventBus\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigma\\EventBus\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        { "type": "path", "url": "../../packages/core" },
+        { "type": "path", "url": "../../packages/kernel" }
+    ],
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable"
+}

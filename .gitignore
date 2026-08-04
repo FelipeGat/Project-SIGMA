@@ -8,33 +8,28 @@ desktop.ini
 .vscode/*
 !.vscode/extensions.json
 
-# Backend (Laravel) — a partir do E1
-backend/vendor/
-backend/node_modules/
-backend/.env
-backend/.env.*
-!backend/.env.example
-backend/storage/*.key
-backend/bootstrap/cache/*
-backend/public/hot
-backend/public/storage
-backend/public/build
+# PHP / Composer — packages/*, services/* (monorepo, cada um com seu proprio composer.json)
+vendor/
+composer.phar
+.phpunit.result.cache
+.phpunit.cache/
 
-# Frontend web (Vite/React) — a partir do E6
-frontend-web/node_modules/
-frontend-web/dist/
-frontend-web/.env
-frontend-web/.env.*
-!frontend-web/.env.example
+# Node (apps/web, apps/mobile — a partir da Release 11)
+node_modules/
+dist/
+.expo/
 
-# Frontend mobile (Expo/React Native) — a partir do E7
-frontend-mobile/node_modules/
-frontend-mobile/.expo/
-frontend-mobile/dist/
-frontend-mobile/.env
-frontend-mobile/.env.*
-!frontend-mobile/.env.example
+# Variaveis de ambiente — nunca commitadas, .env.example sim
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Laravel (quando services/gateway ganhar o framework completo)
+storage/*.key
+bootstrap/cache/*
+public/hot
+public/build
 
 # Logs e artefatos locais
 *.log
-.env

@@ -4,7 +4,7 @@
 
 SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e dez Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado. **Release 2 — SIGMA Bootstrap: aprovada, implementação em andamento** — primeiro código de aplicação do projeto. Veja [ROADMAP.md](ROADMAP.md), [docs/releases/0002-sigma-bootstrap.md](docs/releases/0002-sigma-bootstrap.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado. **Release 2 — SIGMA Bootstrap: implementada** — primeiro código de aplicação do projeto (`packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway`), 48 testes automatizados passando. Veja [ROADMAP.md](ROADMAP.md), [docs/releases/0002-sigma-bootstrap-decision-log.md](docs/releases/0002-sigma-bootstrap-decision-log.md) e [memory/STATE.md](memory/STATE.md).
 
 ## Por onde começar
 

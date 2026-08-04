@@ -1,0 +1,38 @@
+# Sigma Contract — Module
+# Primeiro Contract real do projeto (ver ADR-0049). Descreve o
+# conceito de domínio "Module" tal como implementado na Release 2 —
+# packages/kernel/src/Contract/IModule.php é a fonte da verdade em
+# código; este arquivo é a fonte da verdade em contrato.
+
+name: Module
+version: "1.0.0"
+
+input:
+  - name: dependsOn
+    type: string[]
+    required: true
+  - name: configSchema
+    type: ConfigSchema
+    required: true
+
+output:
+  - name: descriptor
+    type: ComponentDescriptor
+
+events: []
+# Nenhum evento de dominio nesta Release — Module em si nao publica
+# eventos; Engines/Plugins que o implementam a partir da Release 4
+# publicam eventos proprios (ver EVENT_MODEL.md).
+
+permissions: []
+# Module nao tem permissao propria — quem invoca uma Capability e
+# sujeito a autonomy_level_required (ver Capability.contract.yaml,
+# a nascer na Release 8).
+
+autonomy_level_required: 0
+
+supported_versions:
+  - "1.0.0"
+
+compatible_with:
+  protocol: "1.0"

@@ -1,0 +1,35 @@
+{
+    "name": "sigma/gateway",
+    "description": "Casca HTTP minima do SIGMA — Release 2: apenas os tres endpoints de health, cada resposta no Envelope do SIGMA Protocol.",
+    "type": "project",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.2",
+        "sigma/core": "^1.0",
+        "sigma/kernel": "^1.0",
+        "sigma/event-bus": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sigma\\Gateway\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sigma\\Gateway\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        { "type": "path", "url": "../../packages/core" },
+        { "type": "path", "url": "../../packages/kernel" },
+        { "type": "path", "url": "../event-bus" }
+    ],
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable"
+}
