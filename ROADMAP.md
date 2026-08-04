@@ -24,13 +24,13 @@ Este roadmap é a visão macro; o detalhamento formal de cada épico é produzid
 
 ## Foundation (atual)
 
-Entrega apenas documentação e estrutura de projeto. Nenhum código de aplicação. Escopo do Sprint 0: README, VISION, ARCHITECTURE, ROADMAP, estrutura inicial de diretórios, convenções de nomenclatura, ADR-0001–0010, CONTRIBUTING, CODE_OF_CONDUCT, LICENSE. Escopo do Sprint 0.1 (revisão): MANIFESTO, PRODUCT, VISION_2030, DOMAIN, pastas `agents/`, `skills/`, `knowledge/`, `playbooks/`, `memory/`, ADR-0011–0015, roadmap reestruturado por camada.
+Entrega apenas documentação e estrutura de projeto. Nenhum código de aplicação. Escopo do Sprint 0: README, VISION, ARCHITECTURE, ROADMAP, estrutura inicial de diretórios, convenções de nomenclatura, ADR-0001–0010, CONTRIBUTING, CODE_OF_CONDUCT, LICENSE. Escopo do Sprint 0.1 (revisão): MANIFESTO, PRODUCT, VISION_2030, DOMAIN, pastas `agents/`, `skills/`, `knowledge/`, `playbooks/`, `memory/`, ADR-0011–0015, roadmap reestruturado por camada. Escopo do Sprint 0.2 (organização estrutural): monorepo reorganizado em `apps/`, `packages/`, `services/`, `plugins/`, `tools/`, `docker/`; KERNEL, PLUGIN_SYSTEM, EVENT_MODEL, TELEMETRY, WORKSPACES, MULTITENANCY, MEMORY_ARCHITECTURE; `/council`; ADR-0016–0023.
 
 Critério de saída: aprovação explícita do responsável pelo projeto antes de qualquer linha de código de aplicação.
 
 ## L1 — Kernel
 
-Bootstrap da plataforma: configuração por ambiente, contexto de execução, health-check, versionamento interno. Nenhuma regra de negócio — é a fundação sobre a qual todo Engine seguinte roda. Sem este épico, nenhum outro tem onde existir.
+Bootstrap da plataforma: configuração por ambiente, contexto de execução, health-check, versionamento interno, bootstrap de Telemetry (ver [TELEMETRY.md](TELEMETRY.md)) e do `services/event-bus`. Inclui o schema fundacional de multiempresa — Tenant, Company, Workspace, User, Role (ver [MULTITENANCY.md](MULTITENANCY.md) e [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md)) — desde a primeira migration, não retrofitado depois. Nenhuma regra de negócio de domínio — é a fundação sobre a qual todo Engine seguinte roda. Sem este épico, nenhum outro tem onde existir.
 
 ## L2 — Intent Engine
 
@@ -54,7 +54,7 @@ Entidades IA (provedor) e Agent (persona), contrato `AgentPort`. Primeira integr
 
 ## L7 — Skill Engine
 
-Entidade Skill, contrato completo (Config/Permissions/Input/Output/Events/Logs/Tests/Docs — ver [ARCHITECTURE.md §7](docs/architecture/ARCHITECTURE.md)) implementado de fato através de uma primeira Skill ponta a ponta (candidata: `GestorSkill`, já especificada em [skills/gestor.md](skills/gestor.md), por já existir API e caso de uso real no ecossistema Alfa). Primeiro ponto em que o SIGMA age de verdade sobre um sistema externo.
+Entidade Skill, mecanismo de descoberta e carregamento de Plugins (ver [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) e [ADR-0017](docs/adr/0017-plugin-system.md)), contrato completo (Config/Permissions/Input/Output/Events/Logs/Tests/Docs) implementado de fato através de um primeiro Plugin ponta a ponta (candidato: `gestor`, já especificado em [plugins/gestor/manifest.json](plugins/gestor/manifest.json), por já existir API e caso de uso real no ecossistema Alfa). Primeiro ponto em que o SIGMA age de verdade sobre um sistema externo.
 
 ## L8 — Execution Engine
 

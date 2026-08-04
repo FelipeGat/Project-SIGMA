@@ -17,7 +17,7 @@ Sem essa aprovação, não há branch de implementação — apenas documentaç�
 
 ## Fluxo de trabalho
 
-1. Branch a partir de `main`: `epic/<numero>-<slug>` para código de épico aprovado, `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
+1. Branch a partir de `main`: `epic/<camada>-<slug>` para código de épico aprovado (ex: `epic/l1-kernel`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
 2. Commits seguindo [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 3. Pull Request descrevendo a que Critério de Aceite do épico ele atende.
 4. Revisão contra [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md) e [docs/conventions/naming-conventions.md](docs/conventions/naming-conventions.md).
@@ -33,7 +33,9 @@ Todo código de aplicação segue [docs/conventions/coding-standards.md](docs/co
 
 ## Documentação que não é código
 
-`agents/`, `skills/`, `knowledge/` e `playbooks/` são documentação viva, editável fora do ciclo de épico — não exigem a aprovação formal de um épico para receber atualização, mas ainda seguem revisão por Pull Request. `memory/` é atualizada por quem (humano ou Agent) estiver ativamente trabalhando no projeto, para manter [memory/STATE.md](memory/STATE.md) e [memory/NEXT.md](memory/NEXT.md) refletindo a realidade.
+`agents/`, `skills/`, `knowledge/`, `playbooks/` e `council/` são documentação viva, editável fora do ciclo de épico — não exigem a aprovação formal de um épico para receber atualização, mas ainda seguem revisão por Pull Request. `memory/` é atualizada por quem (humano ou Agent) estiver ativamente trabalhando no projeto, para manter [memory/STATE.md](memory/STATE.md) e [memory/NEXT.md](memory/NEXT.md) refletindo a realidade.
+
+Um `manifest.json` novo ou alterado em `plugins/` segue o schema de [plugins/manifest.schema.json](plugins/manifest.schema.json) e referencia uma Skill já documentada em `skills/` — nunca introduz um Plugin sem Skill de domínio correspondente.
 
 ## Código de conduta
 

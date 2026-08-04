@@ -25,3 +25,17 @@ Registro cronológico e leve de decisões do projeto — inclusive as que não j
   - Documentação de filosofia (`MANIFESTO.md`), produto (`PRODUCT.md`), horizonte de longo prazo (`VISION_2030.md`) e glossário de domínio (`DOMAIN.md`) adicionada.
   - Pastas `agents/`, `skills/`, `knowledge/`, `playbooks/`, `memory/` criadas na raiz do repositório — documentação/conhecimento, sem código.
   - Push ao GitHub segue **não autorizado** até esta revisão ser aprovada.
+- **Sprint 0 e Sprint 0.1 aprovadas** pelo Product Owner. Antes do primeiro push, solicitada uma **Sprint 0.2 — Organização Estrutural**, com uma segunda rodada de revisão externa (papel de CTO):
+  - **Monorepo reestruturado** de `backend/`/`frontend-web/`/`frontend-mobile/` para `apps/`, `packages/`, `services/`, `plugins/`, `tools/`, `docker/` — estrutura "estilo Google", pensada para dezenas de repositórios em 2 anos. → [ADR-0016](../docs/adr/0016-monorepo-apps-packages-services.md)
+  - **Plugin System**: Skills deixam de ser classes compiladas e passam a ser Plugins carregados dinamicamente via `manifest.json` — o Kernel nunca conhece a implementação concreta. → [ADR-0017](../docs/adr/0017-plugin-system.md)
+  - **"Tudo é Evento"** oficializado como filosofia central, com catálogo canônico de eventos do fluxo de Mission. → [ADR-0018](../docs/adr/0018-tudo-e-evento.md)
+  - **Observabilidade desde o dia zero** (Logs, Metrics, Tracing, Audit) — não uma melhoria futura. → [ADR-0019](../docs/adr/0019-observabilidade-desde-o-dia-zero.md)
+  - **Workspace** introduzido como unidade de contexto operacional (agrega Client/Project/Budget/Meeting automaticamente), substituindo Project como âncora de contexto de uma Mission. → [ADR-0020](../docs/adr/0020-workspace-como-unidade-de-contexto.md)
+  - **Multiempresa desde o schema** — hierarquia Tenant → Company → Workspace → User → Role, nunca retrofitada. → [ADR-0021](../docs/adr/0021-multitenancy-desde-o-schema.md)
+  - **Memory em três níveis** — Operational, Project, Long Term — com promoção por repetição/generalização, nunca automática. → [ADR-0022](../docs/adr/0022-memory-em-tres-niveis.md)
+  - **Governança formalizada em `/council`** (Product Owner=Felipe, CTO=ChatGPT, Lead Engineer=Claude, Creative=Gemini, Documentation=Manus) — distinto de `/agents` (execução runtime). → [ADR-0023](../docs/adr/0023-governanca-via-council.md)
+  - Documentos novos: `KERNEL.md`, `PLUGIN_SYSTEM.md`, `EVENT_MODEL.md`, `TELEMETRY.md`, `WORKSPACES.md`, `MULTITENANCY.md`, `MEMORY_ARCHITECTURE.md`.
+  - `execution-engine` foi acrescentado a `packages/` por consistência com os nove Engines de [ADR-0011](../docs/adr/0011-arquitetura-em-camadas-de-engines.md), mesmo não constando na lista original da revisão — sinalizado explicitamente, não uma correção silenciosa.
+  - `skills/whatsapp.md` e `plugins/whatsapp/` adicionados (WhatsApp Cloud API, já em produção no Gestor.Alfa) para manter 1:1 entre Skills documentadas e Plugins com manifest.
+  - **Repositório GitHub renomeado pelo Product Owner** para `FelipeGat/Project-SIGMA` — `origin` local atualizado. Criação de Organização no GitHub (`Alfa-Solucoes`/`Grupo-Solucoes`) sugerida, mas não executada — ação de conta fora do escopo do que posso executar diretamente.
+  - Push ao GitHub segue **não autorizado** até esta Sprint 0.2 ser aprovada.

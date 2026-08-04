@@ -21,3 +21,11 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0013](0013-intent-engine-como-porta-de-entrada.md) | Intent Engine como porta de entrada única de linguagem natural |
 | [0014](0014-sigma-e-um-sistema-operacional-nao-uma-ia.md) | SIGMA é um Sistema Operacional, não uma IA |
 | [0015](0015-roadmap-por-camadas-nao-por-feature.md) | Roadmap organizado por camada de Engine, não por feature |
+| [0016](0016-monorepo-apps-packages-services.md) | Monorepo reorganizado em apps/packages/services/plugins/tools/docs/docker |
+| [0017](0017-plugin-system.md) | Skills são implementadas como Plugins carregados dinamicamente — nunca compiladas no Kernel |
+| [0018](0018-tudo-e-evento.md) | Tudo é Evento — o fluxo de Mission é modelado como sequência de eventos nomeados |
+| [0019](0019-observabilidade-desde-o-dia-zero.md) | Observabilidade (Logs, Metrics, Tracing, Audit) desde o dia zero |
+| [0020](0020-workspace-como-unidade-de-contexto.md) | Workspace como unidade de contexto operacional |
+| [0021](0021-multitenancy-desde-o-schema.md) | Multiempresa (multi-tenant) desde o schema, nunca retrofitado |
+| [0022](0022-memory-em-tres-niveis.md) | Memory organizada em três níveis — Operational, Project, Long Term |
+| [0023](0023-governanca-via-council.md) | Governança do projeto formalizada em /council |

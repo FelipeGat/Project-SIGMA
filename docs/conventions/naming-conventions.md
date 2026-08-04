@@ -1,6 +1,6 @@
 # Convenções de Nomenclatura
 
-Aplica-se a todo o monorepo (`backend/`, `frontend-web/`, `frontend-mobile/`, `docs/`). O objetivo é que o nome de qualquer coisa no sistema já entregue seu papel no domínio — ver [ARCHITECTURE.md](../architecture/ARCHITECTURE.md).
+Aplica-se a todo o monorepo (`apps/`, `packages/`, `services/`, `plugins/`, `docs/`). O objetivo é que o nome de qualquer coisa no sistema já entregue seu papel no domínio — ver [ARCHITECTURE.md](../architecture/ARCHITECTURE.md).
 
 ## Domínio (linguagem ubíqua)
 
@@ -13,7 +13,10 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | **Subtask** | Uma unidade de trabalho dentro do Plan de uma Mission | "Mission" |
 | **Agent** | Uma persona operacional especializada que usa uma IA | "IA", "Skill" |
 | **IA** (AIProvider) | O provedor/modelo bruto (Claude, ChatGPT, Gemini, Manus) | "Agent" |
-| **Skill** | Uma capacidade de ação concreta (integração) invocável por um Agent | "Integration" isolado, "Plugin" |
+| **Skill** | Uma capacidade de ação concreta (integração) invocável por um Agent — o conceito de domínio | "Integration" isolado |
+| **Plugin** | O empacotamento técnico de uma Skill, carregado dinamicamente (ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md)) | "Skill" — Plugin é a implementação; Skill é o conceito |
+| **Workspace** | Unidade de contexto operacional (ex: um cliente) que agrega Client/Project/Budget/Meeting relacionados | "Project" isolado |
+| **Tenant** | Fronteira de isolamento total de dados | "Company" |
 | **Knowledge** | O que o sistema sabe | "Memory" |
 | **Memory** | O que o sistema aprendeu | "Knowledge" |
 | **Event** | Um fato de domínio publicado no Event Bus | "Log" |
@@ -21,11 +24,21 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | **Automation** | Uma regra declarativa que reage a Events | — |
 | **Process** | Um fluxo/procedimento reutilizável que uma Mission pode seguir | "Automation" |
 
-## Backend (Laravel / PHP 8.4)
+## Monorepo (apps/packages/services/plugins)
 
 | Elemento | Convenção | Exemplo |
 |---|---|---|
-| Módulo de domínio (bounded context) | PascalCase, singular | `app/Modules/Mission/` |
+| Pacote (`packages/`) | kebab-case | `mission-engine`, `design-system` |
+| Serviço (`services/`) | kebab-case | `ai-router`, `event-bus` |
+| App (`apps/`) | kebab-case | `web`, `mobile`, `admin` |
+| Plugin (`plugins/`) | kebab-case, mesmo nome da Skill em minúsculas | `gestor`, `github`, `whatsapp` |
+| `manifest.json` de Plugin | campos em snake_case (ver [plugins/manifest.schema.json](../../plugins/manifest.schema.json)) | `api_base_url`, `requires_human_approval` |
+
+## Backend (Laravel / PHP 8.4, dentro de cada pacote)
+
+| Elemento | Convenção | Exemplo |
+|---|---|---|
+| Pacote de Engine | kebab-case (diretório), PascalCase singular (namespace interno) | `packages/mission-engine/` |
 | Entidade de domínio | PascalCase, singular | `Mission`, `Skill`, `Agent` |
 | Value Object | PascalCase, sufixo não obrigatório mas descritivo | `MissionStatus`, `SkillInput` |
 | DTO | PascalCase + sufixo `DTO` | `CreateMissionDTO` |
@@ -62,6 +75,6 @@ Formato: `<Contexto>.<Entidade><ParticípioPassado>` no Event Bus, `<Entidade><P
 
 ## Git
 
-- Branches: `epic/<numero>-<slug>` (ex: `epic/1-mission-engine`), `fix/<slug>`, `docs/<slug>`.
+- Branches: `epic/<camada>-<slug>` (ex: `epic/l1-kernel`, `epic/l4-mission-engine` — camadas em [ROADMAP.md](../../ROADMAP.md)), `fix/<slug>`, `docs/<slug>`.
 - Commits: [Conventional Commits](https://www.conventionalcommits.org/) — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`. Detalhado em [CONTRIBUTING.md](../../CONTRIBUTING.md).
 - ADRs: `docs/adr/NNNN-slug-em-kebab-case.md`, numeração sequencial de 4 dígitos.

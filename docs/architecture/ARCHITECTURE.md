@@ -4,7 +4,7 @@ Este documento descreve como o SIGMA é estruturado: os Engines que compõem seu
 
 ## 0. SIGMA é um Sistema Operacional, não uma IA
 
-Antes de qualquer diagrama: o SIGMA não é um chat inteligente com plugins. É uma plataforma operacional corporativa, com um Kernel e Engines de responsabilidade única — cada um resolvendo um problema específico do ciclo de vida de uma Mission. IA é uma capacidade que alguns desses Engines usam (Agent Engine, ao delegar uma Subtask), não a identidade do sistema como um todo. Ver [MANIFESTO.md](../../MANIFESTO.md) e [ADR-0014](../adr/0014-sigma-e-um-sistema-operacional-nao-uma-ia.md).
+Antes de qualquer diagrama: o SIGMA não é um chat inteligente com plugins. É uma plataforma operacional corporativa, com um Kernel e Engines de responsabilidade única — cada um resolvendo um problema específico do ciclo de vida de uma Mission. IA é uma capacidade que alguns desses Engines usam (Agent Engine, ao delegar uma Subtask), não a identidade do sistema como um todo. Ver [MANIFESTO.md](../../MANIFESTO.md), [KERNEL.md](../../KERNEL.md) e [ADR-0014](../adr/0014-sigma-e-um-sistema-operacional-nao-uma-ia.md).
 
 ## 1. Princípios
 
@@ -138,7 +138,7 @@ stateDiagram-v2
     Cancelada --> [*]
 ```
 
-Cada transição de estado publica um evento de domínio (`mission.interpreted`, `mission.planned`, `subtasks.created`, `mission.executing`, `mission.validated`, `mission.completed`, `mission.failed`...) consumido pelo Audit Engine (rastreabilidade), Memory Engine (aprendizado) e WebSocket (tempo real no painel).
+Cada transição de estado publica um evento de domínio, consumido pelo Audit Engine (rastreabilidade), Memory Engine (aprendizado) e WebSocket (tempo real no painel). O catálogo canônico e nomeado desses eventos — `MissionRequested`, `IntentDetected`, `MissionPlanned`, `SubtaskAssigned`, `SkillRequested`, `ExecutionStarted`, `ExecutionValidated`/`ExecutionFailed`, `MissionFinished` — é mantido como fonte única da verdade em [EVENT_MODEL.md](../../EVENT_MODEL.md), não duplicado aqui. Ver também [ADR-0018](../adr/0018-tudo-e-evento.md).
 
 ## 7. Skill — contrato
 
@@ -165,14 +165,16 @@ interface Skill
 }
 ```
 
-Skills previstas, documentadas em [/skills](../../skills/): `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `GoogleCalendarSkill`, `EmailSkill` — e futuramente `DockerSkill`, `WhatsAppSkill`, entre outras.
+Skills previstas, documentadas em [/skills](../../skills/): `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `GoogleCalendarSkill`, `EmailSkill`, `WhatsAppSkill` — e futuramente `DockerSkill`, entre outras. A partir da Sprint 0.2, toda Skill é implementada tecnicamente como um **Plugin** carregado dinamicamente pelo Skill Engine, nunca uma classe compilada no núcleo — ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) e [ADR-0017](../adr/0017-plugin-system.md).
 
-## 8. Estrutura de módulo (backend)
+## 8. Estrutura do monorepo
 
-Cada Engine e cada contexto de apoio do backend Laravel segue a mesma estrutura interna, isolando domínio de infraestrutura:
+O SIGMA é organizado em `apps/`, `packages/`, `services/`, `plugins/`, `docs/`, `tools/` e `docker/` — ver [ADR-0016](../adr/0016-monorepo-apps-packages-services.md) e o índice de cada pasta ([apps/](../../apps/), [packages/](../../packages/), [services/](../../services/), [plugins/](../../plugins/)). Cada Engine descrito na seção 2 vive como um pacote em `packages/`; `services/gateway` é a aplicação Laravel que os monta e expõe via HTTP/WebSocket.
+
+Dentro de cada pacote de Engine, a mesma estrutura interna isola domínio de infraestrutura:
 
 ```
-backend/app/Modules/<Engine-ou-Contexto>/
+packages/<engine>/
 ├── Domain/
 │   ├── Entities/
 │   ├── ValueObjects/
@@ -192,7 +194,7 @@ backend/app/Modules/<Engine-ou-Contexto>/
     └── Resources/
 ```
 
-Ex.: `backend/app/Modules/Mission/`, `backend/app/Modules/Planner/`, `backend/app/Modules/Skill/`. Esta estrutura é o padrão a ser usado a partir do primeiro épico de implementação; nenhum código é criado na Fase Foundation.
+Ex.: `packages/mission-engine/`, `packages/planner-engine/`, `packages/skill-engine/`. Esta estrutura é o padrão a ser usado a partir do primeiro épico de implementação; nenhum código é criado na Fase Foundation.
 
 ## 9. Stack de referência
 
@@ -214,3 +216,17 @@ Justificativa e alternativas consideradas em [ADR-0009](../adr/0009-stack-tecnol
 5. O Planner Engine decide o Plan; nenhum Agent decide, por conta própria, o que uma Mission deve fazer. Ver [ADR-0012](../adr/0012-planner-decide-nunca-a-ia.md).
 
 Ver também [ADR-0007](../adr/0007-comunicacao-somente-via-api.md).
+
+## 11. Documentos relacionados
+
+Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decisões específicas sem duplicar conteúdo:
+
+| Documento | Cobre |
+|---|---|
+| [KERNEL.md](../../KERNEL.md) | O que pertence e o que nunca pertence ao Kernel |
+| [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) | Como uma Skill é empacotada e carregada como Plugin |
+| [EVENT_MODEL.md](../../EVENT_MODEL.md) | Catálogo canônico de eventos e a filosofia "tudo é evento" |
+| [TELEMETRY.md](../../TELEMETRY.md) | Logs, Metrics, Tracing, Audit — observabilidade desde o dia zero |
+| [WORKSPACES.md](../../WORKSPACES.md) | A unidade de contexto operacional (Workspace) |
+| [MULTITENANCY.md](../../MULTITENANCY.md) | A hierarquia Tenant → Company → Workspace → User → Role |
+| [MEMORY_ARCHITECTURE.md](../../MEMORY_ARCHITECTURE.md) | Os três níveis de Memory |

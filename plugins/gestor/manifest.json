@@ -1,0 +1,26 @@
+{
+  "name": "gestor",
+  "version": "0.1.0",
+  "skill": "GestorSkill",
+  "config": {
+    "required": ["api_base_url", "api_token", "empresa_ids"],
+    "optional": ["timeout_ms"]
+  },
+  "permissions": [
+    { "key": "gestor.clientes.ler", "risk": "read" },
+    { "key": "gestor.orcamentos.ler", "risk": "read" },
+    { "key": "gestor.funil.ler", "risk": "read" },
+    { "key": "gestor.orcamentos.criar", "risk": "write-internal", "requires_human_approval": true },
+    { "key": "gestor.funil.atualizar", "risk": "write-internal", "requires_human_approval": true }
+  ],
+  "events": [
+    "gestor_skill.invoked",
+    "gestor_skill.succeeded",
+    "gestor_skill.failed",
+    "budget.created_via_gestor"
+  ],
+  "actions": [
+    { "name": "buscar_cliente", "input": "BuscarClienteInput", "output": "Client" },
+    { "name": "criar_orcamento", "input": "CriarOrcamentoInput", "output": "Budget" }
+  ]
+}

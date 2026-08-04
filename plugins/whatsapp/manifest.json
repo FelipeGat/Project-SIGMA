@@ -1,0 +1,22 @@
+{
+  "name": "whatsapp",
+  "version": "0.1.0",
+  "skill": "WhatsAppSkill",
+  "config": {
+    "required": ["cloud_api_token", "phone_number_id", "templates_aprovados"],
+    "optional": []
+  },
+  "permissions": [
+    { "key": "whatsapp.mensagem.ler", "risk": "read" },
+    { "key": "whatsapp.mensagem.enviar", "risk": "write-external", "requires_human_approval": true }
+  ],
+  "events": [
+    "whatsapp_skill.invoked",
+    "whatsapp_skill.succeeded",
+    "whatsapp_skill.failed",
+    "whatsapp_skill.message_received"
+  ],
+  "actions": [
+    { "name": "enviar_mensagem", "input": "EnviarMensagemInput", "output": "EnvioConfirmado" }
+  ]
+}

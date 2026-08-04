@@ -1,0 +1,25 @@
+{
+  "name": "github",
+  "version": "0.1.0",
+  "skill": "GitHubSkill",
+  "config": {
+    "required": ["api_token", "repositorios_permitidos"],
+    "optional": ["timeout_ms"]
+  },
+  "permissions": [
+    { "key": "github.issues.ler", "risk": "read" },
+    { "key": "github.pull_requests.ler", "risk": "read" },
+    { "key": "github.issues.criar", "risk": "write-external", "requires_human_approval": false },
+    { "key": "github.pull_requests.criar", "risk": "write-external", "requires_human_approval": false },
+    { "key": "github.commits.criar", "risk": "write-external", "requires_human_approval": false }
+  ],
+  "events": [
+    "github_skill.invoked",
+    "github_skill.succeeded",
+    "github_skill.failed"
+  ],
+  "actions": [
+    { "name": "criar_pull_request", "input": "CriarPullRequestInput", "output": "PullRequestRef" },
+    { "name": "criar_issue", "input": "CriarIssueInput", "output": "IssueRef" }
+  ]
+}

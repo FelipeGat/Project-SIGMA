@@ -1,0 +1,21 @@
+{
+  "name": "email",
+  "version": "0.1.0",
+  "skill": "EmailSkill",
+  "config": {
+    "required": ["smtp_credentials", "modelos_permitidos"],
+    "optional": ["imap_credentials"]
+  },
+  "permissions": [
+    { "key": "email.ler", "risk": "read" },
+    { "key": "email.enviar", "risk": "write-external", "requires_human_approval": true }
+  ],
+  "events": [
+    "email_skill.invoked",
+    "email_skill.succeeded",
+    "email_skill.failed"
+  ],
+  "actions": [
+    { "name": "enviar_email", "input": "EnviarEmailInput", "output": "EnvioConfirmado" }
+  ]
+}

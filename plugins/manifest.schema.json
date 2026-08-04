@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sigma.alfasolucoes.com.br/schemas/plugin-manifest.json",
+  "title": "SIGMA Plugin Manifest",
+  "description": "Schema de referência para manifest.json de um Plugin do SIGMA. Ver PLUGIN_SYSTEM.md. Nenhum carregador ainda lê este schema em runtime — é a especificação que o épico do Skill Engine (camada L7) implementará.",
+  "type": "object",
+  "required": ["name", "version", "skill", "config", "permissions", "events", "actions"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Identificador único do Plugin, kebab-case",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Versão semântica do Plugin",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "skill": {
+      "type": "string",
+      "description": "Nome da Skill de domínio (ver /skills) que este Plugin implementa"
+    },
+    "config": {
+      "type": "object",
+      "description": "Schema dos parâmetros de configuração aceitos por ambiente",
+      "properties": {
+        "required": { "type": "array", "items": { "type": "string" } },
+        "optional": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "description": "Operações que o Plugin expõe, cada uma com um nível de risco",
+      "items": {
+        "type": "object",
+        "required": ["key", "risk"],
+        "properties": {
+          "key": { "type": "string", "description": "ex: gestor.orcamentos.criar" },
+          "risk": { "type": "string", "enum": ["read", "write-internal", "write-external", "irreversible"] },
+          "requires_human_approval": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "Eventos que este Plugin publica no Event Bus",
+      "items": { "type": "string" }
+    },
+    "actions": {
+      "type": "array",
+      "description": "Pontos de entrada que o Skill Engine pode invocar",
+      "items": {
+        "type": "object",
+        "required": ["name", "input", "output"],
+        "properties": {
+          "name": { "type": "string" },
+          "input": { "type": "string", "description": "Referência ao contrato de Entrada" },
+          "output": { "type": "string", "description": "Referência ao contrato de Saída" }
+        }
+      }
+    }
+  }
+}

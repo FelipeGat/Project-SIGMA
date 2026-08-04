@@ -22,7 +22,7 @@ Uma unidade de trabalho dentro do Plan de uma Mission, atribuída a um Agent esp
 Tudo que o sistema sabe — base de conhecimento estruturada, documentação de domínio, contexto de negócio. Gerenciado pelo **Memory Engine**. Alimentado, entre outras fontes, por [/knowledge](knowledge/).
 
 ### Memory
-Tudo que o sistema aprendeu — histórico de Missions concluídas, decisões passadas, padrões observados. Também gerenciado pelo **Memory Engine**, mas distinto de Knowledge: Knowledge é factual, Memory é experiencial.
+Tudo que o sistema aprendeu — histórico de Missions concluídas, decisões passadas, padrões observados. Também gerenciado pelo **Memory Engine**, mas distinto de Knowledge: Knowledge é factual, Memory é experiencial. Organizada em três níveis — Operational, Project, Long Term — ver [MEMORY_ARCHITECTURE.md](MEMORY_ARCHITECTURE.md) e [ADR-0022](docs/adr/0022-memory-em-tres-niveis.md).
 
 ### IA (AIProvider)
 Um provedor/modelo bruto de inteligência artificial: credenciais, limites, custo, capacidades técnicas. Ex: Claude API, OpenAI API, Gemini API, Manus.
@@ -31,7 +31,7 @@ Um provedor/modelo bruto de inteligência artificial: credenciais, limites, cust
 Uma persona operacional especializada que usa uma IA para um tipo de trabalho. Gerenciado pelo **Agent Engine**, que decide qual Agent executa cada Subtask. Ver [/agents](agents/) e [ADR-0004](docs/adr/0004-tres-camadas-ia-agente-skill.md).
 
 ### Skill
-Uma capacidade de ação concreta — geralmente uma integração com um sistema externo — invocável por um Agent através do **Skill Engine**. Ver [/skills](skills/) e [ADR-0006](docs/adr/0006-integracao-externa-e-sempre-uma-skill.md).
+Uma capacidade de ação concreta — geralmente uma integração com um sistema externo — invocável por um Agent através do **Skill Engine**. Ver [/skills](skills/) e [ADR-0006](docs/adr/0006-integracao-externa-e-sempre-uma-skill.md). Toda Skill é implementada tecnicamente como um **Plugin** carregado dinamicamente — ver [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) e [ADR-0017](docs/adr/0017-plugin-system.md); o Kernel nunca conhece a implementação concreta.
 
 ### Integration
 Metadados e configuração de uma integração concreta usada por uma Skill (credenciais, endpoint, ambiente). Uma Skill pode usar mais de uma Integration; uma Integration não é, por si só, invocável — só através da Skill que a encapsula.
@@ -50,14 +50,25 @@ Um fluxo ou procedimento reutilizável que uma Mission pode seguir — a versão
 
 ## Identidade & Organização
 
+Hierarquia completa de isolamento e contexto — ver [MULTITENANCY.md](MULTITENANCY.md) e [WORKSPACES.md](WORKSPACES.md).
+
+### Tenant
+Fronteira de isolamento total de dados — o nível mais alto da hierarquia. Hoje existe um único Tenant real ("Alfa Soluções"); a modelagem já suporta mais de um desde o schema. Ver [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md).
+
+### Company
+Uma empresa dentro de um Tenant (GW, Delta, Invest — as empresas do Grupo Soluções) em nome de quem o SIGMA opera.
+
+### Workspace
+A unidade de contexto operacional dentro de uma Company — agrupa Client/Project/Budget/Meeting/Document relacionados automaticamente (ex: "Cliente Brenno"). Ver [WORKSPACES.md](WORKSPACES.md) e [ADR-0020](docs/adr/0020-workspace-como-unidade-de-contexto.md).
+
 ### User
-Uma pessoa com acesso ao SIGMA — autor de Missions, membro de Teams.
+Uma pessoa com acesso ao SIGMA, associada a um Tenant — autor de Missions, membro de Teams e de um ou mais Workspaces.
 
 ### Team
 Um agrupamento de Users, com escopo de permissão e visão sobre Missions.
 
-### Company
-Uma empresa do ecossistema Alfa (ou, futuramente, cliente white-label) em nome de quem o SIGMA opera.
+### Role
+Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (ex: "Comercial", "Técnico", "Administrativo").
 
 ## Negócio (orquestrado, não gerido pelo SIGMA)
 

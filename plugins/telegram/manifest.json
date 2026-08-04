@@ -1,0 +1,22 @@
+{
+  "name": "telegram",
+  "version": "0.1.0",
+  "skill": "TelegramSkill",
+  "config": {
+    "required": ["bot_token", "user_chat_map"],
+    "optional": []
+  },
+  "permissions": [
+    { "key": "telegram.mensagem.enviar", "risk": "write-external" },
+    { "key": "telegram.mensagem.ler", "risk": "read" }
+  ],
+  "events": [
+    "telegram_skill.invoked",
+    "telegram_skill.succeeded",
+    "telegram_skill.failed",
+    "telegram_skill.user_responded"
+  ],
+  "actions": [
+    { "name": "enviar_mensagem", "input": "EnviarMensagemInput", "output": "EnvioConfirmado" }
+  ]
+}

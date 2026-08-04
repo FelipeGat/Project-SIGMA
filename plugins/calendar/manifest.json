@@ -1,0 +1,23 @@
+{
+  "name": "calendar",
+  "version": "0.1.0",
+  "skill": "GoogleCalendarSkill",
+  "config": {
+    "required": ["oauth_credentials", "calendarios_permitidos"],
+    "optional": []
+  },
+  "permissions": [
+    { "key": "calendar.eventos.ler", "risk": "read" },
+    { "key": "calendar.eventos.criar", "risk": "write-external", "requires_human_approval": true },
+    { "key": "calendar.eventos.atualizar", "risk": "write-external", "requires_human_approval": true }
+  ],
+  "events": [
+    "calendar_skill.invoked",
+    "calendar_skill.succeeded",
+    "calendar_skill.failed",
+    "meeting.scheduled"
+  ],
+  "actions": [
+    { "name": "criar_evento", "input": "CriarEventoInput", "output": "Meeting" }
+  ]
+}
