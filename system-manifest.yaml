@@ -33,6 +33,16 @@ modules:
     # registra este Module. Ver docs/releases/0004b-memory-infrastructure.md.
     optional: true
     minVersion: "1.0.0"
+  - name: mission-engine
+    kind: engine
+    # Diferente de identity-engine/memory-engine, nenhum service ainda
+    # registra este Module — Mission Engine não tem worker nem API HTTP
+    # nesta Release (sem consumidor real, ver
+    # docs/releases/0005c-mission-infrastructure.md). Listado aqui para
+    # que o Bootstrap já reconheça o Module quando um service futuro
+    # (Agent/Execution Engine, ou uma API HTTP) passar a registrá-lo.
+    optional: true
+    minVersion: "1.0.0"
 
 # Providers de IA — não interpretados pelo Bootstrap ainda. Chega com o
 # Agent Engine (Release 9). Vazio propositalmente aqui.

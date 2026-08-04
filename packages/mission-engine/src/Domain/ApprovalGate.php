@@ -24,6 +24,26 @@ final class ApprovalGate
     ) {
     }
 
+    /**
+     * Hidratação a partir de estado já persistido (Release 5C) — nunca
+     * dispara evento algum, mesmo espírito de `Mission::reconstitute()`.
+     */
+    public static function reconstitute(
+        ApprovalGateId $id,
+        string $reason,
+        \DateTimeImmutable $requestedAt,
+        ApprovalDecisionStatus $decision,
+        ?\DateTimeImmutable $decidedAt,
+        ?string $decidedBy,
+    ): self {
+        $gate = new self($id, $reason, $requestedAt);
+        $gate->decision = $decision;
+        $gate->decidedAt = $decidedAt;
+        $gate->decidedBy = $decidedBy;
+
+        return $gate;
+    }
+
     public function id(): ApprovalGateId
     {
         return $this->id;

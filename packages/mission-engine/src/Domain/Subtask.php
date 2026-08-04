@@ -35,6 +35,29 @@ final class Subtask
         return new self($id, $candidate->description, $candidate->candidateAgent, $candidate->candidateCapability);
     }
 
+    /**
+     * Hidratação a partir de estado já persistido (Release 5C) — nunca
+     * dispara evento algum, mesmo espírito de `Mission::reconstitute()`.
+     *
+     * @param list<RetryAttempt> $retryAttempts
+     */
+    public static function reconstitute(
+        SubtaskId $id,
+        string $description,
+        ?string $candidateAgent,
+        ?string $candidateCapability,
+        SubtaskStatus $status,
+        array $retryAttempts,
+        mixed $result,
+    ): self {
+        $subtask = new self($id, $description, $candidateAgent, $candidateCapability);
+        $subtask->status = $status;
+        $subtask->retryAttempts = $retryAttempts;
+        $subtask->result = $result;
+
+        return $subtask;
+    }
+
     public function id(): SubtaskId
     {
         return $this->id;
