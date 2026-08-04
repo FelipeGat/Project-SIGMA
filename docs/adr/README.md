@@ -29,3 +29,9 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0021](0021-multitenancy-desde-o-schema.md) | Multiempresa (multi-tenant) desde o schema, nunca retrofitado |
 | [0022](0022-memory-em-tres-niveis.md) | Memory organizada em três níveis — Operational, Project, Long Term |
 | [0023](0023-governanca-via-council.md) | Governança do projeto formalizada em /council |
+| [0024](0024-terminologia-release.md) | "Release" substitui "Sprint" como unidade de entrega |
+| [0025](0025-protocol-antecede-kernel.md) | SIGMA Protocol é a Release 1 — antes do Kernel, antes de qualquer Engine |
+| [0026](0026-envelope-de-resposta-padronizado.md) | Envelope de resposta padronizado para toda resposta do SIGMA |
+| [0027](0027-capability-unidade-de-skill.md) | Capability é a unidade de implementação de uma Skill — não a função |
+| [0028](0028-intencao-nao-comando.md) | SIGMA executa Intenções, não comandos — Intent pode decompor em múltiplas Missions |
+| [0029](0029-autonomia-progressiva.md) | Princípio da Autonomia Progressiva — quatro níveis configuráveis |

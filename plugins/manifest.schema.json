@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sigma.alfasolucoes.com.br/schemas/plugin-manifest.json",
   "title": "SIGMA Plugin Manifest",
-  "description": "Schema de referência para manifest.json de um Plugin do SIGMA. Ver PLUGIN_SYSTEM.md. Nenhum carregador ainda lê este schema em runtime — é a especificação que o épico do Skill Engine (camada L7) implementará.",
+  "description": "Schema de referência para manifest.json de um Plugin do SIGMA. Ver PLUGIN_SYSTEM.md e SIGMA_PROTOCOL.md. Nenhum carregador ainda lê este schema em runtime — é a especificação que a Release 7 (Skill Engine) implementará. Campo 'actions' renomeado para 'capabilities' na Release 1 (ADR-0027); 'requires_human_approval' por permissão substituído por 'autonomy_level_required' por capability (ADR-0029).",
   "type": "object",
-  "required": ["name", "version", "skill", "config", "permissions", "events", "actions"],
+  "required": ["name", "version", "skill", "config", "permissions", "events", "capabilities"],
   "properties": {
     "name": {
       "type": "string",
@@ -30,14 +30,13 @@
     },
     "permissions": {
       "type": "array",
-      "description": "Operações que o Plugin expõe, cada uma com um nível de risco",
+      "description": "Classificação de risco por operação — informativa/auditável; o gate de execução em si é decidido por autonomy_level_required em cada capability, não por este campo",
       "items": {
         "type": "object",
         "required": ["key", "risk"],
         "properties": {
           "key": { "type": "string", "description": "ex: gestor.orcamentos.criar" },
-          "risk": { "type": "string", "enum": ["read", "write-internal", "write-external", "irreversible"] },
-          "requires_human_approval": { "type": "boolean", "default": false }
+          "risk": { "type": "string", "enum": ["read", "write-internal", "write-external", "irreversible"] }
         }
       }
     },
@@ -46,16 +45,23 @@
       "description": "Eventos que este Plugin publica no Event Bus",
       "items": { "type": "string" }
     },
-    "actions": {
+    "capabilities": {
       "type": "array",
-      "description": "Pontos de entrada que o Skill Engine pode invocar",
+      "description": "Capabilities que o Skill Engine pode invocar (ver SIGMA_PROTOCOL.md §3) — uma Skill é um conjunto de Capabilities, nunca funções soltas",
       "items": {
         "type": "object",
-        "required": ["name", "input", "output"],
+        "required": ["name", "input", "output", "autonomy_level_required"],
         "properties": {
-          "name": { "type": "string" },
+          "name": { "type": "string", "description": "Verbo-substantivo, PascalCase — ex: CreateEvent" },
           "input": { "type": "string", "description": "Referência ao contrato de Entrada" },
-          "output": { "type": "string", "description": "Referência ao contrato de Saída" }
+          "output": { "type": "string", "description": "Referência ao contrato de Saída — entregue dentro do campo 'data' do Envelope" },
+          "autonomy_level_required": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "description": "0=Consultivo, 1=Assistido, 2=Delegado, 3=Operacional — ver SIGMA_PROTOCOL.md §4"
+          },
+          "events_emitted": { "type": "array", "items": { "type": "string" } }
         }
       }
     }

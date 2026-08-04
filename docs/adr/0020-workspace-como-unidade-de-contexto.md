@@ -15,5 +15,5 @@ Introduz-se `Workspace` como a unidade de contexto operacional do SIGMA — um a
 
 - Reduz ambiguidade na interpretação de uma Intent — "participe da reunião do cliente Brenno" dentro do Workspace "Cliente Brenno" já ativo não exige desambiguação adicional.
 - `Workspace` não é um Engine novo — é resolvido como parte do contexto de execução do Kernel, evitando a criação de um décimo Engine para um conceito que é, fundamentalmente, agregação de dados já modelados em outros contextos.
-- Exige que o Kernel resolva e mantenha o Workspace ativo como parte do contexto de execução transversal (Tenant/Workspace/User) desde a camada L1 — não pode ser adicionado depois sem revisar o schema base, o que conecta esta decisão diretamente a [ADR-0021](0021-multitenancy-desde-o-schema.md).
+- Exige que o Kernel resolva e mantenha o Workspace ativo como parte do contexto de execução transversal (Tenant/Workspace/User) desde a Release 2 — não pode ser adicionado depois sem revisar o schema base, o que conecta esta decisão diretamente a [ADR-0021](0021-multitenancy-desde-o-schema.md).
 - Nenhum dado é duplicado dentro de um Workspace — tudo é agregado via Skill a partir da fonte de origem; um Workspace some de vista sem apagar nenhum dado de negócio real.

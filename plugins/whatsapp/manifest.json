@@ -8,7 +8,7 @@
   },
   "permissions": [
     { "key": "whatsapp.mensagem.ler", "risk": "read" },
-    { "key": "whatsapp.mensagem.enviar", "risk": "write-external", "requires_human_approval": true }
+    { "key": "whatsapp.mensagem.enviar", "risk": "write-external" }
   ],
   "events": [
     "whatsapp_skill.invoked",
@@ -16,7 +16,7 @@
     "whatsapp_skill.failed",
     "whatsapp_skill.message_received"
   ],
-  "actions": [
-    { "name": "enviar_mensagem", "input": "EnviarMensagemInput", "output": "EnvioConfirmado" }
+  "capabilities": [
+    { "name": "SendMessage", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 1, "events_emitted": [] }
   ]
 }

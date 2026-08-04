@@ -7,16 +7,19 @@ Convenção de nomenclatura correspondente: [docs/conventions/naming-conventions
 ## Núcleo de orquestração
 
 ### Intent
-A interpretação estruturada de uma solicitação em linguagem natural (ou de um evento de outro sistema), produzida pelo **Intent Engine**. Uma Intent ainda não é um plano de ação — é a compreensão de *o que* está sendo pedido, antes de decidir *como* fazer.
+A interpretação estruturada de um **objetivo**, não de uma lista de comandos — produzida pelo **Intent Engine** a partir de linguagem natural ou de um evento de outro sistema. Uma Intent pode se decompor em **uma ou mais Missions** relacionadas (cardinalidade 1:N — ver [SIGMA_PROTOCOL.md §2](SIGMA_PROTOCOL.md#2-intenção-não-comando) e [ADR-0028](docs/adr/0028-intencao-nao-comando.md)). Uma Intent ainda não é um plano de ação — é a compreensão de *o que* se quer alcançar, antes de decidir *como*.
 
 ### Plan
-O plano de execução montado pelo **Planner Engine** a partir de uma Intent: quais Subtasks são necessárias, em que ordem, e quais Agentes/Skills são candidatos para cada uma. O Plan é decidido pelo sistema — nunca por uma IA agindo livremente. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md).
+O plano de execução montado pelo **Planner Engine** a partir de uma Intent: quantas Missions são necessárias, quais Subtasks cada uma exige, em que ordem, e quais Agentes/Skills/Capabilities são candidatos para cada uma. O Plan é decidido pelo sistema — nunca por uma IA agindo livremente. Ver [ADR-0012](docs/adr/0012-planner-decide-nunca-a-ia.md).
 
 ### Mission
-A entidade central do sistema — o agregado raiz. Nasce de uma Intent já planejada (um Plan) e é gerenciada pelo **Mission Engine**: acompanha o progresso de cada Subtask até a conclusão. Toda ação relevante do SIGMA existe para servir ao ciclo de vida de uma Mission. Ver [ADR-0003](docs/adr/0003-mission-como-entidade-central.md).
+A entidade central do sistema — o agregado raiz. Nasce de uma Intent já planejada (uma entre potencialmente várias Missions do mesmo Plan) e é gerenciada pelo **Mission Engine**: acompanha o progresso de cada Subtask até a conclusão. Toda ação relevante do SIGMA existe para servir ao ciclo de vida de uma Mission. Ver [ADR-0003](docs/adr/0003-mission-como-entidade-central.md).
 
 ### Subtask
-Uma unidade de trabalho dentro do Plan de uma Mission, atribuída a um Agent específico.
+Uma unidade de trabalho dentro do Plan de uma Mission, atribuída a um Agent específico, que invoca uma Capability para cumpri-la.
+
+### Capability
+Uma ação nomeada e discreta que uma Skill implementa (ex: `CreateEvent`), com schema de entrada/saída e um nível mínimo de autonomia requerido. Uma Skill é um conjunto de Capabilities — nunca funções soltas. Ver [SIGMA_PROTOCOL.md §3](SIGMA_PROTOCOL.md#3-capability) e [ADR-0027](docs/adr/0027-capability-unidade-de-skill.md).
 
 ### Knowledge
 Tudo que o sistema sabe — base de conhecimento estruturada, documentação de domínio, contexto de negócio. Gerenciado pelo **Memory Engine**. Alimentado, entre outras fontes, por [/knowledge](knowledge/).
@@ -68,7 +71,7 @@ Uma pessoa com acesso ao SIGMA, associada a um Tenant — autor de Missions, mem
 Um agrupamento de Users, com escopo de permissão e visão sobre Missions.
 
 ### Role
-Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (ex: "Comercial", "Técnico", "Administrativo").
+Um conjunto de permissões, aplicável no nível Tenant, Company ou Workspace (ex: "Comercial", "Técnico", "Administrativo"). Carrega, entre outras permissões, um **nível de Autonomia Progressiva** (0–3) que limita o quanto o SIGMA pode agir em nome de um User com esse Role sem confirmação humana. Ver [SIGMA_PROTOCOL.md §4](SIGMA_PROTOCOL.md#4-autonomia-progressiva) e [ADR-0029](docs/adr/0029-autonomia-progressiva.md).
 
 ## Negócio (orquestrado, não gerido pelo SIGMA)
 
@@ -98,11 +101,12 @@ Um compromisso — presencial ou remoto — que pode ser tanto o gatilho de uma 
 ## Relação entre as camadas
 
 ```
-Intent  →  Plan  →  Mission  →  Subtask  →  Agent  →  Skill  →  Integration
-                        │                      │
-                     Event/Log            IA (provedor)
-                        │
-                  Knowledge/Memory
+                          ┌── Mission 1 ──┐
+Intent  →  Plan  ─────────┼── Mission 2 ──┼──→  Subtask  →  Agent  →  Capability (Skill)  →  Integration
+ (1)        (1)           └── Mission N ──┘        │             │            │
+                                  │              Event/Log   IA (provedor)  autonomy_level_required
+                                  │
+                            Knowledge/Memory
 ```
 
-Client, Contact, Project, Product, Budget, Document e Meeting não aparecem nesta cadeia como executores — eles são o *contexto de negócio* que uma Mission carrega, tipicamente obtido ou atualizado através de uma Skill (ex: `GestorSkill` lê/escreve Client e Budget no Gestor.Alfa).
+Um Plan pode decidir por mais de uma Mission a partir de uma única Intent (cardinalidade 1:N — ver [ADR-0028](docs/adr/0028-intencao-nao-comando.md)); todas rastreáveis à mesma Intent de origem. Client, Contact, Project, Product, Budget, Document e Meeting não aparecem nesta cadeia como executores — eles são o *contexto de negócio* que uma Mission carrega, tipicamente obtido ou atualizado através de uma Capability (ex: `GestorSkill.UpdateBudget` lê/escreve Client e Budget no Gestor.Alfa). Toda resposta ao longo desta cadeia é normalizada no [Envelope do SIGMA Protocol](SIGMA_PROTOCOL.md#1-o-envelope).

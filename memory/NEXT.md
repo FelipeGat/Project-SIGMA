@@ -2,14 +2,16 @@
 
 ## Imediato — aguardando aprovação
 
-1. Revisão da Sprint 0.2 pelo Product Owner.
-2. Se aprovado: primeiro `git push` do repositório ao GitHub (`FelipeGat/Project-SIGMA`, já renomeado e com `origin` local atualizado).
+1. Revisão da Release 1 — SIGMA Protocol pelo Product Owner (documento [SIGMA_PROTOCOL.md](../SIGMA_PROTOCOL.md), mais as ADRs 0024–0029 e a atualização de `DOMAIN.md`/`ARCHITECTURE.md`/`PLUGIN_SYSTEM.md`/manifests de Plugin que dele decorrem).
+2. Confirmar especificamente a ordem **Planner Engine (Release 5) antes do Intent Engine (Release 6)** — sinalizada como tensão em [ADR-0025](../docs/adr/0025-protocol-antecede-kernel.md), não assumida silenciosamente.
+3. Se aprovado: `git push` da Release 1 ao GitHub.
 
-## Depois do push — Épico de implementação
+## Depois da aprovação — Release 2
 
-O primeiro épico de código, conforme [ROADMAP.md](../ROADMAP.md), é a camada **L1 — Kernel**: bootstrap da plataforma, configuração, contexto de execução, health-check, schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role — ver [MULTITENANCY.md](../MULTITENANCY.md)), bootstrap de Telemetry e do `services/event-bus`. Nenhum código será escrito antes de esse épico ser apresentado no formato Objetivo/Escopo/Arquitetura/Dependências/Riscos/Entrega/Testes/Critérios de Aceite e aprovado explicitamente (ver [ADR-0010](../docs/adr/0010-processo-por-epicos-com-aprovacao.md)).
+A primeira Release de código é o **Kernel** (bootstrap, contexto de execução, schema fundacional de multiempresa, Telemetry, event-bus), agora implementando o Envelope de resposta desde o primeiro endpoint. Nenhum código será escrito antes de essa Release ser apresentada no formato Objetivo/Escopo/Arquitetura/Dependências/Riscos/Entrega/Testes/Critérios de Aceite e aprovada explicitamente (ver [ADR-0010](../docs/adr/0010-processo-por-epicos-com-aprovacao.md)).
 
 ## Não bloqueado, mas não iniciado
 
-- Popular `knowledge/` com conteúdo real (hoje só há README de escopo por pasta) pode acontecer em paralelo ao desenvolvimento de código, por quem detém o conhecimento de negócio — não depende de nenhum épico técnico.
-- Criar a Organização no GitHub (`Alfa-Solucoes` ou `Grupo-Solucoes`) sugerida pelo Product Owner e mover `Project-SIGMA` para dentro dela — ação de conta do GitHub, fora do escopo do que posso executar diretamente; decisão e execução ficam com o Product Owner.
+- Popular `knowledge/` com conteúdo real pode acontecer em paralelo ao desenvolvimento de código.
+- Criar a Organização no GitHub (`Alfa-Solucoes`/`Grupo-Solucoes`) sugerida pelo Product Owner — ação de conta fora do escopo do que posso executar diretamente.
+- Definir quem configura o nível de Autonomia Progressiva por User/Role na prática (ver [ADR-0029](../docs/adr/0029-autonomia-progressiva.md)) — adiado para a Release 7/8, quando Skill Engine e Agent Engine de fato aplicam esse gate.

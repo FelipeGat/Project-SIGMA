@@ -9,17 +9,17 @@
   "permissions": [
     { "key": "github.issues.ler", "risk": "read" },
     { "key": "github.pull_requests.ler", "risk": "read" },
-    { "key": "github.issues.criar", "risk": "write-external", "requires_human_approval": false },
-    { "key": "github.pull_requests.criar", "risk": "write-external", "requires_human_approval": false },
-    { "key": "github.commits.criar", "risk": "write-external", "requires_human_approval": false }
+    { "key": "github.issues.criar", "risk": "write-external" },
+    { "key": "github.pull_requests.criar", "risk": "write-external" },
+    { "key": "github.commits.criar", "risk": "write-external" }
   ],
   "events": [
     "github_skill.invoked",
     "github_skill.succeeded",
     "github_skill.failed"
   ],
-  "actions": [
-    { "name": "criar_pull_request", "input": "CriarPullRequestInput", "output": "PullRequestRef" },
-    { "name": "criar_issue", "input": "CriarIssueInput", "output": "IssueRef" }
+  "capabilities": [
+    { "name": "CreatePullRequest", "input": "CreatePullRequestInput", "output": "PullRequestRef", "autonomy_level_required": 2, "events_emitted": [] },
+    { "name": "CreateIssue", "input": "CreateIssueInput", "output": "IssueRef", "autonomy_level_required": 2, "events_emitted": [] }
   ]
 }

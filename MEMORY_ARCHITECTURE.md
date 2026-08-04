@@ -32,4 +32,4 @@ Sem essa separação, contexto operacional de uma Mission específica (que pode 
 
 ## Onde vive
 
-Implementado por [packages/memory-engine](packages/memory-engine/) — camada L5 do [ROADMAP.md](ROADMAP.md). A promoção entre níveis, quando automatizada, roda via `services/scheduler`.
+Implementado por [packages/memory-engine](packages/memory-engine/) — Release 3 do [ROADMAP.md](ROADMAP.md). A promoção entre níveis, quando automatizada, roda via `services/scheduler`.

@@ -8,8 +8,9 @@
   },
   "permissions": [
     { "key": "calendar.eventos.ler", "risk": "read" },
-    { "key": "calendar.eventos.criar", "risk": "write-external", "requires_human_approval": true },
-    { "key": "calendar.eventos.atualizar", "risk": "write-external", "requires_human_approval": true }
+    { "key": "calendar.eventos.criar", "risk": "write-external" },
+    { "key": "calendar.eventos.atualizar", "risk": "write-external" },
+    { "key": "calendar.eventos.cancelar", "risk": "write-external" }
   ],
   "events": [
     "calendar_skill.invoked",
@@ -17,7 +18,10 @@
     "calendar_skill.failed",
     "meeting.scheduled"
   ],
-  "actions": [
-    { "name": "criar_evento", "input": "CriarEventoInput", "output": "Meeting" }
+  "capabilities": [
+    { "name": "CreateEvent", "input": "CreateEventInput", "output": "Meeting", "autonomy_level_required": 2, "events_emitted": ["meeting.scheduled"] },
+    { "name": "CancelEvent", "input": "CancelEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [] },
+    { "name": "MoveEvent", "input": "MoveEventInput", "output": "Meeting", "autonomy_level_required": 1, "events_emitted": [] },
+    { "name": "SearchAgenda", "input": "SearchAgendaInput", "output": "Meeting[]", "autonomy_level_required": 3, "events_emitted": [] }
   ]
 }

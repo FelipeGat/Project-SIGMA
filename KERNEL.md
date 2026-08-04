@@ -29,4 +29,4 @@ Uma peça de lógica pertence ao Kernel se, e somente se, remover essa peça que
 
 ## Onde vive
 
-Implementação em [packages/kernel](packages/kernel/) — camada L1 do [ROADMAP.md](ROADMAP.md), pré-requisito de toda camada seguinte.
+Implementação em [packages/kernel](packages/kernel/) — Release 2 do [ROADMAP.md](ROADMAP.md), pré-requisito de toda camada seguinte.

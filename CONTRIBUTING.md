@@ -1,25 +1,25 @@
 # Como contribuir com o SIGMA
 
-## O processo é por épico, não por PR isolado
+## O processo é por Release, não por PR isolado
 
-O SIGMA avança um épico por vez, seguindo a ordem de camadas de Engine do [ROADMAP.md](ROADMAP.md) (ver [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md) e [ADR-0015](docs/adr/0015-roadmap-por-camadas-nao-por-feature.md)). Antes de escrever código para um épico, ele precisa ter sido apresentado e aprovado no formato:
+O SIGMA avança uma Release por vez, seguindo a ordem definida no [ROADMAP.md](ROADMAP.md) (ver [ADR-0010](docs/adr/0010-processo-por-epicos-com-aprovacao.md), [ADR-0015](docs/adr/0015-roadmap-por-camadas-nao-por-feature.md) e [ADR-0024](docs/adr/0024-terminologia-release.md) — "Release" substitui "Sprint"/"épico" como termo corrente, mesmo onde ADRs anteriores ainda dizem "épico"). Antes de escrever código para uma Release, ela precisa ter sido apresentada e aprovada no formato:
 
-- **Objetivo** — o que o épico resolve.
+- **Objetivo** — o que a Release resolve.
 - **Escopo** — o que entra e, explicitamente, o que não entra.
-- **Arquitetura** — como se encaixa no domínio já existente (contextos, entidades, eventos envolvidos).
+- **Arquitetura** — como se encaixa no domínio já existente (Engines, entidades, eventos envolvidos — conforme [SIGMA_PROTOCOL.md](SIGMA_PROTOCOL.md)).
 - **Dependências** — o que precisa existir antes.
 - **Riscos** — o que pode dar errado e como é mitigado.
-- **Entrega** — o incremento concreto e verificável que o épico produz.
+- **Entrega** — o incremento concreto e verificável que a Release produz.
 - **Testes** — o que será coberto e como.
-- **Critérios de Aceite** — como se sabe que o épico está pronto.
+- **Critérios de Aceite** — como se sabe que a Release está pronta.
 
 Sem essa aprovação, não há branch de implementação — apenas documentação e discussão são aceitas.
 
 ## Fluxo de trabalho
 
-1. Branch a partir de `main`: `epic/<camada>-<slug>` para código de épico aprovado (ex: `epic/l1-kernel`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
+1. Branch a partir de `main`: `release/<numero>-<slug>` para código de Release aprovada (ex: `release/2-kernel`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.
 2. Commits seguindo [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
-3. Pull Request descrevendo a que Critério de Aceite do épico ele atende.
+3. Pull Request descrevendo a que Critério de Aceite da Release ele atende.
 4. Revisão contra [docs/conventions/coding-standards.md](docs/conventions/coding-standards.md) e [docs/conventions/naming-conventions.md](docs/conventions/naming-conventions.md).
 5. Merge somente após aprovação explícita.
 

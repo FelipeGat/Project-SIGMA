@@ -1,6 +1,6 @@
 # Arquitetura de Alto Nível — SIGMA
 
-Este documento descreve como o SIGMA é estruturado: os Engines que compõem seu núcleo, o modelo de domínio, o ciclo de vida da Mission, o contrato de Skill, o modelo de Agentes, e a stack de referência. É o documento a se manter atualizado conforme decisões evoluem; decisões pontuais e seu porquê ficam registradas em [docs/adr/](../adr/).
+Este documento descreve como o SIGMA é estruturado: os Engines que compõem seu núcleo, o modelo de domínio, o ciclo de vida da Mission, o contrato de Skill, o modelo de Agentes, e a stack de referência — a **topologia** do sistema. O formato de mensagem que percorre essa topologia (o Envelope, Capabilities, Autonomia Progressiva) é definido em [SIGMA_PROTOCOL.md](../../SIGMA_PROTOCOL.md), documento de maior autoridade em caso de conflito sobre contrato/formato. Este documento é mantido atualizado conforme decisões evoluem; decisões pontuais e seu porquê ficam registradas em [docs/adr/](../adr/).
 
 ## 0. SIGMA é um Sistema Operacional, não uma IA
 
@@ -142,12 +142,12 @@ Cada transição de estado publica um evento de domínio, consumido pelo Audit E
 
 ## 7. Skill — contrato
 
-Toda integração externa é modelada como Skill, operada pelo Skill Engine. Uma Skill é desacoplada e possui, obrigatoriamente:
+Toda integração externa é modelada como Skill, operada pelo Skill Engine. Uma Skill não expõe funções soltas — expõe um conjunto nomeado de **Capabilities** (ver [SIGMA_PROTOCOL.md §3](../../SIGMA_PROTOCOL.md#3-capability) e [ADR-0027](../adr/0027-capability-unidade-de-skill.md)). Uma Skill é desacoplada e possui, obrigatoriamente:
 
 - **Configuração** — como a Skill é ativada e parametrizada por empresa/ambiente.
-- **Permissões** — quem (qual Agent, qual Mission) pode invocá-la e para quê.
-- **Entrada** — contrato de dados que a Skill aceita.
-- **Saída** — contrato de dados que a Skill devolve.
+- **Permissões** — quem (qual Agent, qual Mission) pode invocar cada Capability, e com qual nível de Autonomia Progressiva exigido (ver [SIGMA_PROTOCOL.md §4](../../SIGMA_PROTOCOL.md#4-autonomia-progressiva)).
+- **Entrada** — contrato de dados que cada Capability aceita.
+- **Saída** — contrato de dados que cada Capability devolve, sempre dentro do campo `data` do [Envelope](../../SIGMA_PROTOCOL.md#1-o-envelope).
 - **Eventos** — o que a Skill publica no Event Bus ao ser executada (sucesso, falha, progresso).
 - **Logs** — toda invocação é registrada, correlacionada à Mission que a originou.
 - **Testes** — contrato coberto por testes automatizados antes de ir ao ar.
@@ -160,12 +160,13 @@ interface Skill
 {
     public function name(): string;
     public function configure(SkillConfig $config): void;
-    public function authorize(Agent $agent, Mission $mission): bool;
-    public function execute(SkillInput $input): SkillOutput;
+    public function capabilities(): array; // Capability[]
+    public function authorize(Agent $agent, Mission $mission, string $capability): bool;
+    public function invoke(string $capability, CapabilityInput $input): Envelope;
 }
 ```
 
-Skills previstas, documentadas em [/skills](../../skills/): `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `GoogleCalendarSkill`, `EmailSkill`, `WhatsAppSkill` — e futuramente `DockerSkill`, entre outras. A partir da Sprint 0.2, toda Skill é implementada tecnicamente como um **Plugin** carregado dinamicamente pelo Skill Engine, nunca uma classe compilada no núcleo — ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) e [ADR-0017](../adr/0017-plugin-system.md).
+Skills previstas, documentadas em [/skills](../../skills/): `GestorSkill`, `GitHubSkill`, `TelegramSkill`, `GoogleCalendarSkill`, `EmailSkill`, `WhatsAppSkill` — e futuramente `DockerSkill`, entre outras. Toda Skill é implementada tecnicamente como um **Plugin** carregado dinamicamente pelo Skill Engine, nunca uma classe compilada no núcleo — ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) e [ADR-0017](../adr/0017-plugin-system.md).
 
 ## 8. Estrutura do monorepo
 
@@ -223,6 +224,7 @@ Este documento cobre a arquitetura de alto nível; os seguintes aprofundam decis
 
 | Documento | Cobre |
 |---|---|
+| [SIGMA_PROTOCOL.md](../../SIGMA_PROTOCOL.md) | O Envelope, Capability, Intenção-não-Comando, Autonomia Progressiva — o contrato que une todos os Engines. Maior autoridade que este documento em caso de conflito sobre formato |
 | [KERNEL.md](../../KERNEL.md) | O que pertence e o que nunca pertence ao Kernel |
 | [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md) | Como uma Skill é empacotada e carregada como Plugin |
 | [EVENT_MODEL.md](../../EVENT_MODEL.md) | Catálogo canônico de eventos e a filosofia "tudo é evento" |

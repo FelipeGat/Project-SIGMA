@@ -25,7 +25,7 @@ Tenant
 
 ## Regra desde o schema
 
-Toda tabela de domínio criada a partir da camada L1 — Kernel carrega `tenant_id` como chave estrangeira obrigatória (não nula), e `company_id`/`workspace_id` quando aplicável ao domínio da tabela. Nenhuma tabela nasce "genérica" com a intenção de adicionar isolamento depois.
+Toda tabela de domínio criada a partir da Release 2 — Kernel carrega `tenant_id` como chave estrangeira obrigatória (não nula), e `company_id`/`workspace_id` quando aplicável ao domínio da tabela. Nenhuma tabela nasce "genérica" com a intenção de adicionar isolamento depois.
 
 Toda query de leitura/escrita passa pelo contexto de execução resolvido pelo [Kernel](KERNEL.md) — nenhum Engine ou Plugin monta uma query sem o filtro de Tenant já aplicado por padrão.
 
@@ -35,4 +35,4 @@ O SIGMA não duplica a modelagem multiempresa de cada sistema integrado (ex: `em
 
 ## Onde vive
 
-Fundação em `services/auth` e no schema base do [Kernel](KERNEL.md) — camada L1 do [ROADMAP.md](ROADMAP.md).
+Fundação em `services/auth` e no schema base do [Kernel](KERNEL.md) — Release 2 do [ROADMAP.md](ROADMAP.md).

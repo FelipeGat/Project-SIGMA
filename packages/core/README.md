@@ -4,4 +4,4 @@ Primitivas de domínio compartilhadas por todos os Engines: Value Objects comuns
 
 Não é um "utils" genérico — só pertence aqui o que é verdadeiramente compartilhado por mais de um Engine. Regra prática: se só um Engine usa, vive no pacote daquele Engine, não em `core`.
 
-Vazio na Fase Foundation. Nasce junto com o primeiro pacote que precisar dele — provavelmente `kernel` (camada L1 do [ROADMAP.md](../../ROADMAP.md)).
+Vazio na Fase Foundation. Nasce junto com o primeiro pacote que precisar dele — provavelmente `kernel` (Release 2 do [ROADMAP.md](../../ROADMAP.md)).

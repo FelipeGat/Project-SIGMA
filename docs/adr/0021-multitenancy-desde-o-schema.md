@@ -9,7 +9,7 @@ O SIGMA hoje serve uma única organização (Alfa Soluções), mas [VISION_2030.
 
 ## Decisão
 
-Toda tabela de domínio, desde a camada L1 — Kernel, carrega a hierarquia Tenant → Company → Workspace → User → Role (ver [MULTITENANCY.md](../../MULTITENANCY.md)) com `tenant_id` como chave estrangeira obrigatória. Nenhuma tabela nasce sem essa fronteira com a intenção de adicioná-la depois.
+Toda tabela de domínio, desde a Release 2 — Kernel, carrega a hierarquia Tenant → Company → Workspace → User → Role (ver [MULTITENANCY.md](../../MULTITENANCY.md)) com `tenant_id` como chave estrangeira obrigatória. Nenhuma tabela nasce sem essa fronteira com a intenção de adicioná-la depois.
 
 ## Consequências
 

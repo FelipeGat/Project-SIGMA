@@ -10,8 +10,8 @@
     { "key": "gestor.clientes.ler", "risk": "read" },
     { "key": "gestor.orcamentos.ler", "risk": "read" },
     { "key": "gestor.funil.ler", "risk": "read" },
-    { "key": "gestor.orcamentos.criar", "risk": "write-internal", "requires_human_approval": true },
-    { "key": "gestor.funil.atualizar", "risk": "write-internal", "requires_human_approval": true }
+    { "key": "gestor.orcamentos.criar", "risk": "write-internal" },
+    { "key": "gestor.funil.atualizar", "risk": "write-internal" }
   ],
   "events": [
     "gestor_skill.invoked",
@@ -19,8 +19,8 @@
     "gestor_skill.failed",
     "budget.created_via_gestor"
   ],
-  "actions": [
-    { "name": "buscar_cliente", "input": "BuscarClienteInput", "output": "Client" },
-    { "name": "criar_orcamento", "input": "CriarOrcamentoInput", "output": "Budget" }
+  "capabilities": [
+    { "name": "FindClient", "input": "FindClientInput", "output": "Client", "autonomy_level_required": 3, "events_emitted": [] },
+    { "name": "CreateBudget", "input": "CreateBudgetInput", "output": "Budget", "autonomy_level_required": 1, "events_emitted": ["budget.created_via_gestor"] }
   ]
 }

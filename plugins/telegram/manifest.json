@@ -16,7 +16,7 @@
     "telegram_skill.failed",
     "telegram_skill.user_responded"
   ],
-  "actions": [
-    { "name": "enviar_mensagem", "input": "EnviarMensagemInput", "output": "EnvioConfirmado" }
+  "capabilities": [
+    { "name": "SendMessage", "input": "SendMessageInput", "output": "DeliveryReceipt", "autonomy_level_required": 2, "events_emitted": [] }
   ]
 }

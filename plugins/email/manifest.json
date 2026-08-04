@@ -8,14 +8,14 @@
   },
   "permissions": [
     { "key": "email.ler", "risk": "read" },
-    { "key": "email.enviar", "risk": "write-external", "requires_human_approval": true }
+    { "key": "email.enviar", "risk": "write-external" }
   ],
   "events": [
     "email_skill.invoked",
     "email_skill.succeeded",
     "email_skill.failed"
   ],
-  "actions": [
-    { "name": "enviar_email", "input": "EnviarEmailInput", "output": "EnvioConfirmado" }
+  "capabilities": [
+    { "name": "SendEmail", "input": "SendEmailInput", "output": "DeliveryReceipt", "autonomy_level_required": 1, "events_emitted": [] }
   ]
 }

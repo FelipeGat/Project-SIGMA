@@ -18,12 +18,12 @@ Se o Kernel (ou qualquer Engine) importa e referencia a classe concreta de uma i
 
 ```
 plugins/<nome>/
-├── manifest.json      # identidade, versão, skill correspondente, config, permissões, eventos, ações
+├── manifest.json      # identidade, versão, skill correspondente, config, permissões, eventos, capabilities
 ├── README.md           # documentação legível — o que faz, como configurar
 ├── config/              # valores de configuração por ambiente (sem segredo em texto puro)
-├── permissions/         # regras de autorização por Agent/Mission
+├── permissions/         # regras de autorização por Agent/Mission/Capability
 ├── events/               # eventos que este Plugin publica
-└── actions/               # pontos de entrada que o Skill Engine invoca (implementação, nasce com o épico)
+└── capabilities/          # implementação de cada Capability que o Skill Engine invoca (nasce com o épico)
 ```
 
 ## `manifest.json` — schema de referência
@@ -38,7 +38,9 @@ Ver [plugins/manifest.schema.json](plugins/manifest.schema.json) para o schema f
 | `config` | Schema dos parâmetros de configuração aceitos |
 | `permissions` | Operações que o Plugin expõe e o nível de risco de cada uma |
 | `events` | Eventos que o Plugin publica no Event Bus |
-| `actions` | Pontos de entrada (ações) que o Plugin expõe ao Skill Engine |
+| `capabilities` | As Capabilities (ver [SIGMA_PROTOCOL.md §3](SIGMA_PROTOCOL.md#3-capability)) que o Plugin expõe ao Skill Engine — cada uma com seu `autonomy_level_required` (ver [SIGMA_PROTOCOL.md §4](SIGMA_PROTOCOL.md#4-autonomia-progressiva)). Campo renomeado de `actions` na Release 1 ([ADR-0027](docs/adr/0027-capability-unidade-de-skill.md)) |
+
+Toda resposta de uma Capability é normalizada no [Envelope do SIGMA Protocol](SIGMA_PROTOCOL.md#1-o-envelope) pelo Skill Engine antes de subir ao Agent Engine — nunca o formato nativo do Plugin repassado sem tradução.
 
 ## Relação com `/skills`
 

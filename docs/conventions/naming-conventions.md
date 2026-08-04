@@ -8,12 +8,14 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 
 | Termo | Significa | Nunca usar como sinônimo de |
 |---|---|---|
-| **Mission** | A solicitação central que o sistema interpreta, planeja e executa | "Task", "Job", "Request" isolados |
-| **Plan** | O planejamento gerado para uma Mission | — |
+| **Intent** | Um objetivo interpretado, que pode decompor em uma ou mais Missions (1:N) | "Command", "Comando" — SIGMA nunca executa comandos, ver [ADR-0028](../adr/0028-intencao-nao-comando.md) |
+| **Mission** | Uma solicitação concreta que o sistema planeja e executa, originada de uma Intent | "Task", "Job", "Request" isolados |
+| **Plan** | O planejamento gerado a partir de uma Intent, podendo abranger mais de uma Mission | — |
 | **Subtask** | Uma unidade de trabalho dentro do Plan de uma Mission | "Mission" |
 | **Agent** | Uma persona operacional especializada que usa uma IA | "IA", "Skill" |
 | **IA** (AIProvider) | O provedor/modelo bruto (Claude, ChatGPT, Gemini, Manus) | "Agent" |
 | **Skill** | Uma capacidade de ação concreta (integração) invocável por um Agent — o conceito de domínio | "Integration" isolado |
+| **Capability** | Uma ação nomeada e discreta implementada por uma Skill (ex: `CreateEvent`) | "Action", "função" solta — ver [ADR-0027](../adr/0027-capability-unidade-de-skill.md) |
 | **Plugin** | O empacotamento técnico de uma Skill, carregado dinamicamente (ver [PLUGIN_SYSTEM.md](../../PLUGIN_SYSTEM.md)) | "Skill" — Plugin é a implementação; Skill é o conceito |
 | **Workspace** | Unidade de contexto operacional (ex: um cliente) que agrega Client/Project/Budget/Meeting relacionados | "Project" isolado |
 | **Tenant** | Fronteira de isolamento total de dados | "Company" |
@@ -32,7 +34,7 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | Serviço (`services/`) | kebab-case | `ai-router`, `event-bus` |
 | App (`apps/`) | kebab-case | `web`, `mobile`, `admin` |
 | Plugin (`plugins/`) | kebab-case, mesmo nome da Skill em minúsculas | `gestor`, `github`, `whatsapp` |
-| `manifest.json` de Plugin | campos em snake_case (ver [plugins/manifest.schema.json](../../plugins/manifest.schema.json)) | `api_base_url`, `requires_human_approval` |
+| `manifest.json` de Plugin | campos em snake_case (ver [plugins/manifest.schema.json](../../plugins/manifest.schema.json)) | `api_base_url`, `autonomy_level_required` |
 
 ## Backend (Laravel / PHP 8.4, dentro de cada pacote)
 
@@ -53,6 +55,8 @@ Os termos abaixo têm significado único e fixo em todo o sistema — código, d
 | Rota de API | kebab-case, plural, prefixada pelo contexto | `POST /api/missions`, `GET /api/skills/{skill}/logs` |
 | Fila (queue) | kebab-case | `missions-execution`, `skills-invocation` |
 | Nome de Skill concreta | PascalCase + sufixo `Skill` | `GestorSkill`, `WhatsAppSkill`, `GitHubSkill` |
+| Nome de Capability | Verbo-substantivo, PascalCase | `CreateEvent`, `CancelEvent`, `SearchAgenda` |
+| Campo do Envelope (ver [SIGMA_PROTOCOL.md](../../SIGMA_PROTOCOL.md)) | camelCase, fixo — nunca renomear por integração | `success`, `data`, `error`, `mission`, `workspace`, `events`, `memory`, `nextActions`, `logs` |
 
 ## Frontend (React / TypeScript / React Native)
 
@@ -75,6 +79,6 @@ Formato: `<Contexto>.<Entidade><ParticípioPassado>` no Event Bus, `<Entidade><P
 
 ## Git
 
-- Branches: `epic/<camada>-<slug>` (ex: `epic/l1-kernel`, `epic/l4-mission-engine` — camadas em [ROADMAP.md](../../ROADMAP.md)), `fix/<slug>`, `docs/<slug>`.
+- Branches: `release/<numero>-<slug>` (ex: `release/2-kernel`, `release/4-mission-engine` — numeração em [ROADMAP.md](../../ROADMAP.md)), `fix/<slug>`, `docs/<slug>`.
 - Commits: [Conventional Commits](https://www.conventionalcommits.org/) — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`. Detalhado em [CONTRIBUTING.md](../../CONTRIBUTING.md).
 - ADRs: `docs/adr/NNNN-slug-em-kebab-case.md`, numeração sequencial de 4 dígitos.
