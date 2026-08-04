@@ -16,7 +16,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 3.5 | Architecture Consolidation | ✅ Concluída | 100% |
 | 4A | Memory Domain | ✅ Concluída | 100% |
 | 4B | Memory Infrastructure | ✅ Concluída | 100% |
-| 4.5 | Platform Validation | ⏳ Não iniciada | 0% |
+| 4.5 | Platform Validation | ✅ Concluída | 100% |
 | 5 | Mission Engine | ⏳ Não iniciada | 0% |
 | 6 | Planner Engine | ⏳ Não iniciada | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
@@ -82,9 +82,9 @@ Não mudou o produto — fortaleceu a base antes da Memory Engine, seguindo a re
 
 Mesmo padrão de modelagem cuidadosa e divisão Domain-first da Release 3 ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **4A — Memory Domain** ([docs/releases/0004a-memory-domain.md](docs/releases/0004a-memory-domain.md)) modelou `ContextMemory`/`MemoryRecord`/`KnowledgeRecord`/`DigitalTwin` em código puro, com a mecânica de promoção entre níveis gated por `confidence` ([ADR-0081](docs/adr/0081-mecanica-de-promocao-de-memory.md), [ADR-0084](docs/adr/0084-confidence-como-gate-de-promocao.md)) e a decisão de popular `UserTwin` desde já ([ADR-0079](docs/adr/0079-usertwin-desde-a-release-4.md)); **4B — Memory Infrastructure** ([docs/releases/0004b-memory-infrastructure.md](docs/releases/0004b-memory-infrastructure.md)) trouxe persistência real e, o achado mais importante da Release, o primeiro listener Redis cross-processo do projeto (`RedisSubscriber` + `services/memory-worker`) — validado via `docker compose up --build` real, `UserTwin` sincronizado entre containers distintos. Modelo completo em [MEMORY_MODEL.md](MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md) e [MEMORY_PROMOTION_RULES.md](MEMORY_PROMOTION_RULES.md).
 
-## Release 4.5 — Platform Validation
+## Release 4.5 — Platform Validation ✅
 
-**Não é uma Release funcional — é uma Release de engenharia**, marco acrescentado pelo Product Owner antes de abrir o Mission Engine: provar que tudo construído até aqui (Identity, Memory, Redis, Docker, Gateway, Worker, Event Bus) funciona **junto**, sob estresse e sob falha, não só isoladamente Release a Release. Inclui, no mínimo: stress test (1000 eventos), restart de containers com verificação de recuperação, perda e recuperação do Redis, perda e recuperação do Worker, múltiplos usuários concorrentes, ciclo completo de Memory Promotion, Twin Sync, latência, event replay, e um benchmark de referência. Detalhamento formal (Proposal) escrito quando esta Release começar, mesmo princípio de "não desenhar Release distante hoje" do topo deste documento.
+**Não é uma Release funcional — é uma Release de engenharia**, marco acrescentado pelo Product Owner antes de abrir o Mission Engine: provar que tudo construído até aqui (Identity, Memory, Redis, Docker, Gateway, Worker, Event Bus) funciona **junto**, sob estresse e sob falha, não só isoladamente Release a Release. Dez verificações executadas contra `docker compose up --build` real: stress test (1000 eventos, 0 perdidos, ~112 eventos/s de processamento), restart de containers (achado real: nenhum serviço tem `restart policy` — `memory-worker` não recupera sozinho), perda e recuperação do Redis (`auth`/`gateway` recuperam sozinhos, `memory-worker` não), perda do Worker (mensagem publicada durante a queda é perdida para sempre — confirmado, esperado), 20 usuários concorrentes (0 falhas, 0 contaminação cruzada), Memory Promotion em volume (200 registros, contagem exata), Twin Sync sequencial, latência (p50 ~6ms/p99 ~23ms), event replay (não existe, confirmado), benchmark de referência. Ver [Decision Log](docs/releases/0004.5-platform-validation-decision-log.md) e [Validation Report](docs/releases/0004.5-platform-validation-validation-report.md).
 
 ## Release 5 — Mission Engine
 
