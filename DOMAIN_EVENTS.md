@@ -1,0 +1,35 @@
+# Domain Events
+
+Catálogo dos eventos de domínio que cada Engine publica — o contrato pelo qual o resto do SIGMA sabe o que aconteceu, sem nunca precisar conhecer o Engine que publicou (ver [ADR-0062](docs/adr/0062-identity-nunca-conhece-outro-engine.md)). Distinto do catálogo de [EVENT_MODEL.md](EVENT_MODEL.md), que cobre a sequência **Technical** de orquestração de uma Mission entre os Engines do núcleo — este documento cobre eventos de **domínio** (camada Semantic, ver [EVENT_MODEL.md — Três camadas de evento](EVENT_MODEL.md#três-camadas-de-evento)), publicados por um Engine específico sobre mudanças no seu próprio agregado. Entrega obrigatória antes de qualquer código da Release 3, junto de [IDENTITY_MODEL.md](IDENTITY_MODEL.md) e [IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md).
+
+## Identity Engine
+
+Todos na camada **Semantic** — fatos de negócio sobre o agregado `Identity` (ver [IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md)), não passos de orquestração de Mission. Consumidores esperados: Memory Engine (atualiza o Digital Twin de User/Company), Audit Engine (trilha de conformidade) — nenhum dos dois é conhecido pelo Identity Engine no momento da publicação (ver [ADR-0062](docs/adr/0062-identity-nunca-conhece-outro-engine.md)).
+
+| Evento | Nome no Event Bus | Publicado quando | Payload mínimo |
+|---|---|---|---|
+| `IdentityCreated` | `identity.created` | Um User ganha existência no sistema (Identity Lifecycle, etapa 1) | `identityId`, `userId`, `tenantId` |
+| `IdentityActivated` | `identity.activated` | Uma Identity antes inativa passa a poder se autenticar | `identityId` |
+| `IdentityDisabled` | `identity.disabled` | Uma Identity é desativada — sessões vigentes devem ser invalidadas por quem consome este evento | `identityId`, `reason` |
+| `SessionStarted` | `session.started` | Uma Session é emitida após autenticação bem-sucedida (Identity Lifecycle, etapa 4) | `sessionId`, `identityId`, `issuedAt`, `expiresAt` |
+| `SessionEnded` | `session.ended` | Uma Session é invalidada — por logout explícito ou por expiração | `sessionId`, `identityId`, `reason` (`logout` \| `expired`) |
+| `WorkspaceSelected` | `workspace.selected` | Um Workspace é escolhido como ativo dentro de uma Session (Identity Lifecycle, etapa 5) | `sessionId`, `identityId`, `workspaceId` |
+| `RoleAssigned` | `role.assigned` | Um `RoleAssignment` é criado — User ou Team recebe um Role num escopo (ver [IDENTITY_MODEL.md](IDENTITY_MODEL.md#relações)) | `roleId`, `subjectType` (`user` \| `team`), `subjectId`, `scopeType`, `scopeId` |
+| `RoleRevoked` | `role.revoked` | Um `RoleAssignment` é removido | `roleId`, `subjectType`, `subjectId`, `scopeType`, `scopeId` |
+| `PermissionGranted` | `permission.granted` | Um Role passa a conceder uma Permission que antes não concedia | `roleId`, `permissionKey` |
+| `PermissionRevoked` | `permission.revoked` | Um Role deixa de conceder uma Permission que antes concedia | `roleId`, `permissionKey` |
+
+`RoleRevoked` foi adicionado por simetria com `RoleAssigned` — não estava na lista original do Product Owner, mas é indissociável dela: todo `RoleAssignment` que pode ser criado precisa poder ser desfeito, e o evento correspondente precisa existir desde já para quem for consumi-lo (ex: Audit Engine).
+
+## Regra de payload
+
+Todo evento desta lista carrega, além do payload mínimo indicado, os campos padrão de correlação já exigidos por [EVENT_MODEL.md — Regras](EVENT_MODEL.md#regras): identificador de origem, timestamp, Engine publicador. `permissionKey` refere-se sempre à chave string definida em [IDENTITY_MODEL.md#permission](IDENTITY_MODEL.md#permission) (ex: `mission.create`), nunca a um identificador interno de linha de banco.
+
+## O que este documento não decide
+
+- O schema de serialização exato de cada payload (JSON Schema por evento) — nasce durante a Implementation da Release 3A, junto do código que publica cada evento.
+- Se algum destes eventos, com o tempo, é promovido a Business (ver [EVENT_MODEL.md](EVENT_MODEL.md)) — essa curadoria é decisão do Automation/Analytics Engine (Release 14), não deste documento.
+
+## Onde vive
+
+Publicado por `packages/identity-engine/Domain/` (ver [ADR-0061](docs/adr/0061-engine-quatro-camadas-ddd.md)) sobre `IEventBus` ([packages/kernel](packages/kernel/)) — nunca conhecendo quem consome, conforme [ADR-0062](docs/adr/0062-identity-nunca-conhece-outro-engine.md).

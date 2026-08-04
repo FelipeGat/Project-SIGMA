@@ -11,7 +11,8 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 0 | Foundation (documentação, arquitetura, estrutura) | ✅ Aprovada, publicada |
 | 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
 | 2 | SIGMA Bootstrap | ✅ Implementada — 48 testes passando |
-| 3 | Identity Engine | ✅ Aprovada para implementação — [IDENTITY_MODEL.md](IDENTITY_MODEL.md)/[IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md)/`Identity.contract.yaml` entregues, código ainda não iniciado |
+| 3A | Identity Domain | ✅ Aprovada para implementação — [IDENTITY_MODEL.md](IDENTITY_MODEL.md)/[IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md)/[DOMAIN_EVENTS.md](DOMAIN_EVENTS.md)/`Identity.contract.yaml` entregues, código ainda não iniciado |
+| 3B | Identity Infrastructure | ⚪ Não iniciada — Proposal só é escrita depois que 3A estiver implementada e validada (ver [ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)) |
 | 4 | Memory Engine | ⚪ Não iniciado |
 | 5 | Mission Engine | ⚪ Não iniciado |
 | 6 | Planner Engine | ⚪ Não iniciado |
@@ -41,6 +42,8 @@ O schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role — [MU
 ## Release 3 — Identity Engine
 
 Responde "quem sou, quem é o usuário, qual empresa, qual workspace, qual tenant, quais permissões, qual autonomia, qual contexto" — deliberadamente extraído do Memory Engine, por ser identidade e não memória (ver [ADR-0039](docs/adr/0039-identity-engine.md)). Contém o schema fundacional de multiempresa (Tenant/Company/Workspace/User/Role, `tenant_id` obrigatório desde a primeira migration — [MULTITENANCY.md](MULTITENANCY.md), [ADR-0021](docs/adr/0021-multitenancy-desde-o-schema.md)) e a resolução do nível de Autonomia Progressiva por User/Role ([ADR-0029](docs/adr/0029-autonomia-progressiva.md)). Todo Engine seguinte consome o contexto de identidade resolvido por este Engine através do Kernel — nunca resolve Tenant/Workspace por conta própria.
+
+Primeiro Engine a modelar domínio real, dividido em duas sub-Releases sequenciais ([ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)): **3A — Identity Domain** ([docs/releases/0003a-identity-domain.md](docs/releases/0003a-identity-domain.md)) modela o domínio em código puro, sem infraestrutura; **3B — Identity Infrastructure** ([docs/releases/0003b-identity-infrastructure.md](docs/releases/0003b-identity-infrastructure.md)) só começa depois que 3A estiver validada, e traz persistência, API e autenticação de verdade.
 
 ## Release 4 — Memory Engine
 

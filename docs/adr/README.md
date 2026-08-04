@@ -64,3 +64,8 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0056](0056-validation-report-obrigatorio.md) | `VALIDATION_REPORT.md` como artefato obrigatório de toda Release |
 | [0057](0057-eventbus-composicao-inmemory.md) | `RedisEventBus` compõe `InMemoryEventBus` em vez de reimplementar entrega local |
 | [0058](0058-manifest-version.md) | `manifestVersion` versiona o formato do System Manifest |
+| [0059](0059-repositorio-e-fonte-da-verdade.md) | O repositório é a fonte da verdade — nenhuma decisão crítica depende da memória de uma IA |
+| [0060](0060-release-dividida-em-sub-releases.md) | Uma Release complexa pode se dividir em sub-Releases (Domain-first, Infra depois) |
+| [0061](0061-engine-quatro-camadas-ddd.md) | Todo Engine segue quatro camadas DDD — Domain, Application, Infrastructure, Interface |
+| [0062](0062-identity-nunca-conhece-outro-engine.md) | Identity Engine nunca conhece outro Engine — comunicação apenas por eventos publicados |
+| [0063](0063-identificadores-como-value-objects.md) | Identificadores de domínio são Value Objects, nunca string primitiva |
