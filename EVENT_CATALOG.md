@@ -45,12 +45,17 @@ Nenhum evento de domínio — Release 2 é infraestrutura pura ([ADR-0053](docs/
 
 ## Memory Engine
 
-Ver [DOMAIN_EVENTS.md#memory-engine](DOMAIN_EVENTS.md#memory-engine) — catalogados antes do código, junto do [MEMORY_MODEL.md](MEMORY_MODEL.md)/[MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md), mesmo padrão usado para Identity antes da Release 3A.
+Ver [DOMAIN_EVENTS.md#memory-engine](DOMAIN_EVENTS.md#memory-engine) — catalogados antes do código, junto do [MEMORY_MODEL.md](MEMORY_MODEL.md)/[MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md)/[MEMORY_PROMOTION_RULES.md](MEMORY_PROMOTION_RULES.md), mesmo padrão usado para Identity antes da Release 3A. Revisão 2 do modelo (ver [ADR-0082](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md) a [ADR-0088](docs/adr/0088-retracao-expiracao-e-governanca-de-promocao.md)) acrescentou cinco eventos.
 
 | Evento | Bus | Camada | Publica | Consome | Versão | Contrato |
 |---|---|---|---|---|---|---|
+| `ContextMemoryStarted` | `context_memory.started` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `ContextMemoryClosed` | `context_memory.closed` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 | `MemoryRecordObserved` | `memory.record_observed` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` (a nascer com a Release 4) |
-| `MemoryPromoted` | `memory.promoted` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `MemoryPromoted` | `memory.promoted` | Semantic | Memory Engine | Audit Engine, curadoria humana de Knowledge (`toLevel: LongTerm`) | v1 | `Memory.contract.yaml` |
+| `MemoryDeprecated` | `memory.deprecated` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `MemoryRetracted` | `memory.retracted` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
+| `MemorySubjectPinned` | `memory.subject_pinned` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 | `KnowledgeRecordIndexed` | `knowledge.indexed` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 | `DigitalTwinCreated` | `digital_twin.created` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |
 | `DigitalTwinUpdated` | `digital_twin.updated` | Semantic | Memory Engine | Audit Engine | v1 | `Memory.contract.yaml` |

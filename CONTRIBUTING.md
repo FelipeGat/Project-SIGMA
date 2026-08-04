@@ -15,6 +15,16 @@ O SIGMA avança uma Release por vez, seguindo a ordem definida no [ROADMAP.md](R
 
 Sem essa aprovação, não há branch de implementação — apenas documentação e discussão são aceitas.
 
+## Todo Engine que modela domínio novo segue o Processo Oficial de Desenvolvimento de Engines
+
+A partir da Release 4 (inclusive), uma Release que introduz um Engine com domínio próprio (não uma Release de infraestrutura, consolidação ou correção) segue, nesta ordem, o **Processo Oficial de Desenvolvimento de Engines do SIGMA** ([ADR-0082](docs/adr/0082-processo-oficial-de-desenvolvimento-de-engines.md)):
+
+```
+Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push
+```
+
+Na prática: pesquisa do que já existe em prosa sobre o domínio; um `<ENGINE>_MODEL.md` (entidades, atributos, relações); um `<ENGINE>_LIFECYCLE.md` (como as entidades nascem, transitam, terminam); uma seção nova em `DOMAIN_EVENTS.md`/`EVENT_CATALOG.md`; um `contracts/<Engine>.contract.yaml`; só então a Proposal desta seção acima; Implementation seguindo exatamente o que já foi modelado; Validation nos três níveis; Review do Product Owner; Push só com confirmação explícita. Nenhuma etapa documental é pulada nem invertida — código nunca é escrito antes de Model/Lifecycle/Events/Contract estarem aprovados. Ver [MEMORY_MODEL.md](MEMORY_MODEL.md)/[MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md)/[MEMORY_PROMOTION_RULES.md](MEMORY_PROMOTION_RULES.md) (Release 4) e [IDENTITY_MODEL.md](IDENTITY_MODEL.md)/[IDENTITY_LIFECYCLE.md](IDENTITY_LIFECYCLE.md) (Release 3) como exemplos já seguidos antes desta ADR formalizar o processo.
+
 ## Fluxo de trabalho
 
 1. Branch a partir de `main`: `release/<numero>-<slug>` para código de Release aprovada (ex: `release/2-sigma-bootstrap`), `docs/<slug>` para documentação, `fix/<slug>` para correção pontual.

@@ -25,14 +25,19 @@ Todos na camada **Semantic** — fatos de negócio sobre o agregado `Identity` (
 
 ## Memory Engine
 
-Todos na camada **Semantic** — fatos sobre o que o Memory Engine observou, promoveu ou sincronizou (ver [MEMORY_MODEL.md](MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md)). Escrito antes do código, mesmo padrão já usado para Identity antes da Release 3A — entrega obrigatória antes de qualquer código da Release 4. Consumidor esperado: Audit Engine (trilha de conformidade sobre o que o SIGMA aprendeu e quando).
+Todos na camada **Semantic** — fatos sobre o que o Memory Engine observou, promoveu, deprecou, retratou ou sincronizou (ver [MEMORY_MODEL.md](MEMORY_MODEL.md), [MEMORY_LIFECYCLE.md](MEMORY_LIFECYCLE.md), [MEMORY_PROMOTION_RULES.md](MEMORY_PROMOTION_RULES.md)). Escrito antes do código, mesmo padrão já usado para Identity antes da Release 3A — entrega obrigatória antes de qualquer código da Release 4. Consumidor esperado: Audit Engine (trilha de conformidade sobre o que o SIGMA aprendeu e quando), e um User com `knowledge.curate` no caso de `MemoryPromoted` com `toLevel: LongTerm` (candidatura a Knowledge, ver [MEMORY_MODEL.md — Fronteira com Knowledge](MEMORY_MODEL.md#fronteira-com-knowledge--candidatura-nunca-promoção-automática)). Revisão 2 — cinco eventos novos ([ADR-0083](docs/adr/0083-contextmemory-como-estagio-pre-memory.md), [ADR-0088](docs/adr/0088-retracao-expiracao-e-governanca-de-promocao.md)), `KnowledgeRecordIndexed` ganha `version` no payload ([ADR-0086](docs/adr/0086-knowledgerecord-imutavel-e-versionado.md)).
 
 | Evento | Nome no Event Bus | Publicado quando | Payload mínimo |
 |---|---|---|---|
-| `MemoryRecordObserved` | `memory.record_observed` | Um `MemoryRecord` `Operational` é criado a partir de um fato observado numa Mission | `memoryRecordId`, `subjectKey`, `workspaceId`, `missionId` |
-| `MemoryPromoted` | `memory.promoted` | Um `MemoryRecord` é promovido a um nível mais alto (`Operational→Project` ou `Project→LongTerm`) | `memoryRecordId`, `subjectKey`, `fromLevel`, `toLevel`, `promotedFrom` |
-| `KnowledgeRecordIndexed` | `knowledge.indexed` | Um `KnowledgeRecord` é criado ou atualizado a partir de `/knowledge` | `knowledgeRecordId`, `area`, `sourcePath` |
-| `DigitalTwinCreated` | `digital_twin.created` | Um `DigitalTwin` é criado no primeiro contato com a entidade | `digitalTwinId`, `subjectType`, `externalRef` |
+| `ContextMemoryStarted` | `context_memory.started` | Um `ContextMemory` é aberto no início de um engajamento | `contextMemoryId`, `workspaceId`, `missionId` (opcional), `origin` |
+| `ContextMemoryClosed` | `context_memory.closed` | Um `ContextMemory` é fechado ao fim do engajamento, disparando a destilação | `contextMemoryId`, `workspaceId`, `endedAt` |
+| `MemoryRecordObserved` | `memory.record_observed` | Um `MemoryRecord` `Operational` é criado a partir da destilação de um `ContextMemory` fechado | `memoryRecordId`, `subjectKey`, `workspaceId`, `missionId`, `confidence`, `origin` |
+| `MemoryPromoted` | `memory.promoted` | Um `MemoryRecord` é promovido a um nível mais alto (`Operational→Project` ou `Project→LongTerm`) | `memoryRecordId`, `subjectKey`, `fromLevel`, `toLevel`, `confidence`, `promotedFrom` |
+| `MemoryDeprecated` | `memory.deprecated` | Um `MemoryRecord` `Active` é automaticamente marcado `Deprecated` por uma observação contraditória | `memoryRecordId`, `subjectKey`, `contradictedBy` |
+| `MemoryRetracted` | `memory.retracted` | Um `MemoryRecord` é marcado `Retracted` por ação humana explícita | `memoryRecordId`, `subjectKey`, `actor` |
+| `MemorySubjectPinned` | `memory.subject_pinned` | Um `subjectKey` é fixado por ação humana explícita para nunca promover automaticamente | `subjectKey`, `workspaceId`, `actor` |
+| `KnowledgeRecordIndexed` | `knowledge.indexed` | Um `KnowledgeRecord` é criado — nova versão — a partir de `/knowledge` | `knowledgeRecordId`, `area`, `sourcePath`, `version` |
+| `DigitalTwinCreated` | `digital_twin.created` | Um `DigitalTwin` é criado — sempre a partir de um evento, nunca de leitura direta ([ADR-0085](docs/adr/0085-digital-twin-estritamente-event-driven.md)) | `digitalTwinId`, `subjectType`, `externalRef` |
 | `DigitalTwinUpdated` | `digital_twin.updated` | O `state` de um `DigitalTwin` é atualizado a partir de um Semantic Event | `digitalTwinId`, `subjectType`, `lastSyncedAt` |
 | `DigitalTwinStale` | `digital_twin.stale` | Um `DigitalTwin` é consultado fora da janela de refresh esperada | `digitalTwinId`, `subjectType`, `lastSyncedAt` |
 

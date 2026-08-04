@@ -1,52 +1,79 @@
 # Sigma Contract — Memory
-# Contrato do conceito de dominio "Memory" (ver MEMORY_MODEL.md e
-# MEMORY_LIFECYCLE.md) — so o contrato, nenhum codigo ainda. Nasce
-# antes da implementacao da Release 4, mesmo espirito de
-# contracts/Identity.contract.yaml na Release 3.
+# Contrato do conceito de dominio "Memory" (ver MEMORY_MODEL.md,
+# MEMORY_LIFECYCLE.md e MEMORY_PROMOTION_RULES.md) — so o contrato,
+# nenhum codigo ainda. Nasce antes da implementacao da Release 4,
+# mesmo espirito de contracts/Identity.contract.yaml na Release 3.
+# Revisao 2 do modelo (ADR-0082 a ADR-0088) acrescentou ContextMemory,
+# confidence, origin, versionamento de Knowledge e os eventos de
+# retracao/expiracao — refletidos abaixo.
 
 name: Memory
 version: "1.0.0"
 
 input:
+  - name: engagement
+    type: ContextMemoryEngagement
+    required: false
+    # Presente no fluxo de abertura/fechamento de um ContextMemory
+    # — workspaceId, missionId (opcional), origin, rawContent. Ausente
+    # fora do ciclo de vida do engajamento bruto (ver MEMORY_MODEL.md
+    # — ContextMemory).
   - name: observation
     type: MemoryObservation
     required: false
-    # Presente no fluxo de registro de um fato (MemoryRecord Operational)
-    # — subjectKey, content, workspaceId, missionId, tenantId. Ausente
-    # quando o input é uma consulta ou uma avaliacao de promocao.
+    # Presente no fluxo de registro de um fato (MemoryRecord Operational),
+    # produzido pela destilacao de um ContextMemory fechado — subjectKey,
+    # content, confidence, origin, workspaceId, missionId, tenantId.
+    # Ausente quando o input é uma consulta ou uma avaliacao de promocao.
   - name: query
     type: MemoryQuery
     required: false
-    # Presente na consulta de MemoryRecord/KnowledgeRecord/DigitalTwin
-    # ja existentes.
+    # Presente na consulta de ContextMemory/MemoryRecord/KnowledgeRecord/
+    # DigitalTwin ja existentes.
   - name: semanticEvent
     type: SemanticEvent
     required: false
     # Presente na sincronizacao de um DigitalTwin a partir de um evento
-    # Semantic publicado por outro Engine (ver EVENT_MODEL.md).
+    # Semantic publicado por outro Engine (ver EVENT_MODEL.md) — nunca
+    # de uma leitura direta (ADR-0085).
 
 output:
   - name: record
-    type: MemoryRecord | KnowledgeRecord | DigitalTwin
-    # Um dos tres aggregates de MEMORY_MODEL.md, dependendo do input.
-    # Nunca a mesma coisa — Memory, Knowledge e Digital Twin sao
-    # conceitualmente distintos mesmo compartilhando custodiante
-    # (ver MEMORY_MODEL.md — "Tres conceitos, um custodiante").
+    type: ContextMemory | MemoryRecord | KnowledgeRecord | DigitalTwin
+    # Um dos quatro aggregates de MEMORY_MODEL.md, dependendo do input.
+    # Nunca a mesma coisa — ContextMemory, Memory, Knowledge e Digital
+    # Twin sao conceitualmente distintos mesmo compartilhando
+    # custodiante (ver MEMORY_MODEL.md — "Quatro conceitos, um
+    # custodiante").
 
 events:
+  - context_memory.started
+  - context_memory.closed
   - memory.record_observed
   - memory.promoted
+  - memory.deprecated
+  - memory.retracted
+  - memory.subject_pinned
   - knowledge.indexed
   - digital_twin.created
   - digital_twin.updated
   - digital_twin.stale
-# Os seis eventos publicados pelo Memory Engine — ver DOMAIN_EVENTS.md
+# Os onze eventos publicados pelo Memory Engine — ver DOMAIN_EVENTS.md
 # e EVENT_CATALOG.md para payload/consumidor/versao de cada um.
 
-permissions: []
-# Consultar/registrar Memory nao exige Permission propria nesta
-# Release — quem pode disparar uma observacao e decisao do Engine que
-# a origina (Mission/Planner), nao do Memory Engine em si.
+permissions:
+  - memory.promote
+  - memory.block_promotion
+  - knowledge.curate
+# Vocabulario de Permission esperado a partir da Release 4B (ADR-0088)
+# para as tres intervencoes humanas no ciclo de vida da Memory: forcar
+# promocao, fixar/retratar um subjectKey, e curar um candidato a
+# Knowledge. Nenhuma delas e checada nesta sub-Release (4A e so
+# Domain, sem Application/Interfaces) — listadas aqui porque o
+# Contract documenta o vocabulario completo, nao so o que ja e
+# aplicado. Observar/promover automaticamente continua sem Permission
+# propria — quem dispara uma observacao e decisao do Engine que a
+# origina (Mission/Planner), nao do Memory Engine em si.
 
 autonomy_level_required: 0
 # Observar, promover e sincronizar sao leitura/aprendizado passivo,

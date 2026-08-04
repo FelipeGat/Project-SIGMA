@@ -87,3 +87,10 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0079](0079-usertwin-desde-a-release-4.md) | `UserTwin` é populado desde a Release 4 — os demais Digital Twins esperam a Release 8 |
 | [0080](0080-knowledge-release4-indice-simples.md) | Knowledge da Release 4 é índice estruturado simples — busca semântica fica para a Release 16 |
 | [0081](0081-mecanica-de-promocao-de-memory.md) | Mecânica de promoção de Memory — repetição dentro do Workspace, generalização entre Workspaces |
+| [0082](0082-processo-oficial-de-desenvolvimento-de-engines.md) | Processo Oficial de Desenvolvimento de Engines do SIGMA — Research → Manifesto → Model → Lifecycle → Events → Contract → Proposal → Implementation → Validation → Review → Push |
+| [0083](0083-contextmemory-como-estagio-pre-memory.md) | `ContextMemory` — estágio bruto e efêmero, antes de qualquer `MemoryRecord` |
+| [0084](0084-confidence-como-gate-de-promocao.md) | `confidence` como gate independente de promoção, além da estrutura de repetição/generalização |
+| [0085](0085-digital-twin-estritamente-event-driven.md) | Digital Twin é estritamente Event-Driven — inclusive a primeira população, sem exceção |
+| [0086](0086-knowledgerecord-imutavel-e-versionado.md) | `KnowledgeRecord` é imutável — atualização sempre cria uma nova versão |
+| [0087](0087-memoryrecord-origin-e-candidatura-a-knowledge.md) | `MemoryRecord.origin` como string aberta; promoção a Knowledge é sempre candidatura, nunca automática |
+| [0088](0088-retracao-expiracao-e-governanca-de-promocao.md) | Retração, expiração e governança de promoção de Memory |
