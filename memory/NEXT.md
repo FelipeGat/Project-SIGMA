@@ -2,12 +2,14 @@
 
 ## Imediato
 
-1. **Escrever a Proposal completa da Release 3B — Identity Infrastructure** (`docs/releases/0003b-identity-infrastructure.md` é hoje só um placeholder) — persistência real, `IdentityEngineModule implements IModule`, `services/auth`, MariaDB no `docker-compose.yml` com build validado de fato. Precisa de aprovação explícita do Product Owner antes de qualquer código, mesmo processo de sempre.
-2. Perguntas em aberto para a Architecture Review de 3B: camada de acesso a dados (PDO puro + runner próprio, recomendado, vs. Doctrine DBAL); onde o filtro por Tenant das `roleAssignments`/`teams` passadas a `Identity::resolveContext()` acontece (Application ou Infrastructure/repositório) — ver nota no Decision Log de 3A; se algum limite de Sessions concorrentes por Identity é necessário (sinalizado, não decidido, em [ADR-0065](../docs/adr/0065-session-autentica-identity.md)).
-3. Reconciliar a divergência entre `autonomy_level_required` (inteiro, Sigma Contracts) e `autonomyCapabilities` (mapa nomeado, Identity Engine) — não bloqueia 3B, mas fica para o mais tardar até o Skill Engine (Release 8) definir `Capability.contract.yaml` de verdade.
-4. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
-5. A partir de agora, ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
-6. Toda decisão relevante de cada rodada precisa terminar registrada no repositório (ADR, Decision Log, ou `memory/`) — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
+1. **Aguardar aprovação da Proposal da Release 3B — Identity Infrastructure** ([docs/releases/0003b-identity-infrastructure.md](../docs/releases/0003b-identity-infrastructure.md), revisão 1) — pode passar por mais revisões, mesmo padrão da Release 2/3A. Nenhum código antes disso.
+2. Aguardar confirmação para dar push do commit `4b31a6d` (Release 3A implementada) — commitado localmente, push ainda não realizado.
+3. Decisões já tomadas na Proposal de 3B, não mais em aberto: camada de acesso a dados = PDO puro + runner de migration próprio (sem Doctrine DBAL); filtro por Tenant vive dentro de cada repositório (`WHERE tenant_id = ?` obrigatório, nunca opcional), nunca é responsabilidade de quem chama.
+4. Ainda em aberto para a Architecture Review de 3B: se algum limite de Sessions concorrentes por Identity é necessário (sinalizado, não decidido, em [ADR-0065](../docs/adr/0065-session-autentica-identity.md)); se migrations rodando dentro de `boot()` do `IModule` se sustenta bem no contrato genérico (risco sinalizado desde 3A).
+5. Reconciliar a divergência entre `autonomy_level_required` (inteiro, Sigma Contracts) e `autonomyCapabilities` (mapa nomeado, Identity Engine) — não bloqueia 3B, fica para o Skill Engine (Release 8).
+6. Confirmar se o ambiente de CI/produção já roda PHP 8.4 real (ADR-0009) — decisão explícita de adiar para a Release de CI/CD.
+7. A partir de agora, ao propor soluções de arquitetura no SIGMA: perguntar "como o SIGMA deve fazer" antes de olhar para como um framework conhecido resolve o mesmo problema.
+8. Toda decisão relevante de cada rodada precisa terminar registrada no repositório (ADR, Decision Log, ou `memory/`) — teste do [ADR-0059](../docs/adr/0059-repositorio-e-fonte-da-verdade.md).
 
 ## Aguardando confirmação do Product Owner (não bloqueia nada agora)
 

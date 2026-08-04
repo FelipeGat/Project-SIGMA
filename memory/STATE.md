@@ -39,4 +39,4 @@ _Atualizado em: 2026-08-04._
 
 ## Bloqueios
 
-Nenhum. Próximo passo natural: escrever a Proposal completa da Release 3B — Identity Infrastructure (persistência, `IdentityEngineModule`, `services/auth`). Ver [NEXT.md](../memory/NEXT.md).
+**Aguardando aprovação da Proposal da Release 3B** ([docs/releases/0003b-identity-infrastructure.md](../docs/releases/0003b-identity-infrastructure.md), revisão 1) — nenhum código de 3B (persistência, `IdentityEngineModule`, `services/auth`) antes disso. Decisão já tomada na Proposal (não mais pergunta em aberto): PDO puro + runner de migration próprio, sem Doctrine DBAL. Ver [NEXT.md](../memory/NEXT.md).

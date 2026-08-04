@@ -12,7 +12,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 1 | SIGMA Protocol | ✅ Aprovada, push realizado |
 | 2 | SIGMA Bootstrap | ✅ Implementada — 48 testes passando |
 | 3A | Identity Domain | ✅ Implementada — `packages/identity-engine/Domain`, 50 testes passando |
-| 3B | Identity Infrastructure | ⚪ Não iniciada — Proposal só é escrita depois que 3A estiver implementada e validada (ver [ADR-0060](docs/adr/0060-release-dividida-em-sub-releases.md)) |
+| 3B | Identity Infrastructure | ⏳ Proposta apresentada (revisão 1), aguardando aprovação — nenhum código ainda |
 | 4 | Memory Engine | ⚪ Não iniciado |
 | 5 | Mission Engine | ⚪ Não iniciado |
 | 6 | Planner Engine | ⚪ Não iniciado |
