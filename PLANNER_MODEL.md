@@ -19,6 +19,7 @@ O que o Planner recebe. **Não é o aggregate do Intent Engine** (Release 7) —
 | Atributo | Tipo | Nota |
 |---|---|---|
 | `id` | `IntentId` | Identificador da Intent de origem |
+| `correlationId` | `CorrelationId` | Correlação da cadeia inteira, vinda do Envelope de quem originou o pedido. **Atravessa o Planner sem ser alterada** e chega ao Mission Engine, que a exige em `Mission::create()`. Sem ela, o consumidor teria que inventar uma — e a rastreabilidade fim-a-fim se perderia exatamente na fronteira entre decidir e executar |
 | `tenantId` | `TenantId` | Escopo obrigatório — multiempresa desde o schema |
 | `workspaceId` | `WorkspaceId?` | Opcional, mesmo critério de [ADR-0093](docs/adr/0093-mission-workspace-opcional.md) |
 | `objective` | `string` | O estado desejado, em linguagem natural. É o que [ADR-0037](docs/adr/0037-declarativo-nao-imperativo.md) chama de declarativo |

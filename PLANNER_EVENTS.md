@@ -18,6 +18,7 @@ Publicado quando um `Plan` foi produzido com sucesso. É o único caminho pelo q
 ```json
 {
   "intentId": "uuid",
+  "correlationId": "uuid",
   "tenantId": "uuid",
   "workspaceId": "uuid|null",
   "objective": "string",
@@ -37,7 +38,9 @@ Publicado quando um `Plan` foi produzido com sucesso. É o único caminho pelo q
 }
 ```
 
-**O payload carrega tudo que o Mission Engine precisa para criar a Mission sem consultar ninguém** — `tenantId`, `workspaceId`, `objective`, `actor` e `autonomyCeiling` vêm junto, não apenas o `plan`. Isso é deliberado: um consumidor que precisasse buscar o resto em outro lugar acoplaria Mission a Planner por chamada, exatamente o que [ADR-0092](docs/adr/0092-plan-e-conceito-proprio-do-mission-engine.md) evita.
+**O payload carrega tudo que o Mission Engine precisa para criar a Mission sem consultar ninguém** — `correlationId`, `tenantId`, `workspaceId`, `objective`, `actor` e `autonomyCeiling` vêm junto, não apenas o `plan`. Isso é deliberado: um consumidor que precisasse buscar o resto em outro lugar acoplaria Mission a Planner por chamada, exatamente o que [ADR-0092](docs/adr/0092-plan-e-conceito-proprio-do-mission-engine.md) evita.
+
+`correlationId` é o campo que faz esse payload ser suficiente na prática: `Mission::create()` o exige desde a Release 5B, e sem ele o consumidor teria que gerar um novo — quebrando a rastreabilidade fim-a-fim justamente na fronteira entre decidir e executar. Ele atravessa o Planner sem ser alterado, vindo do Envelope de quem originou o pedido.
 
 `plan.subtaskCandidates` **nunca é vazio** — um plano vazio é `PlanningFailed`, não `MissionPlanned`.
 
@@ -54,6 +57,7 @@ Publicado quando a Intent foi entendida mas nenhum Plan pôde ser produzido. **E
 ```json
 {
   "intentId": "uuid",
+  "correlationId": "uuid",
   "tenantId": "uuid",
   "workspaceId": "uuid|null",
   "reason": "unknown_intent_kind|missing_required_parameter|empty_plan",
@@ -79,7 +83,7 @@ Mesma dos demais Engines: identificadores como `string` (UUID), enums pelo seu v
 
 ## O que este documento não decide
 
-- **Metadata padrão de evento** (`correlationId`/`causationId`/`timestamp`) — [ADR-0076](docs/adr/0076-metadata-padrao-em-eventos-de-dominio.md) aprovou a direção e nenhum Engine a implementou; o Planner segue o padrão atual, não o abre sozinho.
+- **Metadata padrão de evento** — [ADR-0076](docs/adr/0076-metadata-padrao-em-eventos-de-dominio.md) aprovou a direção (`id`/`timestamp`/`correlationId`/`causationId`/`actor`/`workspace` como envelope de metadata separado do payload) e nenhum Engine a implementou. O Planner **não** abre esse precedente sozinho: `correlationId` e `actor` viajam como campos comuns do payload, não como metadata estruturada. Quando a ADR-0076 for implementada, estes dois eventos migram junto com os demais.
 - **Versionamento** — ambos nascem `v1`; a política de evolução é a do [SIGMA_PROTOCOL.md](SIGMA_PROTOCOL.md).
 - **Entrega garantida** — Redis pub/sub não tem replay (confirmado com evidência real na Release 4.5). Se ninguém estiver ouvindo `mission.planned`, o Plan se perde e o Planner, sem estado, não detecta. Ver [PLANNER_LIFECYCLE.md](PLANNER_LIFECYCLE.md#passo-4--publicar).
 

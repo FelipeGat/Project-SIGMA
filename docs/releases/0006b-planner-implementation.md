@@ -1,81 +1,119 @@
-# Release 6B — Planner Implementation
+# Release 6B — Planner Implementation (ciclo fechado)
 
-Proposta formal, no formato exigido por [ADR-0010](../adr/0010-processo-por-epicos-com-aprovacao.md), seguindo o processo de quatro fases de [ADR-0048](../adr/0048-processo-quatro-fases.md). **Revisão 1 — aguardando aprovação do Product Owner.**
+Proposta formal, no formato exigido por [ADR-0010](../adr/0010-processo-por-epicos-com-aprovacao.md), seguindo o processo de quatro fases de [ADR-0048](../adr/0048-processo-quatro-fases.md). **Revisão 2 — aguardando aprovação do Product Owner.**
 
-Implementa o que a [Release 6A](0006a-planner-research.md) modelou: [PLANNER_MANIFESTO.md](../../PLANNER_MANIFESTO.md), [PLANNER_MODEL.md](../../PLANNER_MODEL.md), [PLANNER_LIFECYCLE.md](../../PLANNER_LIFECYCLE.md), [PLANNER_EVENTS.md](../../PLANNER_EVENTS.md), [contracts/Planner.contract.yaml](../../contracts/Planner.contract.yaml) e as ADRs [0095](../adr/0095-planner-sem-estado.md)/[0096](../adr/0096-plan-duplicado-por-bounded-context.md)/[0097](../adr/0097-planner-falha-visivelmente.md) — todas já aprovadas.
+> **O que mudou da revisão 1**: o Product Owner decidiu **unir a 6B e a 6C numa Release só**. A revisão 1 entregava um Planner que publicava `mission.planned` sem que ninguém consumisse — o Plan se perdia, e isso era o Risco 1 da própria proposta. Esta revisão absorve o consumo: ao fim da Release, uma Intent vira uma Mission real, sozinha.
+
+Implementa o que a [Release 6A](0006a-planner-research.md) modelou — [PLANNER_MANIFESTO.md](../../PLANNER_MANIFESTO.md), [PLANNER_MODEL.md](../../PLANNER_MODEL.md), [PLANNER_LIFECYCLE.md](../../PLANNER_LIFECYCLE.md), [PLANNER_EVENTS.md](../../PLANNER_EVENTS.md), [contracts/Planner.contract.yaml](../../contracts/Planner.contract.yaml) e as ADRs [0095](../adr/0095-planner-sem-estado.md)/[0096](../adr/0096-plan-duplicado-por-bounded-context.md)/[0097](../adr/0097-planner-falha-visivelmente.md), todas aprovadas.
 
 ## Objetivo
 
-Fazer o SIGMA **decidir** pela primeira vez.
+Fazer o SIGMA **decidir** pela primeira vez — e executar a decisão até virar uma Mission, sem ninguém escrever os passos.
 
-Até aqui o sistema guarda (Identity, Memory) e acompanha (Mission), mas nada nele transforma um objetivo declarado em passos. A Release 5.5 provou o caminho ponta a ponta com um `Plan` que o próprio usuário escreveu no corpo da requisição — o que funciona, mas é exatamente o oposto da promessa declarativa do [MANIFESTO.md](../../MANIFESTO.md).
+A Release 5.5 provou o caminho ponta a ponta com um `Plan` que o próprio usuário escreveu no corpo da requisição. Funciona, mas é o oposto da promessa declarativa do [MANIFESTO.md](../../MANIFESTO.md): quem pede ainda especifica o como.
 
-Ao fim desta Release, uma Intent com `kind: nova_implantacao` e os parâmetros exigidos produz um `Plan` real, publica `mission.planned`, e o Mission Engine cria a Mission correspondente **sem que ninguém tenha escrito os passos**.
+Ao fim desta Release, o fluxo é:
+
+```
+POST /intents  →  Planner monta o Plan  →  mission.planned (Redis)
+                                                  │
+                                    mission-worker consome
+                                                  │
+                                          Mission criada
+                                                  ▼
+                                      GET /missions/{id}  →  200
+```
+
+O usuário descreve **o quê**. O SIGMA decide **o como**. É a primeira vez que a cadeia `Intent → Planner → Mission` de [ARCHITECTURE.md §3](../architecture/ARCHITECTURE.md) roda de verdade.
 
 ## Escopo
 
-**Existe** — quatro entregas:
+**Existe** — seis entregas:
 
-1. **`packages/planner-engine/src/Domain/`** — os Value Objects de [PLANNER_MODEL.md](../../PLANNER_MODEL.md): `Intent`, `IntentKind`, `PlanTemplate`, `PlanStep`, `Plan`, `PlanSource`, `SubtaskCandidate`, `PlanningFailure`, `PlanningFailureReason`, `Actor`, os identificadores como Value Objects ([ADR-0063](../adr/0063-identificadores-como-value-objects.md)), os dois eventos, e o serviço de domínio `Planner`.
+1. **`packages/planner-engine/src/Domain/`** — os Value Objects de [PLANNER_MODEL.md](../../PLANNER_MODEL.md): `Intent`, `IntentKind`, `PlanTemplate`, `PlanStep`, `Plan`, `PlanSource`, `SubtaskCandidate`, `PlanningFailure`, `PlanningFailureReason`, `Actor`, os identificadores como Value Objects ([ADR-0063](../adr/0063-identificadores-como-value-objects.md)), os dois eventos e o serviço de domínio `Planner`.
 
-2. **`PlanTemplateRegistry` com os sete templates**, um por Playbook existente. Cada um traduz as "Fases esperadas" do seu Playbook em `PlanStep`s, com `requiredAutonomyLevel` refletindo os "Pontos de decisão humana" documentados. **Onde um Playbook estiver incompleto demais para produzir passos honestos, o template declara apenas o que o Playbook de fato diz** — nunca passos inventados para preencher.
+2. **`PlanTemplateRegistry` com os sete templates**, um por Playbook. Cada um traduz as "Fases esperadas" do seu Playbook em `PlanStep`s, com `requiredAutonomyLevel` refletindo os "Pontos de decisão humana" documentados. **Onde o Playbook for vago, o template declara só o que ele de fato diz** — nunca passos inventados (ver Risco 2).
 
-3. **`packages/planner-engine/src/Application/`** — um caso de uso, `PlanFromIntent`, que executa os quatro passos de [PLANNER_LIFECYCLE.md](../../PLANNER_LIFECYCLE.md) e publica `mission.planned` **ou** `planning.failed` via `IEventBus`. **Sem `Infrastructure/` de persistência** (ADR-0095).
+3. **`packages/planner-engine/src/Application/`** — o caso de uso `PlanFromIntent`, executando os quatro passos de [PLANNER_LIFECYCLE.md](../../PLANNER_LIFECYCLE.md) e publicando `mission.planned` **ou** `planning.failed`. **Sem `Infrastructure/` de persistência** ([ADR-0095](../adr/0095-planner-sem-estado.md)) — três camadas DDD, não quatro.
 
-4. **`Interfaces/PlannerEngineModule`** — o Module que registra o caso de uso no container, seguindo o padrão de `MissionEngineModule`. Sem migrations: não há banco.
+4. **`POST /intents` em `services/gateway`** — a porta de entrada. Recebe `objective`, `kind` e `parameters`; resolve `tenantId`/`workspaceId`/`actor`/`autonomyCeiling` da Session (nunca do corpo, mesma disciplina de `POST /missions` na 5.5); invoca `PlanFromIntent`. Responde `202` com o `intentId` e o `correlationId` — **não** com a Mission, que ainda não existe nesse instante.
+
+5. **`CreateMissionFromPlannedEvent` em `packages/mission-engine/src/Application/`** — o caso de uso que traduz o payload de `mission.planned` na chamada a `CreateMission`. É a primeira vez que o Mission Engine **consome** um evento; até a 5C ele só publicava.
+
+6. **`services/mission-worker`** — processo sem HTTP que assina `mission.planned` via `RedisSubscriber` e invoca o caso de uso acima. Mesmo padrão de `services/memory-worker` (Release 4B), incluindo `read_write_timeout: -1` e `restart: on-failure`. Entra no `docker-compose.yml` **sem** `healthcheck` (exceção de [ADR-0094](../adr/0094-health-endpoints-pertencem-ao-kernel.md): não escuta HTTP).
 
 **Não existe** — explicitamente fora do escopo:
 
-- **Consumidor real do `mission.planned`.** O Mission Engine ainda não assina nada (constatado na Release 5C — "nenhum evento é assinado"). Fazê-lo assinar é a entrega natural da Release 6C, não desta. Ver Risco 1.
-- **Superfície HTTP ou worker.** O caso de uso existe e é testável; quem o invoca fica para a 6C.
-- **Tudo que ADR-0095/0096/0097 e o [Decision Log 6A](0006a-planner-research-decision-log.md) já registraram como fora**: estado, replanejamento, múltiplas Missions por Intent, consulta a Memory/Knowledge, composição de Playbooks, templates lidos de Markdown, IA como apoio.
-- **Nenhuma mudança em `packages/mission-engine`** (ADR-0096).
+- **Consumidor de `planning.failed`.** Publicado corretamente, ninguém escuta. Audit Engine (Release 11) é o natural.
+- **Intent Engine.** A Intent chega estruturada, com `kind` explícito no corpo da requisição — ninguém interpreta linguagem natural ainda (Release 7).
+- **Tudo que ADR-0095/0096/0097 e o [Decision Log 6A](0006a-planner-research-decision-log.md) já registram como fora**: estado, replanejamento, múltiplas Missions por Intent, consulta a Memory/Knowledge, composição de Playbooks, templates lidos de Markdown, IA como apoio.
+- **Alteração no `Domain/` do Mission Engine.** A entrega 5 é `Application/` nova; nenhum aggregate muda ([ADR-0096](../adr/0096-plan-duplicado-por-bounded-context.md)).
 
 ## Arquitetura
 
-`packages/planner-engine` depende de `core` e `kernel` apenas — nunca de `intent-engine` nem de `mission-engine` ([ADR-0031](../adr/0031-ordem-runtime-vs-desenvolvimento.md), [ADR-0092](../adr/0092-plan-e-conceito-proprio-do-mission-engine.md)). Três camadas DDD em vez de quatro: `Domain/`, `Application/`, `Interfaces/` — `Infrastructure/` não existe porque não há o que persistir.
+`packages/planner-engine` depende de `core` e `kernel` apenas ([ADR-0031](../adr/0031-ordem-runtime-vs-desenvolvimento.md), [ADR-0092](../adr/0092-plan-e-conceito-proprio-do-mission-engine.md)) — **nunca** de `mission-engine`, mesmo agora que os dois participam do mesmo fluxo. O acoplamento é o payload do evento, e o [contrato](../../contracts/Planner.contract.yaml) é onde a igualdade das duas formas de `Plan` é verificável.
 
-É o primeiro Engine do projeto sem `Infrastructure/`, e o primeiro cujo "estado" é inteiramente o argumento da chamada.
+`services/mission-worker` é quem conhece os dois lados — e é um *service*, não um Engine. É o mesmo papel que `services/memory-worker` já exerce entre Identity e Memory: a tradução entre bounded contexts vive na borda, nunca dentro de um Engine.
+
+`services/gateway` passa a registrar cinco Modules (`kernel`, `event-bus`, `identity-engine`, `mission-engine`, `planner-engine`).
+
+**Sobre o `202`**: `POST /intents` responde antes de a Mission existir, porque a criação é assíncrona por desenho ([ADR-0089](../adr/0089-mission-nasce-do-plan-nao-da-intent.md) — o Planner publica e esquece). Responder `201` com a Mission exigiria o gateway esperar o worker, reintroduzindo acoplamento síncrono entre Engines que [ADR-0008](../adr/0008-arquitetura-orientada-a-eventos.md) proíbe.
 
 ## Dependências
 
-- Release 6A completa e aprovada (documentos e ADRs) — **feito**.
-- Release 5 completa (o `Plan` do Mission Engine é a forma que este contrato precisa espelhar) — **feito**.
-- Redis de pé para os testes de publicação — já parte do ambiente.
+- Release 6A completa e aprovada — **feito**.
+- Release 5 completa (`CreateMission` é o que o worker invoca) — **feito**.
+- `RedisSubscriber` (`services/event-bus`, Release 4B) — **feito**, reusado sem alteração.
 
 ## Riscos
 
-1. **O maior: nada consome `mission.planned`.** Ao fim desta Release o Planner publica corretamente e nenhuma Mission nasce disso — o `Plan` se perde. Isso é esperado e está no escopo declarado, mas precisa ficar explícito no Validation Report para não ser lido como funcionalidade entregue. Agravado pela ausência de replay no Redis pub/sub (Release 4.5). **A Release 6C — fazer o Mission Engine assinar `mission.planned` — é o que fecha o ciclo.**
+1. **Os sete Playbooks estão incompletos, e traduzi-los pode virar invenção.** É o risco mais insidioso: preencher lacunas de conhecimento de negócio com suposições plausíveis produziria um Planner que decide errado com confiança — exatamente o que [ADR-0097](../adr/0097-planner-falha-visivelmente.md) combate. **Mitigação**: um `PlanStep` só existe se o Playbook o descreve; o Decision Log lista, template a template, o que o Playbook **não** respondeu; um Playbook vago gera template com poucos passos, nunca passos inventados.
 
-2. **Os sete Playbooks estão incompletos, e traduzi-los pode virar invenção.** É o risco mais insidioso desta Release: preencher lacunas de conhecimento de negócio com suposições plausíveis produziria um Planner que decide errado com confiança — exatamente o que [ADR-0097](../adr/0097-planner-falha-visivelmente.md) combate. **Mitigação**: um `PlanStep` só existe se o Playbook o descreve; o Decision Log lista, por template, o que o Playbook não respondeu; e um Playbook vago demais gera um template com poucos passos, não passos inventados.
+2. **Perda de evento durante queda do worker é definitiva.** Redis pub/sub não tem replay — confirmado com evidência real na [Release 4.5](0004.5-platform-validation-validation-report.md). Uma Intent planejada enquanto o `mission-worker` estiver fora do ar **não vira Mission, e ninguém percebe**: o Planner é sem estado e o usuário já recebeu `202`. É a consequência mais séria desta Release e precisa estar explícita no Validation Report. Mitigação parcial: `restart: on-failure`. Mitigação real (Redis Streams) continua fora de escopo.
 
-3. **As duas formas de `Plan` podem divergir** (ADR-0096, custo aceito). Mitigação: teste automatizado comparando a estrutura produzida aqui com a que `packages/mission-engine` aceita, e verificação explícita na Architecture Validation.
+3. **As duas formas de `Plan` podem divergir** ([ADR-0096](../adr/0096-plan-duplicado-por-bounded-context.md), custo aceito). Mitigação: teste que leva o payload publicado pelo Planner até `CreateMission` **sem adaptação** — se divergirem, esse teste quebra.
 
-4. **`requiredAutonomyLevel` mal calibrado nos templates** faria uma Mission pedir aprovação humana onde não precisa (irritante) ou executar sem pedir onde precisa (perigoso). Mitigação: o nível vem dos "Pontos de decisão humana" do Playbook, não de julgamento próprio; onde o Playbook não diz, o template usa o nível mais restritivo.
+4. **`requiredAutonomyLevel` mal calibrado** faria uma Mission pedir aprovação humana onde não precisa (irritante) ou executar sem pedir onde precisa (perigoso). Mitigação: o nível vem dos "Pontos de decisão humana" do Playbook; onde o Playbook não diz, usa-se o nível mais restritivo.
+
+5. **Release grande** — dois pacotes, um service novo, uma rota nova. Mitigação: a ordem das entregas (1→6) é executável incrementalmente, e cada uma tem teste próprio antes da seguinte.
 
 ## Entregáveis
 
-- `packages/planner-engine/` com `Domain/`, `Application/`, `Interfaces/`, `composer.json`, `VERSION.md`.
-- Testes automatizados dos quatro passos do ciclo de vida, das três causas de falha, dos sete templates e da igualdade de forma do `Plan`.
+- `packages/planner-engine/` (`Domain/`, `Application/`, `Interfaces/`, `composer.json`, `VERSION.md`).
+- `packages/mission-engine/src/Application/UseCase/CreateMissionFromPlannedEvent.php`.
+- `services/mission-worker/` (`Bootstrap.php`, `bin/worker.php`, `composer.json`), `docker/mission-worker.Dockerfile`, serviço no `docker-compose.yml`.
+- `services/gateway` com `POST /intents`.
 - `system-manifest.yaml` com o Module `planner-engine`.
-- **Decision Log** (`0006b-planner-implementation-decision-log.md`) — incluindo, por template, o que o Playbook não respondeu.
-- **Validation Report** (`0006b-planner-implementation-validation-report.md`).
+- **Decision Log** — incluindo, template a template, o que o Playbook não respondeu.
+- **Validation Report**.
 - `ROADMAP.md`/`CHANGELOG.md`/`memory/STATE.md`/`memory/NEXT.md`/`packages/README.md` atualizados.
 
 ## Testes — três níveis ([ADR-0054](../adr/0054-tres-niveis-de-validacao.md))
 
-**Automatizados** — o caminho feliz por `IntentKind` (sete); as três causas de `PlanningFailed`, incluindo a ordem de verificação; `Plan` nunca vazio; `source` sempre `planner`; a igualdade de forma com o `SubtaskCandidate` do Mission Engine; publicação dos dois eventos via `InMemoryEventBus`. Os 268 testes atuais permanecem verdes.
+**Automatizados** — caminho feliz por `IntentKind` (sete); as três causas de `PlanningFailed`, incluindo a ordem de verificação; `Plan` nunca vazio; `source` sempre `planner`; `correlationId` preservado da Intent até o payload; `POST /intents` (sucesso, sem token, `kind` inválido, parâmetro faltando); `CreateMissionFromPlannedEvent` com payload real. Os 268 testes atuais permanecem verdes.
 
-**Architecture Validation** — `composer.lock` de `planner-engine` não lista nenhum Engine; nenhum `use` resolve para `mission-engine`/`intent-engine`; não existe `Infrastructure/` com banco; todo `PlanTemplate` referencia um Playbook que existe no repositório (verificável por script).
+**Architecture Validation** — `composer.lock` de `planner-engine` não lista nenhum Engine; nenhum `use` resolve para `mission-engine`/`intent-engine`; não existe `Infrastructure/` com banco em `planner-engine`; todo `PlanTemplate` referencia um Playbook que existe no repositório (verificável por script).
 
-**Scenario Validation** — contra Redis real: uma Intent `nova_implantacao` completa produz `mission.planned` capturável via `redis-cli psubscribe`, com payload conforme o contrato; uma Intent de `kind` desconhecido produz `planning.failed`; o payload de `mission.planned` é aceito por `CreateMission` do Mission Engine **sem adaptação** — a prova prática de ADR-0096.
+**Scenario Validation** — contra `docker compose up --build` real:
+
+1. `POST /intents` com `kind: nova_implantacao` e parâmetros completos → `202`.
+2. `mission.planned` capturado no Redis com payload conforme o contrato.
+3. `docker compose ps` mostra `mission-worker` de pé; o log confirma o consumo.
+4. A Mission aparece no MariaDB, e `GET /missions/{id}` responde `200` com `plan.source: planner` e as Subtasks candidatas do Playbook.
+5. **O `correlationId` do `202` é o mesmo da Mission criada** — a prova de que a rastreabilidade sobrevive à fronteira assíncrona.
+6. `POST /intents` com `kind` desconhecido → `planning.failed` no Redis, nenhuma Mission criada.
+7. Com o `mission-worker` parado: `POST /intents` responde `202`, nenhuma Mission nasce, e o evento **se perde** — Risco 2 demonstrado, não escondido.
+8. O caminho da Release 5.5 (`POST /missions` manual) continua funcionando.
 
 ## Critérios de Aceite
 
-1. Uma Intent estruturada de cada um dos sete `IntentKind` produz um `Plan` não vazio, com `source: planner`.
+1. Uma Intent de cada um dos sete `IntentKind` produz um `Plan` não vazio, `source: planner`.
 2. As três causas de `PlanningFailed` disparam corretamente e **na ordem** especificada.
-3. `mission.planned` é capturado no Redis real com payload conforme o contrato, e seu campo `plan` é aceito por `CreateMission` sem adaptação.
-4. Nenhum `PlanStep` existe sem estar descrito no Playbook correspondente — verificado na revisão e registrado no Decision Log.
-5. `planner-engine` não depende de nenhum Engine; não tem persistência.
-6. Suíte completa verde, sem regressão.
-7. Decision Log e Validation Report publicados, o primeiro listando o que cada Playbook não respondeu.
+3. **O ciclo fecha**: `POST /intents` → Mission consultável por `GET /missions/{id}`, contra Docker real, sem ninguém escrever os passos.
+4. O `correlationId` atravessa toda a cadeia sem mudar.
+5. O payload de `mission.planned` é aceito por `CreateMission` **sem adaptação**.
+6. Nenhum `PlanStep` existe sem estar descrito no Playbook correspondente — registrado template a template no Decision Log.
+7. `planner-engine` não depende de nenhum Engine e não tem persistência.
+8. O cenário 7 (worker parado) executado e documentado, com a perda registrada como limitação real.
+9. Suíte completa verde, sem regressão.
+10. Decision Log e Validation Report publicados.

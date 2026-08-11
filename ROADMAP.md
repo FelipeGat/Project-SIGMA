@@ -23,7 +23,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 5.5 | Vertical Slice | ✅ Concluída | 100% |
 | 5.6 | Observability Baseline | ✅ Concluída | 100% |
 | 6A | Planner Research + Modelagem | ✅ Concluída | 100% |
-| 6B | Planner Implementation | ⏳ Proposta aguardando aprovação | 0% |
+| 6B | Planner Implementation (ciclo fechado — absorveu a 6C) | ⏳ Proposta aguardando aprovação | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
 | 8 | Skill Engine | ⏳ Não iniciada | 0% |
 | 9 | Agent Engine | ⏳ Não iniciada | 0% |

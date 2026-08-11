@@ -36,6 +36,7 @@ output:
 types:
   Intent:
     id: IntentId
+    correlationId: CorrelationId   # atravessa o Planner sem ser alterada
     tenantId: TenantId
     workspaceId: WorkspaceId?
     objective: string
@@ -89,6 +90,7 @@ types:
 
   PlanningFailure:
     intentId: IntentId
+    correlationId: CorrelationId
     reason: PlanningFailureReason
     detail: string   # nunca null
 
@@ -107,6 +109,7 @@ events:
     consumes: Mission Engine, Audit Engine (Release 11)
     payload:
       intentId: string
+      correlationId: string
       tenantId: string
       workspaceId: string?
       objective: string
@@ -124,6 +127,7 @@ events:
     consumes: nenhum ainda — Audit Engine (Release 11) e o natural
     payload:
       intentId: string
+      correlationId: string
       tenantId: string
       workspaceId: string?
       reason: PlanningFailureReason
@@ -140,6 +144,7 @@ invariants:
   - "Todo PlanTemplate referencia um Playbook existente que o justifica."
   - "Nenhuma dependencia de codigo com intent-engine nem mission-engine — apenas core e kernel (ADR-0031, ADR-0092)."
   - "A IA nunca decide o Plan; se usada como apoio, o resultado passa pelas regras do Planner (ADR-0012)."
+  - "correlationId atravessa o Planner sem ser alterado — e o que mantem a rastreabilidade fim-a-fim ate o Mission Engine, que o exige em Mission::create()."
 
 outOfScope:
   # Adiados por decisao explicita do Product Owner na Release 6A —
