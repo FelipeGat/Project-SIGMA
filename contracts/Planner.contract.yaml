@@ -1,0 +1,152 @@
+# Sigma Contract — Planner
+# Contrato do conceito de dominio "Planner" (ver PLANNER_MANIFESTO.md,
+# PLANNER_MODEL.md, PLANNER_LIFECYCLE.md e PLANNER_EVENTS.md) — so o
+# contrato, nenhum codigo ainda. Nasce antes da implementacao da
+# Release 6, mesmo espirito de contracts/Mission.contract.yaml.
+#
+# Este contrato tem um papel a mais que os anteriores: e ele que
+# garante que o `Plan` produzido aqui e o `Plan` que
+# packages/mission-engine ja modela (Release 5B) nao divirjam. As duas
+# representacoes sao deliberadamente codigo separado (ver
+# PLANNER_MODEL.md#plan-saida--value-object e ADR-0092); este arquivo e
+# a fronteira onde a igualdade de forma e verificavel.
+
+name: Planner
+version: "1.0.0"
+
+input:
+  - name: intent
+    type: Intent
+    required: true
+    # A Intent estruturada. Nesta Release e sempre montada
+    # manualmente — o Intent Engine so chega na Release 7
+    # (ADR-0031). O Planner nunca importa packages/intent-engine
+    # como dependencia de codigo.
+
+output:
+  - name: plan
+    type: Plan
+    # Produzido quando o planejamento tem sucesso. Nunca vazio.
+  - name: planningFailure
+    type: PlanningFailure
+    # Produzido quando a Intent foi entendida mas nenhum Plan pode
+    # ser montado. Exatamente um dos dois e produzido, nunca ambos,
+    # nunca nenhum.
+
+types:
+  Intent:
+    id: IntentId
+    tenantId: TenantId
+    workspaceId: WorkspaceId?
+    objective: string
+    kind: IntentKind
+    parameters: map<string, scalar>
+    actor: Actor
+    autonomyCeiling: int   # 0..3
+
+  IntentKind:
+    # Enum FECHADO — um valor por Playbook existente. Um kind
+    # desconhecido falha visivelmente (PlanningFailed), nunca cai
+    # num template generico: ver PLANNER_LIFECYCLE.md, passo 1.
+    values:
+      - nova_reuniao
+      - novo_cliente
+      - novo_orcamento
+      - nova_obra
+      - nova_implantacao
+      - nova_academia
+      - novo_condominio
+
+  PlanTemplate:
+    kind: IntentKind
+    playbook: string          # caminho do Playbook que justifica este template
+    requiredParameters: list<string>
+    steps: list<PlanStep>
+
+  PlanStep:
+    description: string
+    candidateAgent: string?
+    candidateCapability: string?
+    requiredAutonomyLevel: int   # 0..3
+
+  Plan:
+    # MESMA FORMA que packages/mission-engine define (Release 5B).
+    # Codigo separado, forma identica — a igualdade e garantida aqui,
+    # nao por dependencia de pacote.
+    source: PlanSource
+    subtaskCandidates: list<SubtaskCandidate>   # nunca vazio
+
+  PlanSource:
+    values:
+      - planner   # produzido por este Engine
+      - manual    # fornecido por quem chama (POST /missions, Release 5.5)
+
+  SubtaskCandidate:
+    description: string
+    candidateAgent: string?
+    candidateCapability: string?
+    requiredAutonomyLevel: int   # 0..3
+
+  PlanningFailure:
+    intentId: IntentId
+    reason: PlanningFailureReason
+    detail: string   # nunca null
+
+  PlanningFailureReason:
+    values:
+      - unknown_intent_kind         # nenhum PlanTemplate atende este kind
+      - missing_required_parameter  # template encontrado, faltam dados na Intent
+      - empty_plan                  # template produziu zero passos (erro de configuracao)
+
+events:
+  - name: MissionPlanned
+    bus: mission.planned
+    layer: technical
+    version: v1
+    publishes: Planner Engine
+    consumes: Mission Engine, Audit Engine (Release 11)
+    payload:
+      intentId: string
+      tenantId: string
+      workspaceId: string?
+      objective: string
+      autonomyCeiling: int
+      actor: { type: string, id: string }
+      plan: Plan
+    # O payload carrega tudo que o Mission Engine precisa para criar a
+    # Mission sem consultar ninguem — nao apenas o `plan`.
+
+  - name: PlanningFailed
+    bus: planning.failed
+    layer: technical
+    version: v1
+    publishes: Planner Engine
+    consumes: nenhum ainda — Audit Engine (Release 11) e o natural
+    payload:
+      intentId: string
+      tenantId: string
+      workspaceId: string?
+      reason: PlanningFailureReason
+      detail: string
+    # NAO confundir com IntentRejected (Intent Engine): aquele significa
+    # "nao entendi o pedido"; este, "entendi e nao sei como executar".
+
+invariants:
+  - "O Planner nao persiste nada — nenhum estado, nenhum historico (PLANNER_MANIFESTO.md)."
+  - "Exatamente um de Plan|PlanningFailure e produzido por Intent."
+  - "Plan.subtaskCandidates nunca e vazio — plano vazio e PlanningFailed."
+  - "Plan.source e sempre `planner` quando produzido por este Engine."
+  - "O Planner marca requiredAutonomyLevel; NUNCA cria ApprovalGate nem compara contra autonomyCeiling — isso e do Mission Engine (Mission::advanceToNextSubtask, Release 5B)."
+  - "Todo PlanTemplate referencia um Playbook existente que o justifica."
+  - "Nenhuma dependencia de codigo com intent-engine nem mission-engine — apenas core e kernel (ADR-0031, ADR-0092)."
+  - "A IA nunca decide o Plan; se usada como apoio, o resultado passa pelas regras do Planner (ADR-0012)."
+
+outOfScope:
+  # Adiados por decisao explicita do Product Owner na Release 6A —
+  # pendencias registradas, nao impossibilidades.
+  - "Estado persistido / replanejamento."
+  - "Uma Intent decompondo em multiplas Missions (ADR-0028 preve, adiado)."
+  - "Consulta a Memory/Knowledge antes de planejar."
+  - "Composicao entre Playbooks (o especializado citado em nova-implantacao.md)."
+  - "PlanTemplate lido dos arquivos Markdown de playbooks/ — nesta Release sao codigo."
+  - "IA como apoio a decomposicao."

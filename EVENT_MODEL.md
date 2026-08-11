@@ -39,6 +39,7 @@ Nome de classe (PHP, PascalCase) e nome publicado no Event Bus (dot.case — ver
 | `IntentDetected` | Intent Engine | `intent.detected` |
 | `IntentRejected` | Intent Engine | `intent.rejected` |
 | `MissionPlanned` | Planner Engine | `mission.planned` |
+| `PlanningFailed` | Planner Engine | `planning.failed` |
 | `MissionCreated` | Mission Engine | `mission.created` |
 | `SubtasksCreated` | Mission Engine | `subtasks.created` |
 | `MissionApprovalRequested` | Mission Engine | `mission.approval_requested` |

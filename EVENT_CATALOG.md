@@ -39,6 +39,17 @@ Ver [DOMAIN_EVENTS.md#identity-engine](DOMAIN_EVENTS.md#identity-engine) para o 
 
 Nenhum destes é publicado de fato no `IEventBus` ainda além do que a `Application/` do Identity Engine já faz (ver `packages/identity-engine/src/Application/UseCase/`) — "Consome" acima é intenção documentada para quando Memory/Audit Engine existirem (Release 4 em diante), não implementação já existente do lado consumidor.
 
+## Planner Engine
+
+Ver [PLANNER_EVENTS.md](PLANNER_EVENTS.md) para o payload completo e a justificativa de cada um. Ambos são **Technical**, não Semantic: descrevem a orquestração entre Engines, não um fato de negócio próprio — o fato de negócio correspondente é `MissionCreated`, publicado pelo Mission Engine ao consumir `mission.planned`.
+
+| Evento | Bus | Camada | Publica | Consome | Versão | Contrato |
+|---|---|---|---|---|---|---|
+| `MissionPlanned` | `mission.planned` | Technical | Planner Engine | Mission Engine (cria a Mission), Audit Engine | v1 | [Planner.contract.yaml](contracts/Planner.contract.yaml) |
+| `PlanningFailed` | `planning.failed` | Technical | Planner Engine | nenhum ainda — Audit Engine é o natural | v1 | [Planner.contract.yaml](contracts/Planner.contract.yaml) |
+
+`MissionPlanned` já constava de [EVENT_MODEL.md](EVENT_MODEL.md) desde a Release 1, **sem payload especificado** — a Release 6A o especifica. `PlanningFailed` é novo, catalogado antes do código (mesma disciplina de `MissionFailed` na 5B e `MemoryReactivated` na 4A). Nenhum dos dois é publicado de fato ainda: a Implementation é a Release 6B.
+
 ## Kernel / Bootstrap (infraestrutura, fora da camada Semantic)
 
 Nenhum evento de domínio — Release 2 é infraestrutura pura ([ADR-0053](docs/adr/0053-escopo-restrito-release-2.md)). A sequência Technical de orquestração de Mission (`MissionRequested`, `IntentDetected`, etc.) já está catalogada em [EVENT_MODEL.md](EVENT_MODEL.md#catálogo-de-eventos-canônico) — não duplicada aqui porque nasce com Releases futuras (Intent/Planner/Mission Engine), nenhuma delas implementada ainda.

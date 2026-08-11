@@ -4,7 +4,7 @@
 
 SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e dez Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Releases 0 a 5.5 concluídas** — Kernel, Identity, Memory e Mission Engines implementados, com 265 testes automatizados passando. Desde a **Release 5.5 — Vertical Slice** existe o primeiro caminho ponta a ponta: criar o usuário inicial pelo CLI, logar, escolher Workspace, registrar uma Mission e consultá-la, tudo por HTTP contra o ambiente Docker do projeto. Ainda sem interface gráfica (`apps/*` chegam na Release 13). Veja [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Releases 0 a 5.6 concluídas** — Kernel, Identity, Memory e Mission Engines implementados, com 268 testes automatizados passando. A **Release 6A** modelou o Planner Engine (o que decide o plano); a Implementation aguarda aprovação. Desde a **Release 5.5 — Vertical Slice** existe o primeiro caminho ponta a ponta: criar o usuário inicial pelo CLI, logar, escolher Workspace, registrar uma Mission e consultá-la, tudo por HTTP contra o ambiente Docker do projeto. Ainda sem interface gráfica (`apps/*` chegam na Release 13). Veja [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md) e [memory/STATE.md](memory/STATE.md).
 
 ## Rodando localmente
 
@@ -34,6 +34,7 @@ Guarde o `tenantId` e o `workspaceId` da saída, então: `POST :18081/auth/login
 | Entender o que pertence e o que nunca pertence ao Kernel | [KERNEL.md](KERNEL.md) |
 | Entender como uma Skill vira código (Plugin System) | [PLUGIN_SYSTEM.md](PLUGIN_SYSTEM.md) |
 | Entender a SIGMA Language (SGL) | [SGL.md](SGL.md) |
+| Entender por que e como o SIGMA decide um plano | [PLANNER_MANIFESTO.md](PLANNER_MANIFESTO.md), [PLANNER_MODEL.md](PLANNER_MODEL.md), [PLANNER_LIFECYCLE.md](PLANNER_LIFECYCLE.md) |
 | Entender por que o SIGMA nunca lê um sistema externo direto | [DIGITAL_TWIN.md](DIGITAL_TWIN.md) |
 | Entender a filosofia "tudo é evento" e as três camadas de evento | [EVENT_MODEL.md](EVENT_MODEL.md) |
 | Entender observabilidade (Logs/Metrics/Tracing/Audit) | [TELEMETRY.md](TELEMETRY.md) |
