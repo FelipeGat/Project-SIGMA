@@ -63,7 +63,8 @@ _Atualizado em: 2026-08-11._
 ## Pendências / riscos sinalizados
 
 - Mesmas de sempre (PHP 8.2, `autonomy_level_required` vs. `autonomyCapabilities`, `PermissionId` sem uso, migrations lazy, numeração Release 6/7).
-- **`services/auth` responde `503` a tudo — inclusive `/health/live` — com MariaDB fora do ar** (mesmo problema que o gateway teve, corrigido só no gateway na 5.5).
+- **`services/auth` não tem endpoint de health nenhum** (nem `live`/`ready`/`startup`), apesar de ADR-0042 defini-los como padrão de todo processo deployável.
+- **Nenhum serviço do SIGMA tem `healthcheck` no `docker-compose.yml`** — só `redis`/`mariadb`, que são imagens de terceiros. O gateway implementa os três endpoints desde a Release 2 e **nada os consome**; `restart: on-failure` reage a processo que morre, não a processo `not_ready`.
 - Uma Mission criada pela rota nova nasce `created` e **fica parada** — sem Planner/Agent/Skill, nada a faz avançar. Esperado, não defeito.
 - Sem `GET /missions` (coleção), sem paginação, sem rota para os outros treze casos de uso do Mission Engine.
 - `Identifier` duplicada em três pacotes (`identity-engine`/`memory-engine`/`mission-engine`) — consolidação em `packages/core` ainda recomendada, não decidida.
@@ -75,7 +76,7 @@ _Atualizado em: 2026-08-11._
 ## Decisões de Implementation da Release 5.5
 
 - **Achado real**: `RegisterIdentity` exigia um Tenant que nenhum caminho de produção sabia criar — `grep "new Tenant("` só encontrava fixtures de teste. Resolvido com `CreateTenant`/`CreateCompany`/`CreateWorkspace`, **casos de uso**, não repositórios expostos no container (os três Engines bindam apenas casos de uso — padrão preservado).
-- **Achado real**: com MariaDB fora do ar, `Bootstrap::fromManifestFile()` lança em `register()`, antes de qualquer Module reportar estado — o `degraded` granular **não** cobria o caso, e `public/index.php` respondia `503` inclusive em `/health/live`. `BootFailureEndpoints` corrige: `live` → `200`, `ready`/`startup`/rotas de domínio → `503`. **`services/auth` tem o mesmo problema desde a 3B e não foi corrigido** (fora de escopo) — se for, a política vira ADR.
+- **Achado real**: com MariaDB fora do ar, `Bootstrap::fromManifestFile()` lança em `register()`, antes de qualquer Module reportar estado — o `degraded` granular **não** cobria o caso, e `public/index.php` respondia `503` inclusive em `/health/live`. `BootFailureEndpoints` corrige: `live` → `200`, `ready`/`startup`/rotas de domínio → `503`. A política vira ADR quando `services/auth` ganhar os três endpoints de ADR-0042 (hoje não tem nenhum), porque aí `HealthEndpoints`/`BootFailureEndpoints` precisam subir de `Sigma\Gateway\` para `packages/kernel`.
 - **`tenantId`/`workspaceId` vêm da Session, nunca do corpo** — validado com dois Tenants reais: o mesmo token que cria Mission própria (`201`) recebe `404` na Mission alheia; o dono recebe `200`.
 - **Mission de outro Tenant responde `404`, não `403`** — a existência de uma Mission é informação do Tenant dono dela.
 - **`CreateTenant`/`CreateCompany`/`CreateWorkspace` não publicam evento** — `Tenant`/`Company`/`Workspace` não são aggregates com eventos no modelo atual; inventar `tenant.created` exigiria catalogá-lo.
