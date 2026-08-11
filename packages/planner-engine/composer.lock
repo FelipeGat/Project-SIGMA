@@ -4,76 +4,14 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f52f720d2ea0be87a74e10968f1d84a",
+    "content-hash": "8b5f4777df6978f8f33e447ac1c06cc5",
     "packages": [
-        {
-            "name": "predis/predis",
-            "version": "v2.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/predis/predis.git",
-                "reference": "07105e050622ed80bd60808367ced9e379f31530"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/07105e050622ed80bd60808367ced9e379f31530",
-                "reference": "07105e050622ed80bd60808367ced9e379f31530",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2 || ^8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.3",
-                "phpstan/phpstan": "^1.9",
-                "phpunit/phpcov": "^6.0 || ^8.0",
-                "phpunit/phpunit": "^8.0 || ^9.4"
-            },
-            "suggest": {
-                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Predis\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Till Krüss",
-                    "homepage": "https://till.im",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "A flexible and feature-complete Redis/Valkey client for PHP.",
-            "homepage": "http://github.com/predis/predis",
-            "keywords": [
-                "nosql",
-                "predis",
-                "redis"
-            ],
-            "support": {
-                "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v2.4.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/tillkruss",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-11-12T18:00:11+00:00"
-        },
         {
             "name": "sigma/core",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../../packages/core",
+                "url": "../core",
                 "reference": "66ded89b9bc114c5c969578ee17a56b622207807"
             },
             "require": {
@@ -107,93 +45,11 @@
             }
         },
         {
-            "name": "sigma/event-bus",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../event-bus",
-                "reference": "084db43bbf3c29d2387f126afac72984e99e0557"
-            },
-            "require": {
-                "php": "^8.2",
-                "predis/predis": "^2.0",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\EventBus\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\EventBus\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Wrapper de publish/subscribe sobre Redis, implementando IEventBus do Kernel. Infraestrutura apenas — nenhum evento de dominio nesta Release.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "sigma/identity-engine",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/identity-engine",
-                "reference": "b6bf7d16afc3f0258291cb80d99f6173d805af20"
-            },
-            "require": {
-                "ext-pdo": "*",
-                "php": "^8.2",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\IdentityEngine\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\IdentityEngine\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Identity Engine do SIGMA — responde 'quem'. Domain (Release 3A) + Application/Infrastructure/Interface (Release 3B) — ver ADR-0060, ADR-0061.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "sigma/kernel",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../../packages/kernel",
+                "url": "../kernel",
                 "reference": "fc7e464503bf530a7dadeb78ef1c6ab1a50cc924"
             },
             "require": {
@@ -224,87 +80,6 @@
                 "proprietary"
             ],
             "description": "Bootstrap do SIGMA: DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, System Manifest Loader, e os tres endpoints de health que todo service expoe (Http/, ver ADR-0094). Expoe apenas interfaces (ver ADR-0052) — nunca conhece Engine (ADR-0040).",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "sigma/mission-engine",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/mission-engine",
-                "reference": "0847cac61201091c35c3f23d4380fe78eb493f80"
-            },
-            "require": {
-                "ext-pdo": "*",
-                "php": "^8.2",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\MissionEngine\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\MissionEngine\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Mission Engine do SIGMA — responde 'o que deve acontecer, quem executa, quando'. Domain (Release 5B) + Application/Infrastructure/Interfaces (Release 5C) — ver ADR-0060, ADR-0061, MISSION_MODEL.md.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "sigma/planner-engine",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/planner-engine",
-                "reference": "d47ab7ee2a0f40c3c4bf30e9a5ab31882e5f4d43"
-            },
-            "require": {
-                "php": "^8.2",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\PlannerEngine\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\PlannerEngine\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Planner Engine do SIGMA — decide o Plan de execucao a partir de uma Intent. O unico lugar do sistema onde essa decisao acontece (ADR-0012). Sem estado, sem persistencia (ADR-0095) — tres camadas DDD, nao quatro.",
             "transport-options": {
                 "relative": true
             }
@@ -2312,8 +2087,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2",
-        "ext-pdo": "*"
+        "php": "^8.2"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

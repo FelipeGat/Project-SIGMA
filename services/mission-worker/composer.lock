@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f52f720d2ea0be87a74e10968f1d84a",
+    "content-hash": "571a462609099c4b6b05eda713730f01",
     "packages": [
         {
             "name": "predis/predis",
@@ -148,47 +148,6 @@
             }
         },
         {
-            "name": "sigma/identity-engine",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/identity-engine",
-                "reference": "b6bf7d16afc3f0258291cb80d99f6173d805af20"
-            },
-            "require": {
-                "ext-pdo": "*",
-                "php": "^8.2",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\IdentityEngine\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\IdentityEngine\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Identity Engine do SIGMA — responde 'quem'. Domain (Release 3A) + Application/Infrastructure/Interface (Release 3B) — ver ADR-0060, ADR-0061.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "sigma/kernel",
             "version": "1.0.0",
             "dist": {
@@ -265,46 +224,6 @@
                 "proprietary"
             ],
             "description": "Mission Engine do SIGMA — responde 'o que deve acontecer, quem executa, quando'. Domain (Release 5B) + Application/Infrastructure/Interfaces (Release 5C) — ver ADR-0060, ADR-0061, MISSION_MODEL.md.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "sigma/planner-engine",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/planner-engine",
-                "reference": "d47ab7ee2a0f40c3c4bf30e9a5ab31882e5f4d43"
-            },
-            "require": {
-                "php": "^8.2",
-                "sigma/core": "^1.0",
-                "sigma/kernel": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sigma\\PlannerEngine\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Sigma\\PlannerEngine\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "Planner Engine do SIGMA — decide o Plan de execucao a partir de uma Intent. O unico lugar do sistema onde essa decisao acontece (ADR-0012). Sem estado, sem persistencia (ADR-0095) — tres camadas DDD, nao quatro.",
             "transport-options": {
                 "relative": true
             }

@@ -132,6 +132,37 @@ services:
       mariadb:
         condition: service_healthy
 
+  mission-worker:
+    build:
+      context: ..
+      dockerfile: docker/mission-worker.Dockerfile
+    # O segundo worker do SIGMA (Release 6B). Assina mission.planned,
+    # publicado pelo Planner Engine, e cria a Mission correspondente —
+    # o primeiro consumidor real de evento do Mission Engine.
+    #
+    # `restart: on-failure` importa tanto quanto no memory-worker: sem
+    # este processo de pe, uma Intent planejada NAO vira Mission e
+    # ninguem percebe (o Planner e sem estado e quem chamou ja recebeu
+    # 202). Redis pub/sub nao guarda mensagem para assinante ausente —
+    # ver Risco 2 da Proposal 6B e Release 4.5.
+    restart: on-failure
+    # Sem "ports" e sem "healthcheck": nunca escuta HTTP — mesma
+    # excecao explicita de ADR-0094 aplicada ao memory-worker.
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: sigma_identity
+      DB_USER: sigma
+      DB_PASSWORD: sigma
+      SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
+    depends_on:
+      redis:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+
 # MariaDB entra no ambiente a partir da Release 3B (Identity
 # Infrastructure) — primeira Release do projeto com persistencia
 # (ver ADR-0053, que a excluiu deliberadamente da Release 2).

@@ -2,6 +2,20 @@
 
 O que o SIGMA passou a fazer, Release a Release — escrito para quem vai usar o sistema, não para quem o constrói. Documentação técnica (por quê, como foi validado) fica em `docs/releases/*-decision-log.md` e `*-validation-report.md`; aqui só o que mudou na prática. Ver [ADR-0078](docs/adr/0078-changelog-orientado-ao-usuario.md).
 
+## Release 6 — Planner
+
+**Agora o SIGMA decide sozinho o que fazer.** Até aqui, quem pedia tinha que escrever os passos; nesta Release, descreve-se o objetivo e o sistema monta o plano:
+
+> *"Iniciar a implantação do AlfaGym para a Sea Master"*
+
+vira, sozinho, uma Missão com as quatro etapas do processo da Alfa — na ordem certa, e com a etapa de ativação em produção marcada para exigir aprovação de uma pessoa, exatamente como o Playbook manda.
+
+- ✔ Sete tipos de pedido reconhecidos, um para cada Playbook já documentado (nova reunião, novo cliente, novo orçamento, nova obra, nova implantação, nova academia, novo condomínio)
+- ✔ Quando o SIGMA não sabe planejar, ele **diz que não sabe** em vez de inventar um plano genérico — e o aviso aponta qual Playbook está faltando
+- ✔ Quem decide é o sistema, com as regras da Alfa. Nenhuma IA decide o que vai ser feito
+
+Ainda é `curl` no terminal, e a Missão criada **não executa sozinha** — quem faz cada etapa acontecer (os Agentes e as integrações) chega nas Releases 8 a 10. Ver [docs/releases/0006b-planner-implementation.md](docs/releases/0006b-planner-implementation.md).
+
 ## Release 5.6 — Observability Baseline
 
 Nenhuma capacidade nova para quem usa o sistema — esta Release fez o SIGMA **reagir** ao próprio estado de saúde, em vez de apenas relatá-lo:

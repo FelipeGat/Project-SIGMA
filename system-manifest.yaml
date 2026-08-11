@@ -43,6 +43,14 @@ modules:
     optional: true
     minVersion: "1.0.0"
 
+  - name: planner-engine
+    kind: engine
+    # Registrado por services/gateway a partir da Release 6B, que expoe
+    # POST /intents. Unico Engine do projeto sem banco e sem migration:
+    # o Planner nao persiste nada (ADR-0095).
+    optional: true
+    minVersion: "1.0.0"
+
 # Providers de IA — não interpretados pelo Bootstrap ainda. Chega com o
 # Agent Engine (Release 9). Vazio propositalmente aqui.
 providers: []

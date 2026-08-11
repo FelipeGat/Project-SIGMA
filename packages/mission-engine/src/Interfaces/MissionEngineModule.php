@@ -20,6 +20,7 @@ use Sigma\MissionEngine\Application\UseCase\BeginMissionValidation;
 use Sigma\MissionEngine\Application\UseCase\CancelMission;
 use Sigma\MissionEngine\Application\UseCase\CompensateSubtask;
 use Sigma\MissionEngine\Application\UseCase\CreateMission;
+use Sigma\MissionEngine\Application\UseCase\CreateMissionFromPlannedEvent;
 use Sigma\MissionEngine\Application\UseCase\FailMissionValidation;
 use Sigma\MissionEngine\Application\UseCase\FailSubtask;
 use Sigma\MissionEngine\Application\UseCase\GetMission;
@@ -102,7 +103,9 @@ final class MissionEngineModule implements IModule
         /** @var IEventBus $eventBus */
         $eventBus = $container->get(IEventBus::class);
 
-        $container->bind(CreateMission::class, new CreateMission($missions, $eventBus));
+        $createMission = new CreateMission($missions, $eventBus);
+        $container->bind(CreateMission::class, $createMission);
+        $container->bind(CreateMissionFromPlannedEvent::class, new CreateMissionFromPlannedEvent($createMission));
         $container->bind(AdvanceMissionToNextSubtask::class, new AdvanceMissionToNextSubtask($missions, $eventBus));
         $container->bind(ApproveMission::class, new ApproveMission($missions, $eventBus));
         $container->bind(RejectMission::class, new RejectMission($missions, $eventBus));
@@ -135,7 +138,7 @@ final class MissionEngineModule implements IModule
                 'CreateMission', 'AdvanceMissionToNextSubtask', 'ApproveMission', 'RejectMission',
                 'AssignSubtask', 'StartSubtaskExecution', 'RetrySubtask', 'ValidateSubtask',
                 'FailSubtask', 'CompensateSubtask', 'BeginMissionValidation', 'PassMissionValidation',
-                'FailMissionValidation', 'CancelMission', 'GetMission',
+                'FailMissionValidation', 'CancelMission', 'GetMission', 'CreateMissionFromPlannedEvent',
             ],
             dependencies: $this->dependsOn(),
         );

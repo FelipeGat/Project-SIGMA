@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /**
  * Front controller mínimo — os três endpoints de health (Release 2) e
- * as duas rotas de Mission (Release 5.5). Continua sem Laravel: cinco
- * rotas ainda não justificam o framework completo (ver Decision Log da
+ * as rotas de Mission (Release 5.5) e POST /intents (6B). Continua sem
+ * Laravel: seis rotas ainda não justificam o framework completo (ver Decision Log da
  * Release 2). services/gateway ganha um framework HTTP quando expuser
  * o ciclo de vida completo da Mission — escopo da Release 12.
  */
@@ -16,6 +16,7 @@ use Sigma\Kernel\Http\BootFailureEndpoints;
 use Sigma\Gateway\Bootstrap;
 use Sigma\Core\Envelope;
 use Sigma\Kernel\Http\HealthEndpoints;
+use Sigma\Gateway\IntentEndpoints;
 use Sigma\Gateway\MissionEndpoints;
 
 $manifestPath = getenv('SIGMA_MANIFEST_PATH') ?: __DIR__ . '/../../../system-manifest.yaml';
@@ -44,6 +45,7 @@ try {
 
 $health = $bootstrap !== null ? new HealthEndpoints($bootstrap->health) : $bootFailure;
 $missions = $bootstrap !== null ? new MissionEndpoints($bootstrap->container) : null;
+$intents = $bootstrap !== null ? new IntentEndpoints($bootstrap->container) : null;
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', \PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -67,6 +69,7 @@ $isMissionDetail = $method === 'GET' && preg_match('#^/missions/([^/]+)$#', $pat
     $method === 'GET' && $path === '/health/ready' => $health->ready(),
     $method === 'GET' && $path === '/health/startup' => $health->startup(),
     $method === 'POST' && $path === '/missions' => $missions?->create($sessionToken, $requestBody) ?? $bootFailure->unavailable(),
+    $method === 'POST' && $path === '/intents' => $intents?->create($sessionToken, $requestBody) ?? $bootFailure->unavailable(),
     $isMissionDetail => $missions?->get($sessionToken, urldecode($missionIdMatch[1])) ?? $bootFailure->unavailable(),
     default => [404, Envelope::failure('route.not_found', sprintf('Rota "%s %s" não existe nesta Release.', $method, $path))],
 };

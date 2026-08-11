@@ -13,6 +13,7 @@ COPY packages/core packages/core
 COPY packages/kernel packages/kernel
 COPY packages/identity-engine packages/identity-engine
 COPY packages/mission-engine packages/mission-engine
+COPY packages/planner-engine packages/planner-engine
 COPY services/event-bus services/event-bus
 COPY services/gateway services/gateway
 COPY system-manifest.yaml system-manifest.yaml
