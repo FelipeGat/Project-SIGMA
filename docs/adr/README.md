@@ -99,3 +99,4 @@ Novas ADRs seguem o [template.md](template.md) e são numeradas sequencialmente.
 | [0091](0091-retry-subtask-compensacao-mission.md) | Retry é histórico de Subtask; Compensação é estado da Mission |
 | [0092](0092-plan-e-conceito-proprio-do-mission-engine.md) | `Plan`/`Subtask` candidata são conceitos do próprio Mission Engine — sem dependência de `planner-engine` |
 | [0093](0093-mission-workspace-opcional.md) | `Mission.workspaceId` é opcional |
+| [0094](0094-health-endpoints-pertencem-ao-kernel.md) | Health endpoints pertencem ao Kernel, não a cada service |
