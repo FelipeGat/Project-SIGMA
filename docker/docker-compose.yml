@@ -1,6 +1,7 @@
 services:
   redis:
     image: redis:7-alpine
+    restart: on-failure
     ports:
       - "16379:6379"
     healthcheck:
@@ -13,6 +14,7 @@ services:
     build:
       context: ..
       dockerfile: docker/gateway.Dockerfile
+    restart: on-failure
     ports:
       - "18080:8080"
     environment:
@@ -25,6 +27,7 @@ services:
 
   mariadb:
     image: mariadb:10.11
+    restart: on-failure
     environment:
       MARIADB_DATABASE: sigma_identity
       MARIADB_USER: sigma
@@ -42,6 +45,7 @@ services:
     build:
       context: ..
       dockerfile: docker/auth.Dockerfile
+    restart: on-failure
     ports:
       - "18081:8081"
     environment:
@@ -63,6 +67,12 @@ services:
     build:
       context: ..
       dockerfile: docker/memory-worker.Dockerfile
+    # `restart: on-failure` é o mais importante deste arquivo: o worker
+    # depende de um loop bloqueante sobre uma conexão Redis viva, e a
+    # Release 4.5 provou com evidência real que ele morre e nunca volta
+    # sozinho quando o Redis pisca. Sem esta linha, o Twin Sync fica
+    # fora do ar até alguém reiniciar o container na mão.
+    restart: on-failure
     # Sem "ports": é um worker, nunca escuta HTTP (Release 4B, ver
     # docs/releases/0004b-memory-infrastructure.md). Reaproveita a
     # mesma MariaDB do Identity Engine — schema novo (tabelas), nao
