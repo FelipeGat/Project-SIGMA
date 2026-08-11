@@ -21,10 +21,11 @@ modules:
     kind: engine
     # optional: true aqui não significa "este Module é dispensável" —
     # significa "nem todo processo que lê este Manifest precisa
-    # registrá-lo". services/gateway só registra kernel+event-bus;
-    # services/auth registra os três, incluindo identity-engine, e
-    # sempre o mantém presente do próprio ponto de vista. Ver Decision
-    # Log da Release 3B — gap descoberto ao validar via HTTP real.
+    # registrá-lo". services/auth e, a partir da Release 5.5,
+    # services/gateway registram identity-engine e sempre o mantêm
+    # presente do próprio ponto de vista; services/memory-worker não.
+    # Ver Decision Log da Release 3B — gap descoberto ao validar via
+    # HTTP real.
     optional: true
     minVersion: "1.0.0"
   - name: memory-engine
@@ -35,12 +36,10 @@ modules:
     minVersion: "1.0.0"
   - name: mission-engine
     kind: engine
-    # Diferente de identity-engine/memory-engine, nenhum service ainda
-    # registra este Module — Mission Engine não tem worker nem API HTTP
-    # nesta Release (sem consumidor real, ver
-    # docs/releases/0005c-mission-infrastructure.md). Listado aqui para
-    # que o Bootstrap já reconheça o Module quando um service futuro
-    # (Agent/Execution Engine, ou uma API HTTP) passar a registrá-lo.
+    # Registrado por services/gateway a partir da Release 5.5, que
+    # expõe as duas primeiras rotas de domínio do SIGMA (POST /missions
+    # e GET /missions/{id}) — até a 5C este Module não tinha nenhum
+    # consumidor real (ver docs/releases/0005.5-vertical-slice.md).
     optional: true
     minVersion: "1.0.0"
 

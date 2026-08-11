@@ -20,6 +20,7 @@ Este roadmap é a visão macro; o detalhamento formal de cada Release é produzi
 | 5A | Mission Research | ✅ Concluída | 100% |
 | 5B | Mission Implementation (Domain) | ✅ Concluída | 100% |
 | 5C | Mission Infrastructure | ✅ Concluída | 100% |
+| 5.5 | Vertical Slice | ✅ Concluída | 100% |
 | 6 | Planner Engine | ⏳ Não iniciada | 0% |
 | 7 | Intent Engine | ⏳ Não iniciada | 0% |
 | 8 | Skill Engine | ⏳ Não iniciada | 0% |

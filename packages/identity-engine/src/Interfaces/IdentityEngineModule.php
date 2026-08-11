@@ -7,6 +7,9 @@ namespace Sigma\IdentityEngine\Interfaces;
 use Sigma\Core\SigmaException;
 use Sigma\IdentityEngine\Application\UseCase\AssignRole;
 use Sigma\IdentityEngine\Application\UseCase\Authenticate;
+use Sigma\IdentityEngine\Application\UseCase\CreateCompany;
+use Sigma\IdentityEngine\Application\UseCase\CreateTenant;
+use Sigma\IdentityEngine\Application\UseCase\CreateWorkspace;
 use Sigma\IdentityEngine\Application\UseCase\GrantPermission;
 use Sigma\IdentityEngine\Application\UseCase\Logout;
 use Sigma\IdentityEngine\Application\UseCase\RegisterIdentity;
@@ -120,6 +123,9 @@ final class IdentityEngineModule implements IModule
         /** @var IEventBus $eventBus */
         $eventBus = $container->get(IEventBus::class);
 
+        $container->bind(CreateTenant::class, new CreateTenant($tenants));
+        $container->bind(CreateCompany::class, new CreateCompany($tenants, $companies));
+        $container->bind(CreateWorkspace::class, new CreateWorkspace($companies, $workspaces));
         $container->bind(RegisterIdentity::class, new RegisterIdentity($tenants, $users, $credentials, $identities, $credentialProvider, $eventBus));
         $container->bind(Authenticate::class, new Authenticate($users, $credentials, $identities, $credentialProvider, $sessions, $eventBus));
         $container->bind(SelectWorkspace::class, new SelectWorkspace($identities, $workspaces, $sessions, $eventBus));

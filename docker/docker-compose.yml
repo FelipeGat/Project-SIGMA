@@ -20,9 +20,19 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: "6379"
+      # A partir da Release 5.5 o gateway registra identity-engine e
+      # mission-engine, e passa a depender da mesma MariaDB do auth —
+      # schemas já existentes, nao banco/container novo.
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: sigma_identity
+      DB_USER: sigma
+      DB_PASSWORD: sigma
       SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
     depends_on:
       redis:
+        condition: service_healthy
+      mariadb:
         condition: service_healthy
 
   mariadb:

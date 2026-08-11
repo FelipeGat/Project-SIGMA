@@ -2,6 +2,17 @@
 
 O que o SIGMA passou a fazer, Release a Release — escrito para quem vai usar o sistema, não para quem o constrói. Documentação técnica (por quê, como foi validado) fica em `docs/releases/*-decision-log.md` e `*-validation-report.md`; aqui só o que mudou na prática. Ver [ADR-0078](docs/adr/0078-changelog-orientado-ao-usuario.md).
 
+## Release 5.5 — Vertical Slice
+
+**Pela primeira vez, o SIGMA faz algo de ponta a ponta.** Até aqui cada Release entregava uma camada interna; esta ligou todas elas num caminho que uma pessoa consegue percorrer:
+
+- ✔ Criar o primeiro usuário do sistema — antes disso, não existia nenhuma forma de criar um Tenant, uma empresa ou um Workspace sem mexer no banco à mão
+- ✔ Fazer login, escolher o Workspace, **registrar uma Missão** e consultá-la depois
+- ✔ Cada Missão fica isolada por empresa: uma Missão de um cliente é invisível para outro, mesmo com login válido
+- ✔ O sistema se recupera sozinho quando o Redis ou o banco piscam, em vez de ficar fora do ar até alguém reiniciar na mão
+
+Ainda é `curl` no terminal, não uma tela — e uma Missão registrada **fica parada**, porque quem a faz avançar (Planner, Agentes, Skills) chega nas Releases seguintes. O ganho aqui é de confiança: as cinco Releases anteriores foram provadas funcionando juntas, não só isoladamente. Ver [docs/releases/0005.5-vertical-slice.md](docs/releases/0005.5-vertical-slice.md).
+
 ## Release 4 — Memory
 
 Agora o SIGMA consegue:

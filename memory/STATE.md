@@ -1,8 +1,10 @@
 # Estado atual do projeto
 
-_Atualizado em: 2026-08-04._
+_Atualizado em: 2026-08-11._
 
 ## Fase
+
+**Release 5.5 — Vertical Slice: COMPLETA.** [Proposal 5.5](../docs/releases/0005.5-vertical-slice.md) implementada e validada contra Docker real — o primeiro caminho ponta a ponta do SIGMA existe: `bootstrap-identity.php` → `POST /auth/login` → `POST /auth/workspace` → `POST /missions` (**201**) → `GET /missions/{id}` (**200**). Três entregas: `restart: on-failure` nos cinco serviços (achado de prioridade alta da 4.5, **verificado como resolvido** — worker volta sozinho em ~6s após queda do Redis); `services/auth/bin/bootstrap-identity.php` + `IdentityBootstrapper`; e as duas primeiras rotas de domínio do projeto em `services/gateway`, que agora registra quatro Modules (`kernel`, `event-bus`, `identity-engine`, `mission-engine`) e depende de MariaDB pela primeira vez. **265 testes, 632 assertions, 0 pulados** (eram 246). Dois achados reais: (1) o Identity Engine não sabia criar o Tenant que ele mesmo exige — `Tenant`/`Company`/`Workspace` só nasciam em fixtures de teste, resolvido com três casos de uso novos; (2) com o banco fora do ar, o gateway deixava de responder `/health/live`, violando BOOTSTRAP.md § Health e causando restart-loop de um processo saudável — resolvido com `BootFailureEndpoints`. Ver [Decision Log 5.5](../docs/releases/0005.5-vertical-slice-decision-log.md)/[Validation Report 5.5](../docs/releases/0005.5-vertical-slice-validation-report.md).
 
 **Release 5 — Mission Engine: COMPLETA (5A + 5B + 5C).** [Proposal 5C](../docs/releases/0005c-mission-infrastructure.md) implementada — `Application/` (interface `MissionRepository` + quinze casos de uso), `Infrastructure/` (`PdoMissionRepository`, seis tabelas — `subtask_retry_attempts` foi um achado real, sexta tabela não prevista na Proposal), `Interfaces/MissionEngineModule`. Diferente da Release 4B (Memory), **sem worker/listener Redis**: nenhum Engine anterior publica eventos que o Mission Engine precise consumir ainda (Planner/Intent não existem, ADR-0031) — os treze eventos são publicados por `Application/`, nenhum é assinado. `Plan` persistido como `JSON` (validado na prática via round-trip). Dois achados de modelagem em `Domain/` durante uma Release de Infrastructure: `Subtask`/`ApprovalGate` ganharam `reconstitute()` próprio (necessário para hidratar sem violar suas máquinas de estado); `missions.pending_approval_gate_id` não tem `FOREIGN KEY` (dependência circular com `approval_gates`, integridade garantida pela ordem de escrita, não pelo schema). **Achado positivo**: suíte completa do monorepo rodou pela primeira vez contra MariaDB real com **0 testes pulados** (246 testes, 583 assertions) — `docker compose up -d mariadb` do próprio projeto subido nesta rodada. Ver [Decision Log 5C](../docs/releases/0005c-mission-infrastructure-decision-log.md)/[Validation Report 5C](../docs/releases/0005c-mission-infrastructure-validation-report.md).
 
@@ -61,12 +63,25 @@ _Atualizado em: 2026-08-04._
 ## Pendências / riscos sinalizados
 
 - Mesmas de sempre (PHP 8.2, `autonomy_level_required` vs. `autonomyCapabilities`, `PermissionId` sem uso, migrations lazy, numeração Release 6/7).
+- **`services/auth` responde `503` a tudo — inclusive `/health/live` — com MariaDB fora do ar** (mesmo problema que o gateway teve, corrigido só no gateway na 5.5).
+- Uma Mission criada pela rota nova nasce `created` e **fica parada** — sem Planner/Agent/Skill, nada a faz avançar. Esperado, não defeito.
+- Sem `GET /missions` (coleção), sem paginação, sem rota para os outros treze casos de uso do Mission Engine.
 - `Identifier` duplicada em três pacotes (`identity-engine`/`memory-engine`/`mission-engine`) — consolidação em `packages/core` ainda recomendada, não decidida.
 - `KnowledgeFolderIndexer` sem gatilho de execução automática.
 - `handleWorkspaceSelected()` ignora silenciosamente entrega fora de ordem — sem retry/fila.
 - `read_write_timeout: -1` é correção pragmática, não estratégia de reconexão robusta — revisitar quando o Scheduler existir.
 - Mission Engine sem consumidor real (Application/Infrastructure prontas, mas nenhum service ainda registra o Module) — mesmo padrão já aceito para vários eventos/Permissions do Memory Engine em 4B.
 
+## Decisões de Implementation da Release 5.5
+
+- **Achado real**: `RegisterIdentity` exigia um Tenant que nenhum caminho de produção sabia criar — `grep "new Tenant("` só encontrava fixtures de teste. Resolvido com `CreateTenant`/`CreateCompany`/`CreateWorkspace`, **casos de uso**, não repositórios expostos no container (os três Engines bindam apenas casos de uso — padrão preservado).
+- **Achado real**: com MariaDB fora do ar, `Bootstrap::fromManifestFile()` lança em `register()`, antes de qualquer Module reportar estado — o `degraded` granular **não** cobria o caso, e `public/index.php` respondia `503` inclusive em `/health/live`. `BootFailureEndpoints` corrige: `live` → `200`, `ready`/`startup`/rotas de domínio → `503`. **`services/auth` tem o mesmo problema desde a 3B e não foi corrigido** (fora de escopo) — se for, a política vira ADR.
+- **`tenantId`/`workspaceId` vêm da Session, nunca do corpo** — validado com dois Tenants reais: o mesmo token que cria Mission própria (`201`) recebe `404` na Mission alheia; o dono recebe `200`.
+- **Mission de outro Tenant responde `404`, não `403`** — a existência de uma Mission é informação do Tenant dono dela.
+- **`CreateTenant`/`CreateCompany`/`CreateWorkspace` não publicam evento** — `Tenant`/`Company`/`Workspace` não são aggregates com eventos no modelo atual; inventar `tenant.created` exigiria catalogá-lo.
+- **`intentId` é `null`** — sem Intent Engine, nenhuma Mission desta rota nasce de uma Intent registrada.
+- **Front controller continua sem framework** — `GET /missions/{id}` é a primeira rota com segmento variável, resolvida com `preg_match`; não escala para a Release 12.
+
 ## Bloqueios
 
-**Nenhum bloqueio de aprovação no momento** — Release 5 (5A + 5B + 5C) completa. Push do(s) commit(s) pendentes aguardando confirmação explícita (mesma regra de sempre). Próxima decisão real: quando priorizar Planner Engine (Release 6) vs. o achado de alta prioridade da 4.5 (`restart policy` ausente no `docker-compose.yml`). Ver [NEXT.md](../memory/NEXT.md).
+**Nenhum bloqueio de aprovação no momento** — Release 5 (5A + 5B + 5C) e 5.5 completas. Push do(s) commit(s) pendentes aguardando confirmação explícita (mesma regra de sempre). Próxima decisão real: quando priorizar Planner Engine (Release 6) vs. o achado de alta prioridade da 4.5 (`restart policy` ausente no `docker-compose.yml`). Ver [NEXT.md](../memory/NEXT.md).

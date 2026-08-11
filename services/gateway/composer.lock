@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9cab4cf8d55e5195d7544bbf4b3dd5f7",
+    "content-hash": "db003bc32b88d0f3ea7d26416d320053",
     "packages": [
         {
             "name": "predis/predis",
@@ -148,6 +148,47 @@
             }
         },
         {
+            "name": "sigma/identity-engine",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/identity-engine",
+                "reference": "b6bf7d16afc3f0258291cb80d99f6173d805af20"
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": "^8.2",
+                "sigma/core": "^1.0",
+                "sigma/kernel": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sigma\\IdentityEngine\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Sigma\\IdentityEngine\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Identity Engine do SIGMA — responde 'quem'. Domain (Release 3A) + Application/Infrastructure/Interface (Release 3B) — ver ADR-0060, ADR-0061.",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "sigma/kernel",
             "version": "1.0.0",
             "dist": {
@@ -183,6 +224,47 @@
                 "proprietary"
             ],
             "description": "Bootstrap do SIGMA: DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, System Manifest Loader. Expoe apenas interfaces (ver ADR-0052) — nunca conhece Engine (ADR-0040).",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "sigma/mission-engine",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/mission-engine",
+                "reference": "0847cac61201091c35c3f23d4380fe78eb493f80"
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": "^8.2",
+                "sigma/core": "^1.0",
+                "sigma/kernel": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sigma\\MissionEngine\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Sigma\\MissionEngine\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Mission Engine do SIGMA — responde 'o que deve acontecer, quem executa, quando'. Domain (Release 5B) + Application/Infrastructure/Interfaces (Release 5C) — ver ADR-0060, ADR-0061, MISSION_MODEL.md.",
             "transport-options": {
                 "relative": true
             }
@@ -421,20 +503,20 @@
     "packages-dev": [
         {
             "name": "myclabs/deep-copy",
-            "version": "1.13.4",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "07d290f0c47959fd5eed98c95ee5602db07e0b6a"
+                "reference": "8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/07d290f0c47959fd5eed98c95ee5602db07e0b6a",
-                "reference": "07d290f0c47959fd5eed98c95ee5602db07e0b6a",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae",
+                "reference": "8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "^8.0"
             },
             "conflict": {
                 "doctrine/collections": "<1.6.8",
@@ -469,15 +551,15 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.4"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.14.0"
             },
             "funding": [
                 {
-                    "url": "https://tidelift.com/funding/github/packagist/myclabs/deep-copy",
-                    "type": "tidelift"
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
                 }
             ],
-            "time": "2025-08-01T08:46:24+00:00"
+            "time": "2026-08-11T10:17:44+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -2190,8 +2272,9 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "ext-pdo": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

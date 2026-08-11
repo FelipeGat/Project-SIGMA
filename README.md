@@ -4,7 +4,20 @@
 
 SIGMA não é um chatbot, não é um sistema CRUD e não é um assistente virtual. É a camada de orquestração — um Kernel e dez Engines especializados — que conecta pessoas, clientes, projetos, sistemas, inteligências artificiais e automações através de linguagem natural. Ver [MANIFESTO.md](MANIFESTO.md) para o porquê.
 
-> Status atual: **Release 1 — SIGMA Protocol**, aprovada, push realizado. **Release 2 — SIGMA Bootstrap: implementada** — primeiro código de aplicação do projeto (`packages/core`, `packages/kernel`, `services/event-bus`, `services/gateway`), 48 testes automatizados passando. Veja [ROADMAP.md](ROADMAP.md), [docs/releases/0002-sigma-bootstrap-decision-log.md](docs/releases/0002-sigma-bootstrap-decision-log.md) e [memory/STATE.md](memory/STATE.md).
+> Status atual: **Releases 0 a 5.5 concluídas** — Kernel, Identity, Memory e Mission Engines implementados, com 265 testes automatizados passando. Desde a **Release 5.5 — Vertical Slice** existe o primeiro caminho ponta a ponta: criar o usuário inicial pelo CLI, logar, escolher Workspace, registrar uma Mission e consultá-la, tudo por HTTP contra o ambiente Docker do projeto. Ainda sem interface gráfica (`apps/*` chegam na Release 13). Veja [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md) e [memory/STATE.md](memory/STATE.md).
+
+## Rodando localmente
+
+```bash
+cd docker && docker compose up -d --build
+
+# cria o primeiro usuário (Tenant → Company → Workspace → User)
+docker compose exec auth php bin/bootstrap-identity.php \
+  --tenant="Alfa Soluções" --company="Alfa Tecnologia" --workspace="Operação" \
+  --name="Seu Nome" --email=voce@alfa.com.br --password='trocar-depois'
+```
+
+Guarde o `tenantId` e o `workspaceId` da saída, então: `POST :18081/auth/login` → `POST :18081/auth/workspace` → `POST :18080/missions` → `GET :18080/missions/{id}`. A sequência completa, com as respostas reais, está no [Validation Report da Release 5.5](docs/releases/0005.5-vertical-slice-validation-report.md).
 
 ## Por onde começar
 
@@ -71,7 +84,7 @@ project-sigma/
 └── memory/                          # Memória operacional do próprio projeto (estado, próximos passos, decisões)
 ```
 
-Todas as pastas de código (`apps/`, `packages/`, `services/`, `plugins/`, `sdk/`) estão vazias na Fase Foundation, exceto `packages/kernel` e `services/event-bus`/`services/gateway`, onde a Release 2 já está em implementação. Ver [ADR-0016](docs/adr/0016-monorepo-apps-packages-services.md).
+Implementados até aqui: `packages/core`, `packages/kernel`, `packages/identity-engine`, `packages/memory-engine`, `packages/mission-engine`, `services/event-bus`, `services/gateway`, `services/auth`, `services/memory-worker`. `apps/`, `plugins/` e `sdk/` continuam vazios — chegam nas Releases 8 e 13. Ver [ADR-0016](docs/adr/0016-monorepo-apps-packages-services.md).
 
 ## Princípios inegociáveis
 
