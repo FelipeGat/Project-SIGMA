@@ -1,6 +1,6 @@
 # ADR-0094: Health endpoints pertencem ao Kernel, não a cada service
 
-- **Status**: Proposto
+- **Status**: Aceito
 - **Data**: 2026-08-11
 
 ## Contexto

@@ -2,6 +2,17 @@
 
 O que o SIGMA passou a fazer, Release a Release — escrito para quem vai usar o sistema, não para quem o constrói. Documentação técnica (por quê, como foi validado) fica em `docs/releases/*-decision-log.md` e `*-validation-report.md`; aqui só o que mudou na prática. Ver [ADR-0078](docs/adr/0078-changelog-orientado-ao-usuario.md).
 
+## Release 5.6 — Observability Baseline
+
+Nenhuma capacidade nova para quem usa o sistema — esta Release fez o SIGMA **reagir** ao próprio estado de saúde, em vez de apenas relatá-lo:
+
+- ✔ Se o banco cai, os serviços saem do tráfego automaticamente, sem que ninguém precise perceber
+- ✔ Quando o banco volta, eles voltam sozinhos — medido em 4 segundos
+- ✔ Um serviço com problema não é mais reiniciado à toa: o sistema distingue "travado" (reinicia) de "esperando uma dependência" (só espera)
+- ✔ O `auth` passou a informar seu estado, coisa que nunca fez desde que entrou no ar
+
+Ver [docs/releases/0005.6-observability-baseline.md](docs/releases/0005.6-observability-baseline.md).
+
 ## Release 5.5 — Vertical Slice
 
 **Pela primeira vez, o SIGMA faz algo de ponta a ponta.** Até aqui cada Release entregava uma camada interna; esta ligou todas elas num caminho que uma pessoa consegue percorrer:

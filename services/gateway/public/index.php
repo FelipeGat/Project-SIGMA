@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Sigma\Gateway\BootFailureEndpoints;
+use Sigma\Kernel\Http\BootFailureEndpoints;
 use Sigma\Gateway\Bootstrap;
 use Sigma\Core\Envelope;
-use Sigma\Gateway\HealthEndpoints;
+use Sigma\Kernel\Http\HealthEndpoints;
 use Sigma\Gateway\MissionEndpoints;
 
 $manifestPath = getenv('SIGMA_MANIFEST_PATH') ?: __DIR__ . '/../../../system-manifest.yaml';

@@ -29,6 +29,22 @@ services:
       DB_USER: sigma
       DB_PASSWORD: sigma
       SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
+    # /health/ready, nao /health/live: este healthcheck responde "devo
+    # receber trafego?", que e exatamente o que `ready` significa
+    # (ADR-0042/ADR-0094). Um Module `degraded` tira o servico do
+    # trafego sem que o processo precise morrer.
+    #
+    # start_period folgado de proposito: as migrations do Identity e do
+    # Mission Engine rodam na primeira requisicao HTTP (pendencia aberta
+    # desde a Release 3B), entao a primeira resposta e mais lenta que as
+    # seguintes. Sem esta folga o container seria marcado unhealthy
+    # durante uma subida perfeitamente normal.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       redis:
         condition: service_healthy
@@ -67,6 +83,15 @@ services:
       DB_USER: sigma
       DB_PASSWORD: sigma
       SIGMA_MANIFEST_PATH: /app/system-manifest.yaml
+    # Ver o comentario do healthcheck do gateway — mesma politica.
+    # services/auth passou a expor os tres endpoints de ADR-0042 na
+    # Release 5.6 (ADR-0094); antes disso nao havia o que consultar aqui.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       redis:
         condition: service_healthy
@@ -87,6 +112,11 @@ services:
     # docs/releases/0004b-memory-infrastructure.md). Reaproveita a
     # mesma MariaDB do Identity Engine — schema novo (tabelas), nao
     # banco/container novo.
+    #
+    # Sem "healthcheck", e a excecao explicita da ADR-0094: nao ha
+    # endpoint a consultar num processo que nunca escuta HTTP. Sua
+    # saude aqui e "o processo esta vivo", ja coberto pelo
+    # `restart: on-failure` acima.
     environment:
       REDIS_HOST: redis
       REDIS_PORT: "6379"

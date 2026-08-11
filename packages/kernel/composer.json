@@ -1,6 +1,6 @@
 {
     "name": "sigma/kernel",
-    "description": "Bootstrap do SIGMA: DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, System Manifest Loader. Expoe apenas interfaces (ver ADR-0052) — nunca conhece Engine (ADR-0040).",
+    "description": "Bootstrap do SIGMA: DI Container, Module Loader, Configuration Provider, Lifecycle Manager, Health Manager, System Manifest Loader, e os tres endpoints de health que todo service expoe (Http/, ver ADR-0094). Expoe apenas interfaces (ver ADR-0052) — nunca conhece Engine (ADR-0040).",
     "type": "library",
     "license": "proprietary",
     "version": "1.0.0",

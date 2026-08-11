@@ -2,17 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Sigma\Gateway;
+namespace Sigma\Kernel\Http;
 
 use Sigma\Core\Envelope;
 use Sigma\Kernel\HealthManager;
 
 /**
- * A lógica dos três endpoints de health — separada do front controller
- * (`public/index.php`) para ser testável sem subir um servidor HTTP.
- * Ver BOOTSTRAP.md § Health e ADR-0042.
+ * A lógica dos três endpoints de health de ADR-0042 — separada de
+ * qualquer front controller para ser testável sem subir um servidor
+ * HTTP. Ver BOOTSTRAP.md § Health.
  *
- * @see public/index.php
+ * Vive no Kernel desde a ADR-0094: health é comportamento de Module,
+ * não de service, e todo processo deployável do SIGMA expõe os mesmos
+ * três endpoints a partir do mesmo `HealthManager`. Traduz estado em
+ * pares `[status, Envelope]` — sem roteamento, sem middleware, sem
+ * conhecer SAPI, sem conhecer Engine (ADR-0040).
+ *
+ * @see BootFailureEndpoints Para quando o próprio boot falhou.
  */
 final class HealthEndpoints
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Sigma\Gateway\Tests;
+namespace Sigma\Kernel\Tests\Http;
 
 use PHPUnit\Framework\TestCase;
-use Sigma\Gateway\HealthEndpoints;
+use Sigma\Kernel\Http\HealthEndpoints;
 use Sigma\Kernel\Contract\ModuleStatus;
 use Sigma\Kernel\HealthManager;
 
